@@ -11,8 +11,8 @@
 <style scoped>
 
 .pacman-img {
-  width: 50px; /* Set the width to 200 pixels */
-  height: auto; /* Maintain the aspect ratio */
+  width: 50px;
+  height: auto;
 }
 
 </style>

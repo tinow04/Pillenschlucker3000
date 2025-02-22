@@ -1,104 +1,61 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
 import PacmanObject from "@/components/feature/game/src/components/PacmanObject.vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
-const position = ref({ left: 0, top: 0 });
+const position = ref({ x: 200, y: 400 });
+const speed = 5;
+const keysPressed = new Set<string>();
 
-function getPosition() {
-  const pacmanIcon = document.getElementById('pacman-icon');
-  if (pacmanIcon) {
-    return pacmanIcon.getBoundingClientRect();
-  }
-  return null;
-}
+const move = () => {
+  if (keysPressed.has("ArrowUp")) position.value.y -= speed;
+  if (keysPressed.has("ArrowDown")) position.value.y += speed;
+  if (keysPressed.has("ArrowLeft")) position.value.x -= speed;
+  if (keysPressed.has("ArrowRight")) position.value.x += speed;
+};
 
-function yourFunction() {
-  const rect = getPosition();
-  if (rect) {
-    console.log(`Pacman position - X: ${rect.left}, Y: ${rect.top}`);
-    position.value.left = rect.left + 5;
-    position.value.top = rect.top + 5;
-  }
-}
+const keyDownHandler = (event: KeyboardEvent) => {
+  keysPressed.add(event.key);
+};
+const keyUpHandler = (event: KeyboardEvent) => {
+  keysPressed.delete(event.key);
+};
+
+
+const gameLoop = () => {
+  move();
+  requestAnimationFrame(gameLoop);
+};
 
 onMounted(() => {
-  setInterval(() => {
-    yourFunction();
-  }, 10 * 60 * 10);
+  window.addEventListener("keydown", keyDownHandler);
+  window.addEventListener("keyup", keyUpHandler);
+  requestAnimationFrame(gameLoop);
 });
+
+onUnmounted(() => {
+  window.removeEventListener("keydown", keyDownHandler);
+  window.removeEventListener("keyup", keyUpHandler);
+});
+
 </script>
 
 <template>
   <div id="game-field" class="game-field">
-    <pacman-object id="pacman-icon" :style="{ left: position.left + 'px', top: position.top + 'px', position: 'absolute' }"></pacman-object>
+    <pacman-object class="pacman"
+      :style="{ left: position.x + 'px', top: position.y + 'px' }"
+    ></pacman-object>
   </div>
 </template>
 
 <style scoped>
 .game-field {
-  width: 50rem;
-  height: 30rem;
+  width: 800px;
+  height: 480px;
   background-color: green;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
+}
+
+.pacman {
+  position: absolute;
 }
 </style>
-
-
-
-
-
-
-
-<!--<script setup lang="ts">-->
-<!--import { onMounted } from 'vue';-->
-<!--import PacmanObject from "@/components/feature/game/src/components/PacmanObject.vue";-->
-
-<!--function getPosition() {-->
-<!--  const pacmanIcon = document.getElementById('pacman-icon');-->
-<!--  if (pacmanIcon) {-->
-<!--    const position = pacmanIcon.getBoundingClientRect();-->
-<!--  }-->
-<!--  return null;-->
-<!--}-->
-
-
-
-<!--function yourFunction() {-->
-<!--  const rect = getPosition();-->
-<!--  if (rect) {-->
-<!--    console.log(`Pacman position - X: ${rect.left}, Y: ${rect.top}`);-->
-<!--    position.value.left = rect.left + 5;-->
-<!--    position.value.top = rect.top + 5;-->
-<!--  }-->
-<!--}-->
-
-<!--onMounted(() => {-->
-<!--  setInterval(() => {-->
-<!--    yourFunction();-->
-<!--  }, 1000 * 60 * 10);-->
-<!--});-->
-<!--</script>-->
-
-<!--<template>-->
-
-<!--  <div id="game-field" class="game-field">-->
-<!--    <pacman-object id="pacman-icon"></pacman-object>-->
-<!--  </div>-->
-
-<!--</template>-->
-
-<!--<style scoped>-->
-
-<!--.game-field {-->
-<!--  /* Add styles for your game field here */-->
-<!--  width: 50rem;-->
-<!--  height: 30rem;-->
-<!--  background-color: green;-->
-<!--  display: flex;-->
-<!--  justify-content: center;-->
-<!--  align-items: center;-->
-<!--}-->
-
-<!--</style>-->
