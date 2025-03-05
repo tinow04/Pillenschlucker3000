@@ -1,4 +1,11 @@
 @import './base.css';
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
+
+body {
+  font-family: "Jersey 10", serif;
+  overflow: hidden;
+  user-select: none;
+}
 
 html, body, #app {
   height: 100%;
