@@ -1,22 +1,25 @@
-<script setup lang="ts"></script>
-
 <template>
-  <div class="image-bottom">
-    <img src="@/assets/pacmanwghosts.png" alt="Image could not load" />
+  <div class="bottom-image">
+    <img src="@/assets/pacmanwghosts.png" alt="Pac-Man Logo" />
   </div>
 </template>
 
+<script>
+export default {
+  name: "ImageBottomComponent",
+};
+</script>
+
 <style scoped>
-.image-bottom {
-  position: fixed;
-  bottom: 0;
+.bottom-image {
+  position: absolute;
+  bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
-  text-align: center;
 }
 
-.image-bottom img {
-  max-width: 100%;
+.bottom-image img {
+  width: 15rem;
   height: auto;
 }
 </style>

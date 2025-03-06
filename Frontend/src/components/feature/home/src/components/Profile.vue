@@ -1,12 +1,16 @@
-<script setup lang="ts"></script>
-
 <template>
   <div class="profile-picture">
     <button class="profile-button">
-      <img src="@/assets/profile.png" />
+      <img src="@/assets/profile.png" alt="Image could not load" />
     </button>
   </div>
 </template>
+
+<script>
+export default {
+  name: "ProfileComponent",
+};
+</script>
 
 <style scoped>
 .profile-picture {
