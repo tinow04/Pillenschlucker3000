@@ -68,7 +68,7 @@ export default {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  margin-top: 10rem;
+  margin-top: 8rem;
 
 }
 
@@ -87,11 +87,11 @@ export default {
 .board-title {
   background-color: #183446;
   width: 24rem;
-  margin-top: -40rem;
+  margin-top: -41rem;
   color: #FFFF;
   text-align: center;
   position: fixed;
-  padding: 0.5rem 0;
+  padding: 0rem 0;
   font-size: 2.8rem;
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
 }
@@ -105,7 +105,7 @@ export default {
 .leaderboard-list li {
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
+  padding: -3rem 1rem;
   margin-bottom: 0.5rem;
   font-size: 2rem;
   gap: 3rem;
@@ -116,7 +116,7 @@ export default {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-top: -2rem;
+  margin-top: 1rem;
 }
 
 .stat-group {

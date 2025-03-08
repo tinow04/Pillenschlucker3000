@@ -1,14 +1,28 @@
 <template>
   <div class="profile-picture">
-    <button class="profile-button">
+    <button class="profile-button" @click="togglePopup">
       <img src="@/assets/profile.png" alt="Image could not load" />
     </button>
+    <div v-if="showPopup" class="profile-popup">
+      <p>Noch kein Account?</p>
+      <router-link to="/login" class="popup-link">Login</router-link>
+    </div>
   </div>
 </template>
 
 <script>
+import { ref } from "vue";
 export default {
   name: "ProfileComponent",
+  setup() {
+    const showPopup = ref(false);
+
+    const togglePopup = () => {
+      showPopup.value = !showPopup.value;
+    };
+
+    return { showPopup, togglePopup };
+  },
 };
 </script>
 
@@ -35,5 +49,34 @@ export default {
 
 .profile-button img:hover {
   transform: scale(1.1);
+}
+
+/* Popup-Styles passend zum restlichen Design */
+.profile-popup {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background-color: #183446;
+  padding: 1rem;
+  border-radius: 1rem;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  text-align: center;
+}
+
+.profile-popup p {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.4rem;
+}
+
+.popup-link {
+  color: yellow;
+  text-decoration: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.popup-link:hover {
+  text-decoration: underline;
 }
 </style>

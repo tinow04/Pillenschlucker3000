@@ -17,9 +17,4 @@ export default {
   left: 50%;
   transform: translateX(-50%);
 }
-
-.bottom-image img {
-  width: 15rem;
-  height: auto;
-}
 </style>

@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: "HeaderComponent",
+  name: "Header",
 };
 </script>
 
@@ -15,7 +15,7 @@ export default {
   color: yellow;
   font-size: 6rem;
   text-align: center;
-  margin-top: -40rem;
+  margin-top: 0rem;
   position: fixed;
   left: 50%;
   transform: translateX(-50%);

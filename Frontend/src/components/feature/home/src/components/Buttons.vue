@@ -24,7 +24,7 @@ export default {
   align-items: center;
   gap: 2rem;
   min-height: 100vh;
-  margin-top: 20rem;
+  margin-top: 40rem;
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
