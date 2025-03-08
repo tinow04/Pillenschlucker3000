@@ -4,9 +4,6 @@ import GameField from "@/components/feature/game/src/components/GameField.vue";
 
 <template>
   <div class="page-container">
-    <h3>
-      You’ve successfully created a project with Vue
-    </h3>
     <game-field class="field-box"></game-field>
   </div>
 </template>
