@@ -41,7 +41,7 @@ const grid = [
 const highlightedCells = computed(() => {
   return grid.flatMap((row, rowIndex) =>
     row.map((cell, colIndex) => (cell === 1 ? { row: rowIndex, col: colIndex } : null))
-  ).filter(Boolean);
+  ).filter((cell): cell is { row: number, col: number } => cell !== null);
 });
 
 </script>
