@@ -41,13 +41,13 @@
       return;
     } else {
      punkte.value.forEach((punkt, index) =>{
-      let distanceBetweenDotAndPacmanTop = Math.abs(punkt.positionX - imagePacman.value!.offsetTop);
-      let distanceBetweenDotAndPacmanLeft = Math.abs(punkt.positionX - imagePacman.value!.offsetLeft);
+      const distanceBetweenDotAndPacmanTop = Math.abs(punkt.positionX - imagePacman.value!.offsetTop);
+      const distanceBetweenDotAndPacmanLeft = Math.abs(punkt.positionX - imagePacman.value!.offsetLeft);
 
       if(distanceBetweenDotAndPacmanLeft <= 10 && distanceBetweenDotAndPacmanTop <= 10) {
         punkte.value[index].visible = false;
       }
-     }); 
+     });
     }
   }
 
@@ -61,7 +61,7 @@
   });
 
   const Direction = (event: KeyboardEvent) =>{
-    
+
     if(event.key == "W" || event.key =="w" || event.key == "ArrowUp"){
       if(durationMoveA != null){
         clearInterval(durationMoveA);
@@ -75,7 +75,7 @@
 
       if(imagePacman.value && alreadyRotatedW == false) {
         imagePacman.value.style.transform = `rotate(270deg)`;
-        alreadyRotatedW = true; 
+        alreadyRotatedW = true;
         alreadyRotatedD = false;
         alreadyRotatedS = false;
         alreadyRotatedA = false;
@@ -107,7 +107,7 @@
 
         if(imagePacman.value && alreadyRotatedD == false) {
           imagePacman.value.style.transform = `rotate(360deg)`;
-          alreadyRotatedW = false; 
+          alreadyRotatedW = false;
           alreadyRotatedD = true;
           alreadyRotatedS = false;
           alreadyRotatedA = false;
@@ -135,11 +135,11 @@
         if(durationMoveW != null){
           clearInterval(durationMoveW);
         }
-        
+
 
         if(imagePacman.value && alreadyRotatedS == false) {
           imagePacman.value.style.transform = `rotate(90deg)`;
-          alreadyRotatedW = false; 
+          alreadyRotatedW = false;
           alreadyRotatedD = false;
           alreadyRotatedS = true;
           alreadyRotatedA = false;
@@ -152,7 +152,7 @@
             }else {
               moveS +=1;
               imagePacman.value.style.top = `${moveS}px`;
-              colisionDot();  
+              colisionDot();
             }
           },10);
         }
@@ -168,10 +168,10 @@
         if(durationMoveW != null){
           clearInterval(durationMoveW);
         }
-        
+
         if(imagePacman.value && alreadyRotatedA == false) {
           imagePacman.value.style.transform = `rotate(180deg)`;
-          alreadyRotatedW = false; 
+          alreadyRotatedW = false;
           alreadyRotatedD = false;
           alreadyRotatedS = false;
           alreadyRotatedA = true;
@@ -189,7 +189,7 @@
           },10);
         }
       }
-    }; 
+    };
 </script>
 
 <template>
@@ -203,13 +203,13 @@
   #pacmanGIf {
     position:absolute;
     top: 0px;
-    left: 0px; 
-    image-rendering: optimizeSpeed;         /*Austellen von "anti-alias sinc". Aliassign wird verwendet wenn ein Bild hoch squaliert wird d.h. es ensteht ein Treppeneffekt zur Kantenklätung. Dieser wird durch das Anti-Alias-Sinc ausgestellt damit nicht neachbarte Pixel kombiniert werden um eine neue Farbe zur Klätung zu erzeugen */   
-    image-rendering: -moz-crisp-edges;          
-    image-rendering: -o-crisp-edges;            
-    image-rendering: -webkit-optimize-contrast; 
-    image-rendering: pixelated;                
-    -ms-interpolation-mode: nearest-neighbor; 
+    left: 0px;
+    image-rendering: optimizeSpeed;         /*Austellen von "anti-alias sinc". Aliassign wird verwendet wenn ein Bild hoch squaliert wird d.h. es ensteht ein Treppeneffekt zur Kantenklätung. Dieser wird durch das Anti-Alias-Sinc ausgestellt damit nicht neachbarte Pixel kombiniert werden um eine neue Farbe zur Klätung zu erzeugen */
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -o-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
+    -ms-interpolation-mode: nearest-neighbor;
   }
 
   #pacmanDot {
