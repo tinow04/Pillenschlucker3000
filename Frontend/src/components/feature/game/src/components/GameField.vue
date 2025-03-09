@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import Points from "@/components/feature/game/src/components/Points.vue";
+import PowerUp from "@/components/feature/game/src/components/PowerUp.vue";
 import PacmanObject from "@/components/feature/game/src/components/PacmanObject.vue";
 import { ref, onMounted, onUnmounted } from "vue";
 
@@ -44,6 +46,8 @@ onUnmounted(() => {
     <pacman-object class="pacman"
       :style="{ left: position.x + 'px', top: position.y + 'px' }"
     ></pacman-object>
+    <points></points>
+    <power-up></power-up>
   </div>
 </template>
 
