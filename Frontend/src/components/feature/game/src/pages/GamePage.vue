@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import GameField from "@/components/feature/game/src/components/GameField.vue";
+import GameField from '../components/GameField.vue';
 </script>
 
 <template>
@@ -7,7 +7,7 @@ import GameField from "@/components/feature/game/src/components/GameField.vue";
     <h3>
       You’ve successfully created a project with Vue
     </h3>
-    <game-field class="field-box"></game-field>
+    <GameField></GameField>
   </div>
 </template>
 
