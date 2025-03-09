@@ -1,17 +1,14 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "strict": true,            // oder false, je nach Bedarf
-    "noImplicitAny": false,    // kann helfen, den Fehler zu vermeiden
+    "module": "esnext",
     "allowJs": true,
+    "noImplicitAny": false,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    // ... weitere Optionen
+    "types": ["vite/client"],
+    "strict": true
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.vue"
-  ],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"],
   "exclude": ["node_modules"]
 }
