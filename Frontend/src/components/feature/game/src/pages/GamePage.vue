@@ -4,9 +4,6 @@ import GameField from '../components/GameField.vue';
 
 <template>
   <div class="page-container">
-    <h3>
-      You’ve successfully created a project with Vue
-    </h3>
     <GameField></GameField>
   </div>
 </template>
@@ -18,6 +15,7 @@ import GameField from '../components/GameField.vue';
   justify-content: center;
   align-items: center;
   height: 100%;
+  background-color: black;
 }
 
 .field-box {
