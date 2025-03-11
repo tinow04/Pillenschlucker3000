@@ -36,13 +36,19 @@
     [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0], //30
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], //31
   //[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], //32
-  ];  
+  ];
 
+  /*
   const highlightedCells = computed(() => {
     return grid.flatMap((row, rowIndex) =>
       row.map((cell, colIndex) => (cell === 1 ? { row: rowIndex, col: colIndex } : null))
     ).filter((cell): cell is { row: number, col: number } => cell !== null);
   });
+
+
+
+
+  */
 
 </script>
 
@@ -51,12 +57,16 @@
   <div class="pacman-container">
     <img class="pacman-maze" src="@/assets/PacManMaze.png">
     <PacmanObject class="pacman" :grid="grid"></PacmanObject>
-    <div v-for="cell in highlightedCells" class="highlight" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }"></div>
+   <!-- <div v-for="cell in highlightedCells" class="highlight" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }"></div> -->
   </div>
   </body>
 </template>
 
 <style scoped>
+  .game-field {
+    background-color: black;
+  }
+
   .pacman-maze {
     width: 700px;
     height: 775px;
@@ -73,7 +83,7 @@
     display: grid;
     grid-template-columns: repeat(28, 25px);
     grid-template-rows: repeat(31, 25px);
-    border: 1px solid red;
+   /* border: 1px solid red; */
   }
 
   .highlight {

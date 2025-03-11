@@ -6,7 +6,7 @@ import LoginPage from '../components/feature/login/src/pages/LoginPage.vue';
 const routes = [
   { path: '/', component: HomePage},
   { path: '/login', component: LoginPage },
-  { path: '/game', component: GamePage },
+  { path: '/ingame', component: GamePage },
 ]
 
 const router = createRouter({

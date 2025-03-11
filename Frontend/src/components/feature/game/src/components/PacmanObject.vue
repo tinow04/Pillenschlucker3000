@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-  import { onMounted, onUnmounted, ref} from "vue"; 
+  import { onMounted, onUnmounted, ref} from "vue";
   const props = defineProps<{ grid: number[][] }>();
   const speed = 1.67;
   const position = ref({ x: 20, y: 20 });
@@ -37,7 +37,7 @@
   });
 
   const Direction = (event: KeyboardEvent) =>{
-    
+
     if((event.key == "W" || event.key =="w" || event.key == "ArrowUp") && alreadyRotatedW == false && position.value.y > 0 && canMoveTo(position.value.x, position.value.y - speed)){
       if(durationMoveA != null){
         clearInterval(durationMoveA);
@@ -59,7 +59,7 @@
                 if(imagePacman.value && alreadyRotatedW == false) {
                   position.value.y -= speed;
                   imagePacman.value.style.transform = `rotate(270deg)`;
-                  alreadyRotatedW = true; 
+                  alreadyRotatedW = true;
                   alreadyRotatedD = false;
                   alreadyRotatedS = false;
                   alreadyRotatedA = false;
@@ -91,14 +91,14 @@
                   if(imagePacman.value && alreadyRotatedD == false) {
                     position.value.x += speed;
                     imagePacman.value.style.transform = `rotate(360deg)`;
-                    alreadyRotatedW = false; 
+                    alreadyRotatedW = false;
                     alreadyRotatedD = true;
                     alreadyRotatedS = false;
                     alreadyRotatedA = false;
                   }
                   position.value.x += speed;
                   imagePacman.value!.style.left = `${position.value.x}px`;
-                } 
+                }
               }
           },10);
       }
@@ -113,7 +113,7 @@
         if(durationMoveW != null){
           clearInterval(durationMoveW);
         }
-        
+
 
           durationMoveS = setInterval(()=>{
             if(imagePacman.value == null){
@@ -125,11 +125,11 @@
                 if(imagePacman.value && alreadyRotatedS == false) {
                   position.value.y += speed;
                   imagePacman.value.style.transform = `rotate(90deg)`;
-                  alreadyRotatedW = false; 
+                  alreadyRotatedW = false;
                   alreadyRotatedD = false;
                   alreadyRotatedS = true;
                   alreadyRotatedA = false;
-                }  
+                }
                 position.value.y += speed;
                 imagePacman.value!.style.top = `${position.value.y}px`;
               }
@@ -147,7 +147,7 @@
         if(durationMoveW != null){
           clearInterval(durationMoveW);
         }
-        
+
           durationMoveA = setInterval(()=>{
             if(imagePacman.value == null){
               if(durationMoveA != null){
@@ -158,7 +158,7 @@
                 if(imagePacman.value && alreadyRotatedA == false) {
                   position.value.x -= speed;
                   imagePacman.value.style.transform = `rotate(180deg)`;
-                  alreadyRotatedW = false; 
+                  alreadyRotatedW = false;
                   alreadyRotatedD = false;
                   alreadyRotatedS = false;
                   alreadyRotatedA = true;
@@ -169,7 +169,7 @@
             }
           },10);
         }
-    }; 
+    };
 </script>
 
 <template>
@@ -188,14 +188,14 @@
   #pacmanGIf {
     position:absolute;
     top: 0px;
-    left: 0px; 
+    left: 0px;
     width: 35px;
     height: 35px;
-    image-rendering: optimizeSpeed;         
-    image-rendering: -o-crisp-edges;            
-    image-rendering: -webkit-optimize-contrast; 
-    image-rendering: pixelated;                
-    -ms-interpolation-mode: nearest-neighbor; 
+    image-rendering: optimizeSpeed;
+    image-rendering: -o-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
+    -ms-interpolation-mode: nearest-neighbor;
   }
 
 </style>
