@@ -1,10 +1,6 @@
 <template>
   <div>
-    <!-- Overlay und Pac-Man Container -->
-    <div class="black-overlay" v-show="showOverlay">
-      <!-- Pixel werden dynamisch in JS hinzugefügt -->
-    </div>
-
+    <div class="black-overlay" v-show="showOverlay"></div>
     <div class="pacman-container" v-show="showPacman">
       <svg id="pacman" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <circle cx="50" cy="50" r="50" fill="yellow"/>
@@ -19,65 +15,48 @@ export default {
   name: 'StartAnimation',
   data() {
     return {
-      showOverlay: false, // Steuerung für das Overlay
-      showPacman: false,  // Steuerung für Pac-Man
-      mouthPoints: '50,50 100,20 100,80', // Anfangs-Mundposition
+      showOverlay: false,
+      showPacman: false,
+      mouthPoints: '50,50 100,20 100,80'
     };
   },
   methods: {
     startTransition() {
       this.showOverlay = true;
       this.showPacman = true;
-
-      const pacman = document.getElementById('pacman');
-      const mouth = document.getElementById('mouth');
-      const overlay = document.querySelector('.black-overlay');
-
-      // Pac-Man bewegt sich
-      pacman.classList.add('move');
-
-      let open = true;
-      let eatInterval = setInterval(() => {
-        this.mouthPoints = open ? "50,50 100,40 100,60" : "50,50 100,20 100,80";
-        open = !open;
-      }, 150); // Mund öffnet/schließt sich alle 150ms
-
-      // Erzeuge Pixel für die Animation (hinter Pac-Man)
-      this.createPixels(overlay);
-
-      // Nach 1.8 Sekunden → Wechsel zur Ingame-Seite
-      setTimeout(() => {
-        clearInterval(eatInterval); // Stoppe die Mund-Animation
-        this.$router.push('/ingame'); // Seitenwechsel in Vue, z.B. über Vue Router
-      }, 1800);
+      this.$nextTick(() => {
+        const pacman = document.getElementById('pacman');
+        const overlay = document.querySelector('.black-overlay');
+        pacman.classList.add('move');
+        let open = true;
+        const eatInterval = setInterval(() => {
+          this.mouthPoints = open ? "50,50 100,40 100,60" : "50,50 100,20 100,80";
+          open = !open;
+        }, 150);
+        this.createPixels(overlay);
+        overlay.classList.add('fill');
+        setTimeout(() => {
+          clearInterval(eatInterval);
+          this.$router.push('/ingame');
+        }, 1800);
+      });
     },
-
     createPixels(overlay) {
-      // 400 Pixel werden generiert und zufällig auf dem Bildschirm verteilt
       for (let i = 0; i < 400; i++) {
-        let pixel = document.createElement('div');
+        const pixel = document.createElement('div');
         pixel.classList.add('pixel');
-
-        // Zufällige Position der Pixel innerhalb des Bildschirms
-        const x = Math.random() * 100; // Zufällige x-Position (0-100%)
-        const y = Math.random() * 100; // Zufällige y-Position (0-100%)
-
-        pixel.style.left = `${x}vw`;
-        pixel.style.top = `${y}vh`;
-
-        pixel.style.animationDelay = `${Math.random() * 0.6}s`; // Zufällige Verzögerung für jedes Pixel
+        pixel.style.animationDelay = `${Math.random() * 0.6}s`;
         overlay.appendChild(pixel);
       }
     },
   },
   mounted() {
-    this.startTransition(); // Starte die Animation sobald die Komponente geladen ist
+    this.startTransition();
   }
 };
 </script>
 
 <style scoped>
-/* Start Animation */
 .black-overlay {
   position: fixed;
   top: 0;
@@ -91,17 +70,15 @@ export default {
   pointer-events: none;
 }
 
-.pixel {
-  position: absolute; /* Positioniere Pixel absolut innerhalb des Overlays */
+::v-deep .pixel {
   width: 5vw;
   height: 5vw;
   background-color: black;
   opacity: 0;
   transform: scale(0);
-  pointer-events: none; /* Stellen sicher, dass Pixel nicht mit anderen Elementen interagieren */
 }
 
-.fill .pixel {
+::v-deep .fill .pixel {
   animation: pixelFade 0.6s forwards;
 }
 
