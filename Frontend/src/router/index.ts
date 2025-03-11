@@ -1,15 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import GamePage from "@/components/feature/game/src/pages/GamePage.vue";
+import GamePage from "../components/feature/game/src/pages/GamePage.vue";
+import HomePage from '../components/feature/home/src/pages/HomePage.vue';
+import LoginPage from '../components/feature/login/src/pages/LoginPage.vue';
+
+const routes = [
+  { path: '/', component: HomePage},
+  { path: '/login', component: LoginPage },
+  { path: '/game', component: GamePage },
+]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: GamePage,
-    },
-  ],
+  history: createWebHistory(),
+  routes
 })
 
 export default router
