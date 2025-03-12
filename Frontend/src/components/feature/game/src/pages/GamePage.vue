@@ -4,7 +4,7 @@ import GameField from '../components/GameField.vue';
 
 <template>
   <div class="page-container">
-    <GameField></GameField>
+    <GameField class="field-box"></GameField>
   </div>
 </template>
 
