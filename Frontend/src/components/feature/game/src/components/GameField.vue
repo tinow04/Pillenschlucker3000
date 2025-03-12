@@ -2,13 +2,14 @@
   import { computed } from 'vue';
   import PacmanObject from './PacmanObject.vue';
   import PacmanPoints from './PacmanPoints.vue';
+import PacmanPowerUp from './PacmanPowerUp.vue';
 
   const grid = [
   // 1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], //1
     [0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0], //2
     [0, 3, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 3, 0], //3
-    [0, 3, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 3, 0], //4
+    [0, 5, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 5, 0], //4
     [0, 3, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 3, 0], //5
     [0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0], //6
     [0, 3, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 3, 0], //7
@@ -28,7 +29,7 @@
     [0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0], //21
     [0, 3, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 3, 0], //22
     [0, 3, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 3, 0], //23
-    [0, 3, 3, 3, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 3, 3, 3, 0], //24
+    [0, 5, 3, 3, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 3, 3, 5, 0], //24
     [0, 0, 0, 3, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 3, 0, 0, 0], //25
     [0, 0, 0, 3, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 3, 0, 0, 0], //26
     [0, 3, 3, 3, 3, 3, 3, 0, 0, 3, 3, 3, 3, 0, 0, 3, 3, 3, 3, 0, 0, 3, 3, 3, 3, 3, 3, 0], //27
@@ -52,6 +53,12 @@
     ).filter((cell): cell is { row: number, col: number } => cell !== null);
   });
 
+  const showPowerUp = computed(() => {
+    return grid.flatMap((row, rowIndex) =>
+      row.map((cell, colIndex) => (cell === 5 ? { row: rowIndex, col: colIndex } : null))
+    ).filter((cell): cell is { row: number, col: number } => cell !== null);
+  });
+
 
   
 
@@ -65,6 +72,9 @@
       <!-- <div v-for="cell in highlightedCells" class="highlight" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }"></div> -->
       <div v-for="cell in showPoints" class="showPoints" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
         <PacmanPoints></PacmanPoints>
+      </div>
+      <div v-for="cell in showPowerUp" class="showPowerUp" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
+        <PacmanPowerUp></PacmanPowerUp>
       </div>
     </div>
   </body>
@@ -105,10 +115,18 @@
 
   .showPoints {
     display: flex;
-    justify-content: center; /* horizontale Zentrierung */
-    align-items: center; /* vertikale Zentrierung */
-    width: 100%; /* volle Breite der Grid-Zelle */
-    height: 100%; /* volle Höhe der Grid-Zelle */
+    justify-content: center; 
+    align-items: center; 
+    width: 100%; 
+    height: 100%; 
+  }
+
+  .showPowerUp {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    width: 100%; 
+    height: 100%; 
   }
 
 </style>
