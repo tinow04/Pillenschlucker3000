@@ -13,8 +13,25 @@
   const canMoveTo = (x: number, y: number) => {
     const col = Math.floor((x - hitboxOffsetLeft) / 25);
     const row = Math.floor((y - hitboxOffsetUp) / 25);
-    return props.grid[row] && props.grid[row][col] === 1;
+    return props.grid[row] && props.grid[row][col] >= 3;
   };
+
+  function moveOverPoint(x: number, y: number):void {
+    const col = Math.floor((x - hitboxOffsetLeft) / 25);
+    const row = Math.floor((y - hitboxOffsetUp) / 25);
+    if(props.grid[row] && props.grid[row][col] === 3){
+      props.grid[row][col]=4;
+      console.log("Über Punkt gelaufen");  
+    }
+    if(props.grid[row] && props.grid[row][col] === 5){
+      props.grid[row][col]=6;
+      console.log("Über PowerUp gelaufen");  
+    }
+  };
+
+  function gameLoop(x: number, y: number):void {
+    moveOverPoint(x,y);
+  }
 
   const imageURLPacman = ref<string>('https://i.gifer.com/XOsf.gif');
   const imagePacman = ref<HTMLImageElement | null>(null);
