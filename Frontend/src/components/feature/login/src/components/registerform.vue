@@ -1,39 +1,73 @@
 <template>
   <div class="form-box">
     <h2>Registrieren</h2>
-    <form @submit.prevent="validatePassword">
+    <form @submit.prevent="registerUser"> <!-- // NEU -->
       <input v-model="username" type="text" placeholder="Benutzername" required>
+      <input v-model="email" type="email" placeholder="Email" required> <!-- // NEU -->
       <input v-model="password" type="password" placeholder="Passwort" required>
       <input v-model="passwordRepeat" type="password" placeholder="Passwort wiederholen" required>
       <button type="submit" class="button">Registrieren</button>
     </form>
+    <p>{{ message }}</p> <!-- // NEU -->
     <p>Schon ein Konto? <a @click="$emit('toggle-form')">Anmelden</a></p>
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
+import { showToast} from "@/components/ToastManager.vue";
 
 export default {
   name: "RegisterForm",
   setup(_, { emit }) {
     const username = ref("");
+    const email = ref(""); // NEU
     const password = ref("");
     const passwordRepeat = ref("");
+    const message = ref(""); // NEU
 
-    const validatePassword = () => {
+    // NEU
+    const registerUser = async () => {
       if (password.value !== passwordRepeat.value) {
-        emit("password-mismatch");
-        return false;
+        message.value = "Passwörter stimmen nicht überein";
+        return;
       }
-      console.log("Registrierung mit:", username.value, password.value);
-      return true;
-    };
 
-    return { username, password, passwordRepeat, validatePassword };
+      try {
+        const response = await fetch("http://localhost:3001/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: username.value,
+            email: email.value,
+            password: password.value
+          })
+        });
+
+        const data = await response.json();
+        message.value = data.message;
+        console.log("Registrierung erfolgreich:", data);
+        showToast("Registrierung erfolgreich", "success")
+
+      } catch (error) {
+        message.value = "Fehler bei der Registrierung";
+        console.error(error);
+      }
+    };
+    // ENDE NEU
+
+    return {
+      username,
+      email, // NEU
+      password,
+      passwordRepeat,
+      message, // NEU
+      registerUser // NEU
+    };
   },
 };
 </script>
+
 
 <style scoped>
 .form-box {

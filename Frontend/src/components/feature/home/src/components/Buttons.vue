@@ -1,8 +1,8 @@
 <template>
   <div class="button-container">
     <button class="button" @click="startTransition">PLAY</button>
-    <button class="button">HOW TO</button>
-    <button class="button">SETTINGS</button>
+    <button class="button" @click="emitHowTo">HOW TO</button>
+    <button class="button" @click="emitSettings">SETTINGS</button>
   </div>
 </template>
 
@@ -12,6 +12,12 @@ export default {
   methods: {
     startTransition() {
       this.$emit("start-game"); // Event für die Animation und Seitenwechsel
+    },
+    emitHowTo() {
+      this.$emit('howto-click');
+    },
+    emitSettings() {
+      this.$emit('settings-click');
     },
   },
 };

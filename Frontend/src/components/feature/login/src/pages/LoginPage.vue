@@ -41,6 +41,7 @@ export default {
 
     const showPasswordPopup = () => {
       showPopup.value = true;
+
       setTimeout(() => {
         showPopup.value = false;
       }, 3000);

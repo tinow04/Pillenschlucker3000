@@ -1,13 +1,21 @@
 <template>
   <div class="home-page">
     <Header />
-    <Buttons @start-game="startGame" /> <!-- Empfang des Events -->
+    <Buttons
+      @start-game="startGame"
+      @howto-click="showHowTo = true"
+      @settings-click="showSettings = true"
+    />
     <Profile />
     <Boards />
     <ImageBottom />
-
-    <!-- Zeigt die Animation an, wenn isGameStarted true ist -->
     <StartAnimation v-if="isGameStarted" />
+
+    <!-- How To Popup -->
+    <HowTo v-if="showHowTo" @close="showHowTo = false" />
+
+    <!-- Settings Popup -->
+    <Settings v-if="showSettings" @close="showSettings = false" />
   </div>
 </template>
 
@@ -17,7 +25,9 @@ import Buttons from "@/components/feature/home/src/components/Buttons.vue";
 import Profile from "@/components/feature/home/src/components/Profile.vue";
 import Boards from "@/components/feature/home/src/components/Boards.vue";
 import ImageBottom from "@/components/feature/home/src/components/ImageBottom.vue";
-import StartAnimation from "@/components/feature/home/src/components/StartAnimation.vue"; // Importiere StartAnimation
+import StartAnimation from "@/components/feature/home/src/components/StartAnimation.vue";
+import HowTo from "@/components/feature/home/src/components/HowTo.vue";
+import Settings from "@/components/feature/home/src/components/Settings.vue";
 
 export default {
   components: {
@@ -26,16 +36,20 @@ export default {
     Profile,
     Boards,
     ImageBottom,
-    StartAnimation,  // Hier die StartAnimation einfügen
+    StartAnimation,
+    HowTo,
+    Settings
   },
   data() {
     return {
-      isGameStarted: false, // Steuert, ob die StartAnimation angezeigt wird
+      isGameStarted: false,
+      showHowTo: false,
+      showSettings: false
     };
   },
   methods: {
     startGame() {
-      this.isGameStarted = true; // Setzt isGameStarted auf true, wenn der Play-Button gedrückt wird
+      this.isGameStarted = true;
     }
   }
 };

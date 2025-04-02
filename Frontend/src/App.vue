@@ -1,11 +1,17 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-  <RouterView />
+  <router-view />
+  <ToastManager />
+  <DevPanel />
 </template>
 
-<style scoped>
+<script>
+import ToastManager from "@/components/ToastManager.vue";
+import DevPanel from "@/components/DevPanel.vue";
 
-</style>
+export default {
+  components: {
+    ToastManager,
+    DevPanel
+  }
+};
+</script>

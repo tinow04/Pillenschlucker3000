@@ -1,36 +1,78 @@
 <template>
   <div class="profile-picture">
+    <span class="username">{{ username }}</span> <!-- Dynamisch statt Eierkopf123 -->
     <button class="profile-button" @click="togglePopup">
       <img src="@/assets/profile.png" alt="Image could not load" />
     </button>
     <div v-if="showPopup" class="profile-popup">
-      <p>Noch kein Account?</p>
-      <router-link to="/login" class="popup-link">Login</router-link>
+      <p v-if="!username">Noch kein Account?</p>
+      <router-link v-if="!username" to="/login" class="popup-link">Login</router-link>
+      <div v-else>
+        <p>Eingeloggt als {{ username }}</p>
+        <a class="popup-link" @click.prevent="logout">Abmelden</a>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { showToast} from "@/components/ToastManager.vue";
+
 export default {
   name: "ProfileComponent",
   setup() {
     const showPopup = ref(false);
+    const username = ref(null); // NEU
 
     const togglePopup = () => {
       showPopup.value = !showPopup.value;
     };
+    const logout = () => {
+      localStorage.removeItem("user");
+      username.value = null;
+      showPopup.value = false;
+      showToast("Erfolgreich abgemeldet", "info");
+    };
 
-    return { showPopup, togglePopup };
+    // NEU: beim Laden nach eingeloggtem User schauen
+    onMounted(() => {
+      const user = localStorage.getItem("user");
+      if (user) {
+        username.value = JSON.parse(user).username;
+      }
+    });
+
+    return {
+      showPopup,
+      togglePopup,
+      username,
+      logout
+    };
   },
 };
 </script>
+
 
 <style scoped>
 .profile-picture {
   position: absolute;
   top: 1rem;
   right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.username {
+  font-size: 2rem;
+  color: white;
+  white-space: nowrap;
+  direction: rtl;
+  text-align: right;
+  max-width: 15rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .profile-button {
@@ -51,7 +93,6 @@ export default {
   transform: scale(1.1);
 }
 
-/* Popup-Styles passend zum restlichen Design */
 .profile-popup {
   position: absolute;
   top: 110%;
