@@ -2,7 +2,7 @@
   import { computed } from 'vue';
   import PacmanObject from './PacmanObject.vue';
   import PacmanPoints from './PacmanPoints.vue';
-import PacmanPowerUp from './PacmanPowerUp.vue';
+  import PacmanPowerUp from './PacmanPowerUp.vue';
 
   const grid = [
   // 1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28
@@ -59,9 +59,6 @@ import PacmanPowerUp from './PacmanPowerUp.vue';
     ).filter((cell): cell is { row: number, col: number } => cell !== null);
   });
 
-
-  
-
 </script>
 
 <template>
@@ -115,18 +112,18 @@ import PacmanPowerUp from './PacmanPowerUp.vue';
 
   .showPoints {
     display: flex;
-    justify-content: center; 
-    align-items: center; 
-    width: 100%; 
-    height: 100%; 
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
   }
 
   .showPowerUp {
     display: flex;
-    justify-content: center; 
-    align-items: center; 
-    width: 100%; 
-    height: 100%; 
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
   }
 
 </style>
