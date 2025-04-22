@@ -63,17 +63,17 @@
 
 <template>
   <body id="game-field" class="game-field">
-    <div class="pacman-container">
-      <img class="pacman-maze" src="@/assets/PacManMaze.png">
-      <PacmanObject class="pacman" :grid="grid"></PacmanObject>
-      <!-- <div v-for="cell in highlightedCells" class="highlight" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }"></div> -->
-      <div v-for="cell in showPoints" class="showPoints" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
-        <PacmanPoints></PacmanPoints>
-      </div>
-      <div v-for="cell in showPowerUp" class="showPowerUp" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
-        <PacmanPowerUp></PacmanPowerUp>
-      </div>
+  <div class="pacman-container">
+    <img class="pacman-maze" src="@/assets/PacManMaze.png">
+    <PacmanObject class="pacman" :grid="grid"></PacmanObject>
+    <!-- <div v-for="cell in highlightedCells" class="highlight" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }"></div> -->
+    <div v-for="(cell, index) in showPoints" :key="`point-${index}`" class="showPoints" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
+      <PacmanPoints></PacmanPoints>
     </div>
+    <div v-for="(cell, index) in showPowerUp" :key="`powerup-${index}`" class="showPowerUp" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
+      <PacmanPowerUp></PacmanPowerUp>
+    </div>
+  </div>
   </body>
 </template>
 
