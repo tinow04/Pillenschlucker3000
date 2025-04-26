@@ -1,202 +1,131 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, defineProps } from "vue";
+  import { ref } from "vue";
 
-const props = defineProps<{ grid: number[][] }>();
+  type Direction = 'up' | 'down' | 'left' | 'right' | null;
 
-const position = ref({ x: 20, y: 20 });
-const speed = 5;
-const keysPressed = new Set<string>();
-const pacmanObject = ref<HTMLElement | null>(null);
-const mazeWidth = 700;
-const mazeHeight = 755;
-const pacmanSize = 35;
-const hitboxOffsetUp = -8;
-const hitboxOffsetLeft = -8;
+  const canMoveToDirections: Record<Direction, { x1: number; y1: number; x2: number; y2: number }> = {
+    up:     { x1: -2.5,  y1: -5,    x2:  20,   y2: -5},
+    down:   { x1: -2.5,  y1:  22.5, x2:  20,   y2:  22.5},
+    left:   { x1: -5,    y1: -2.5,  x2: -5,    y2:  20},
+    right:  { x1:  22.5, y1: -2.5,  x2:  22.5, y2:  20},
+  };
 
-const canMoveTo = (x: number, y: number) => {
-  const col = Math.floor((x - hitboxOffsetLeft) / 25);
-  const row = Math.floor((y - hitboxOffsetUp) / 25);
-  return props.grid[row] && props.grid[row][col] === 1;
-};
+  const moveToDirection: Record<Direction, { x: number; y: number }> = {
+    up: { x: 0, y: -2.5 },
+    down: { x: 0, y: 2.5 },
+    left: { x: -2.5, y: 0 },
+    right: { x: 2.5, y: 0 },
+  };
 
-  const imageURLPacman = ref<string>('https://i.gifer.com/XOsf.gif');
-  const imagePacman = ref<HTMLImageElement | null>(null);
-  let alreadyRotatedW = false;
-  let alreadyRotatedD = false;
-  let alreadyRotatedS = false;
-  let alreadyRotatedA = false;
-  let moveW = 0;
-  let moveD = 0;
-  let moveS = 0;
-  let moveA = 0;
-  let durationMoveW: number | null =null;
-  let durationMoveD: number | null =null;
-  let durationMoveS: number | null =null;
-  let durationMoveA: number | null =null;
+  const directionToRotation: Record<Direction, number> = {
+    up: -90,
+    down: 90,
+    left: 180,
+    right: 0,
+  };
 
-  const punkte = ref([
-    { id: 1,visible: true, positionY: 100, positionX: 100},
-    { id: 2,visible: true, positionY: 100, positionX: 130},
-    { id: 3,visible: true, positionY: 100, positionX: 160},
-    { id: 4,visible: true, positionY: 100, positionX: 190},
-    { id: 5,visible: true, positionY: 100, positionX: 220},
-    { id: 6,visible: true, positionY: 100, positionX: 250},
-    { id: 7,visible: true, positionY: 100, positionX: 280},
-    { id: 8,visible: true, positionY: 100, positionX: 310},
-    { id: 9,visible: true, positionY: 100, positionX: 340},
-    { id: 10,visible: true, positionY: 100, positionX: 370},
+  const props = defineProps<{ grid: number[][] }>();
+  const pacmanGif = ref<HTMLElement | null>(null);
+  const position = ref({ x: 20, y: 20 });
+  const hitboxOffsetUp = -8;
+  const hitboxOffsetLeft = -8;
+  let currentDirection: Direction = null;
+  let nextDirection: Direction = null;
+  let lastMoveTime = 0;
+  const moveInterval = 20;
 
-  ]);
+  const canMoveTo = (x: number, y: number) => {
+    const col = Math.floor((x - hitboxOffsetLeft) / 25);
+    const row = Math.floor((y - hitboxOffsetUp) / 25);
+    return props.grid[row] && props.grid[row][col] >= 3;
+  };
 
-  onMounted(() =>{
-    window.addEventListener("keyup", Direction);
+  function canMoveInDirection(dir: Direction, pos: { x: number, y: number }) {
+    const vec = canMoveToDirections[dir];
+    return canMoveTo(pos.x + vec.x1, pos.y + vec.y1) && canMoveTo(pos.x + vec.x2, pos.y + vec.y2);
+  }
+
+  function moveOverPoint(x: number, y: number):void {
+    const col = Math.floor((x - hitboxOffsetLeft) / 25);
+    const row = Math.floor((y - hitboxOffsetUp) / 25);
+    if(props.grid[row] && props.grid[row][col] === 3){
+      props.grid[row][col]=4;
+      console.log("Über Punkt gelaufen");
+    }
+    if(props.grid[row] && props.grid[row][col] === 5){
+      props.grid[row][col]=6;
+      console.log("Über PowerUp gelaufen");
+    }
+  };
+
+  function updatePacmanPosition() {
+    // Ist nextDirection erlaubt?
+    if (nextDirection && canMoveInDirection(nextDirection, position.value)) {
+      currentDirection = nextDirection;
+    }
+
+    // Versuche, in currentDirection zu laufen
+    if (currentDirection) {
+      console.log(currentDirection);
+      const vec = moveToDirection[currentDirection];
+      const newX1 = position.value.x + (2 * vec.x);
+      const newY1 = position.value.y + (2 * vec.y);
+      const newX2 = position.value.x + (2 * vec.x) + 20;
+      const newY2 = position.value.y + (2 * vec.y) + 20;
+
+      const rotation = directionToRotation[currentDirection];
+      pacmanGif.value.style.transform = `rotate(${rotation}deg)`;
+
+      if (canMoveTo(newX1, newY1) && canMoveTo(newX2, newY2)) {
+        position.value.x = newX1;
+        position.value.y = newY1;
+      } else {
+        currentDirection = null;
+      }
+    }
+  }
+
+  function gameLoop(timestamp: number) {
+    if (timestamp - lastMoveTime > moveInterval) {
+      updatePacmanPosition();
+      lastMoveTime = timestamp;
+    }
+    requestAnimationFrame(gameLoop);
+  }
+
+  const keyToDirection: Record<string, Direction> = {
+    w: 'up',
+    s: 'down',
+    a: 'left',
+    d: 'right',
+  };
+
+  window.addEventListener('keydown', (e) => {
+    if (keyToDirection[e.key]) {
+      nextDirection = keyToDirection[e.key];
+    }
   });
-
-  onUnmounted (()=> {
-    window.removeEventListener("keyup", Direction)
-  });
-
-  const Direction = (event: KeyboardEvent) =>{
-
-    if(event.key == "W" || event.key =="w" || event.key == "ArrowUp" && position.value.y > 0 && canMoveTo(position.value.x, position.value.y - speed)){
-      if(durationMoveA != null){
-        clearInterval(durationMoveA);
-      }
-      if(durationMoveD != null){
-        clearInterval(durationMoveD);
-      }
-      if(durationMoveS != null){
-        clearInterval(durationMoveS);
-      }
-
-      if(imagePacman.value && alreadyRotatedW == false) {
-        imagePacman.value.style.transform = `rotate(270deg)`;
-        alreadyRotatedW = true;
-        alreadyRotatedD = false;
-        alreadyRotatedS = false;
-        alreadyRotatedA = false;
-        moveW=parseInt(imagePacman.value.style.top, 10) || 0;
-        durationMoveW = setInterval(() =>{
-          if(imagePacman.value == null){
-            if(durationMoveW != null){
-              clearInterval(durationMoveW);
-              }
-            }else {
-              moveW -=1;
-              imagePacman.value.style.top = `${moveW}px`;
-              colisionDot();
-            };
-          },10);
-        }
-      }
-
-      if(event.key == "D" || event.key =="d" || event.key == "ArrowRight" && position.value.x < mazeWidth - pacmanSize && canMoveTo(position.value.x + speed + pacmanSize -18, position.value.y)){
-        if(durationMoveA != null){
-          clearInterval(durationMoveA);
-        }
-        if(durationMoveS != null){
-          clearInterval(durationMoveS);
-        }
-        if(durationMoveW != null){
-          clearInterval(durationMoveW);
-        }
-
-        if(imagePacman.value && alreadyRotatedD == false) {
-          imagePacman.value.style.transform = `rotate(360deg)`;
-          alreadyRotatedW = false;
-          alreadyRotatedD = true;
-          alreadyRotatedS = false;
-          alreadyRotatedA = false;
-          moveD=parseInt(imagePacman.value.style.left, 10) || 0;
-          durationMoveD = setInterval(()=>{
-            if(imagePacman.value == null){
-              if(durationMoveD != null)
-              clearInterval(durationMoveD);
-            }else {
-              moveD +=1;
-              imagePacman.value.style.left = `${moveD}px`; //Ich setzte ich den Left Wert des Images durch dynamsiches Setzten durch die Tempalte String Schreibweise.
-              colisionDot();
-            }
-          },10);
-        };
-      }
-
-      if(event.key == "S" || event.key =="s" || event.key == "ArrowDown" && position.value.y < mazeHeight - pacmanSize && canMoveTo(position.value.x, position.value.y + speed + pacmanSize -15)){
-        if(durationMoveD != null){
-          clearInterval(durationMoveD);
-        }
-        if(durationMoveA != null){
-          clearInterval(durationMoveA);
-        }
-        if(durationMoveW != null){
-          clearInterval(durationMoveW);
-        }
-
-
-        if(imagePacman.value && alreadyRotatedS == false) {
-          imagePacman.value.style.transform = `rotate(90deg)`;
-          alreadyRotatedW = false;
-          alreadyRotatedD = false;
-          alreadyRotatedS = true;
-          alreadyRotatedA = false;
-          moveS=parseInt(imagePacman.value.style.top, 10) || 0;
-          durationMoveS = setInterval(()=>{
-            if(imagePacman.value == null){
-              if(durationMoveS != null){
-                clearInterval(durationMoveS);
-              }
-            }else {
-              moveS +=1;
-              imagePacman.value.style.top = `${moveS}px`;
-              colisionDot();
-            }
-          },10);
-        }
-      }
-
-      if(event.key == "A" || event.key =="a" || event.key == "ArrowLeft" && position.value.x > 0 && canMoveTo(position.value.x - speed, position.value.y)){
-        if(durationMoveS != null){
-          clearInterval(durationMoveS);
-        }
-        if(durationMoveD != null){
-          clearInterval(durationMoveD);
-        }
-        if(durationMoveW != null){
-          clearInterval(durationMoveW);
-        }
-
-        if(imagePacman.value && alreadyRotatedA == false) {
-          imagePacman.value.style.transform = `rotate(180deg)`;
-          alreadyRotatedW = false;
-          alreadyRotatedD = false;
-          alreadyRotatedS = false;
-          alreadyRotatedA = true;
-          moveA=parseInt(imagePacman.value.style.left, 10) || 0;
-          durationMoveA = setInterval(()=>{
-            if(imagePacman.value == null){
-              if(durationMoveA != null){
-                clearInterval(durationMoveA);
-              }
-            }else {
-              moveA -=1;
-              imagePacman.value.style.left = `${moveA}px`;
-              colisionDot();
-            }
-          },10);
-        }
-      }
-    };
+  requestAnimationFrame(gameLoop);
 </script>
 
 <template>
   <div ref="pacmanObject" :style="{ left: position.x + 'px', top: position.y + 'px' }">
-    <img class="pacman-img" src="@/assets/img_1.png" alt="Pacman Image">
+    <img class="pacman-gif" ref="pacmanGif" src="@/assets/PacManEating.gif" alt="Pacman gif">
   </div>
 </template>
 
 <style scoped>
-.pacman-img {
-  width: 35px;
-  height: 35px;
-}
+
+  .pacman-gif {
+    position:absolute;
+    top: 0px;
+    left: 0px;
+    width: 35px;
+    height: 35px;
+    /* transition: transform 0.15s ease; */
+    image-rendering: optimizeSpeed;
+    image-rendering: -o-crisp-edges;
+    image-rendering: pixelated;
+    -ms-interpolation-mode: nearest-neighbor;
+  }
 </style>
