@@ -45,6 +45,19 @@
     return canMoveTo(pos.x + vec.x1, pos.y + vec.y1) && canMoveTo(pos.x + vec.x2, pos.y + vec.y2);
   }
 
+  function moveOverPoint(x: number, y: number):void {
+    const col = Math.floor((x - hitboxOffsetLeft) / 25);
+    const row = Math.floor((y - hitboxOffsetUp) / 25);
+    if(props.grid[row] && props.grid[row][col] === 3){
+      props.grid[row][col]=4;
+      console.log("Über Punkt gelaufen");
+    }
+    if(props.grid[row] && props.grid[row][col] === 5){
+      props.grid[row][col]=6;
+      console.log("Über PowerUp gelaufen");
+    }
+  };
+
   function updatePacmanPosition() {
     // Ist nextDirection erlaubt?
     if (nextDirection && canMoveInDirection(nextDirection, position.value)) {
