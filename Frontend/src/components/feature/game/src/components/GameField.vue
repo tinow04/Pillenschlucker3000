@@ -1,10 +1,10 @@
 <script setup lang="ts">
-  import { computed } from 'vue';
+  import { ref,computed } from 'vue';
   import PacmanObject from './PacmanObject.vue';
   import PacmanPoints from './PacmanPoints.vue';
   import PacmanPowerUp from './PacmanPowerUp.vue';
 
-  const grid = [
+  const grid = ref([
   // 1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], //1
     [0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0, 0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0], //2
@@ -38,7 +38,7 @@
     [0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 0], //30
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], //31
   //[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], //32
-  ];
+  ]);
 
   /*
   const highlightedCells = computed(() => {
@@ -48,16 +48,21 @@
   });
   */
   const showPoints = computed(() => {
-    return grid.flatMap((row, rowIndex) =>
+    return grid.value.flatMap((row, rowIndex) =>
       row.map((cell, colIndex) => (cell === 3 ? { row: rowIndex, col: colIndex } : null))
     ).filter((cell): cell is { row: number, col: number } => cell !== null);
   });
 
   const showPowerUp = computed(() => {
-    return grid.flatMap((row, rowIndex) =>
+    return grid.value.flatMap((row, rowIndex) =>
       row.map((cell, colIndex) => (cell === 5 ? { row: rowIndex, col: colIndex } : null))
     ).filter((cell): cell is { row: number, col: number } => cell !== null);
   });
+
+  function updateGrid({ row, col, value }) {
+  console.log("test"+value);  
+  grid.value[row][col] = value;
+  }
 
 </script>
 
@@ -65,7 +70,7 @@
   <body id="game-field" class="game-field">
   <div class="pacman-container">
     <img class="pacman-maze" src="@/assets/PacManMaze.png">
-    <PacmanObject class="pacman" :grid="grid"></PacmanObject>
+    <PacmanObject class="pacman" :grid="grid" @update-grid="updateGrid"></PacmanObject>
     <!-- <div v-for="cell in highlightedCells" class="highlight" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }"></div> -->
     <div v-for="(cell, index) in showPoints" :key="`point-${index}`" class="showPoints" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
       <PacmanPoints></PacmanPoints>
