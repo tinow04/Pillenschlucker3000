@@ -33,6 +33,7 @@
   let nextDirection: Direction = null;
   let lastMoveTime = 0;
   const moveInterval = 20;
+  const emit = defineEmits(['update-grid']);
 
   const canMoveTo = (x: number, y: number) => {
     const col = Math.floor((x - hitboxOffsetLeft) / 25);
@@ -49,11 +50,13 @@
     const col = Math.floor((x - hitboxOffsetLeft) / 25);
     const row = Math.floor((y - hitboxOffsetUp) / 25);
     if(props.grid[row] && props.grid[row][col] === 3){
-      props.grid[row][col]=4;
+      emit('update-grid', { row, col, value: 4 });
+      //props.grid[row][col] = 4;
       console.log("Über Punkt gelaufen");
     }
     if(props.grid[row] && props.grid[row][col] === 5){
-      props.grid[row][col]=6;
+      emit('update-grid', { row, col, value: 6 });
+      //props.grid[row][col] = 6;
       console.log("Über PowerUp gelaufen");
     }
   };
@@ -77,6 +80,7 @@
       pacmanGif.value.style.transform = `rotate(${rotation}deg)`;
 
       if (canMoveTo(newX1, newY1) && canMoveTo(newX2, newY2)) {
+        moveOverPoint(newX1,newY1);
         position.value.x = newX1;
         position.value.y = newY1;
       } else {
