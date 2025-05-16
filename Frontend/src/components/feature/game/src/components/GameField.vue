@@ -4,6 +4,8 @@
   import PacmanPoints from './PacmanPoints.vue';
   import PacmanPowerUp from './PacmanPowerUp.vue';
 
+  const score = ref(0);
+
   const grid = ref([
   // 1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], //1
@@ -60,29 +62,52 @@
   });
 
   function updateGrid({ row, col, value }) {
-  console.log("test"+value);  
-  grid.value[row][col] = value;
+    console.log("test"+value);  
+    grid.value[row][col] = value;
+    if(value == 4||value ==6){
+      updatePoints(value);
+    }
+  }
+
+  function updatePoints(value){
+    console.log("Moin"+value)
+    if(value==4){
+      score.value += 10;
+    } else {
+      score.value += 50;
+    }
   }
 
 </script>
 
 <template>
   <body id="game-field" class="game-field">
-  <div class="pacman-container">
-    <img class="pacman-maze" src="@/assets/PacManMaze.png">
-    <PacmanObject class="pacman" :grid="grid" @update-grid="updateGrid"></PacmanObject>
-    <!-- <div v-for="cell in highlightedCells" class="highlight" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }"></div> -->
-    <div v-for="(cell, index) in showPoints" :key="`point-${index}`" class="showPoints" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
-      <PacmanPoints></PacmanPoints>
+  <div class="game-wrapper">
+    <div class="score-display">
+     Punkte: {{ score }}
     </div>
-    <div v-for="(cell, index) in showPowerUp" :key="`powerup-${index}`" class="showPowerUp" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
-      <PacmanPowerUp></PacmanPowerUp>
+    <div class="pacman-container">
+      <img class="pacman-maze" src="@/assets/PacManMaze.png">
+      <PacmanObject class="pacman" :grid="grid" @update-grid="updateGrid"></PacmanObject>
+      <div v-for="(cell, index) in showPoints" :key="`point-${index}`" class="showPoints" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
+        <PacmanPoints></PacmanPoints>
+      </div>
+      <div v-for="(cell, index) in showPowerUp" :key="`powerup-${index}`" class="showPowerUp" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
+        <PacmanPowerUp></PacmanPowerUp>
+      </div>
     </div>
-  </div>
+  </div>  
   </body>
 </template>
 
 <style scoped>
+  .game-wrapper {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  justify-items: center; /* Zentriert Score und Grid */
+  align-items: start;
+  }
+
   .game-field {
     background-color: black;
   }
@@ -129,6 +154,17 @@
     align-items: center;
     width: 100%;
     height: 100%;
+  }
+
+  .score-display {
+    display: flex;
+    width: 100%;
+    font-size: 3rem;         
+    font-weight: bold;
+    color: white;          
+    margin-bottom: 20px;     
+    letter-spacing: 2px;
+    background-color: black;
   }
 
 </style>
