@@ -10,8 +10,6 @@
   const hitboxOffsetLeft = -8;
   let currentDirection: Direction = null;
   let nextDirection: Direction = null;
-  let lastMoveTime = 0;
-  const moveInterval = 20;
   let currentCollisions :Direction[] = [];
   let prevCollisions :Direction[] = [];
   let isAllowedToMoveOver = 2;
@@ -114,15 +112,7 @@
           currentDirection = null;
         }
     }
-  }
-
-  function gameLoop(timestamp: number) {
-    if (timestamp - lastMoveTime > moveInterval) {
-      updateGhostPosition();
-      lastMoveTime = timestamp;
-    }
-    requestAnimationFrame(gameLoop);
-  }
+  } defineExpose({ updateGhostPosition })
 
   const keyToDirection: Record<string, Direction> = {
     w: 'up',
@@ -136,7 +126,6 @@
       nextDirection = keyToDirection[e.key]; 
     }
   });
-  requestAnimationFrame(gameLoop);
 </script>
 
 <template>

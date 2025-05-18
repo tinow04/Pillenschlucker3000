@@ -31,8 +31,6 @@
   const hitboxOffsetLeft = -8;
   let currentDirection: Direction = null;
   let nextDirection: Direction = null;
-  let lastMoveTime = 0;
-  const moveInterval = 20;
   const emit = defineEmits(['update-grid']);
 
   const canMoveTo = (x: number, y: number) => {
@@ -82,15 +80,7 @@
         currentDirection = null;
       }
     }
-  }
-
-  function gameLoop(timestamp: number) {
-    if (timestamp - lastMoveTime > moveInterval) {
-      updatePacmanPosition();
-      lastMoveTime = timestamp;
-    }
-    requestAnimationFrame(gameLoop);
-  }
+  } defineExpose({ updatePacmanPosition })
 
   const keyToDirection: Record<string, Direction> = {
     w: 'up',
@@ -104,7 +94,6 @@
       nextDirection = keyToDirection[e.key];
     }
   });
-  requestAnimationFrame(gameLoop);
 </script>
 
 <template>
