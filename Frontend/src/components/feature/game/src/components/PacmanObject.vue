@@ -70,7 +70,9 @@
       const newY2 = position.value.y + (2 * vec.y) + 20;
 
       const rotation = directionToRotation[currentDirection];
-      pacmanGif.value.style.transform = `rotate(${rotation}deg)`;
+      if (pacmanGif.value) {
+       pacmanGif.value.style.transform = `rotate(${rotation}deg)`;
+      }
 
       if (canMoveTo(newX1, newY1) && canMoveTo(newX2, newY2)) {
         moveOverPoint(newX1,newY1);
@@ -80,7 +82,7 @@
         currentDirection = null;
       }
     }
-  } defineExpose({ updatePacmanPosition })
+  } 
 
   const keyToDirection: Record<string, Direction> = {
     w: 'up',
@@ -94,6 +96,8 @@
       nextDirection = keyToDirection[e.key];
     }
   });
+
+  defineExpose({ updatePacmanPosition ,position })
 </script>
 
 <template>

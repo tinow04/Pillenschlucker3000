@@ -6,6 +6,7 @@
   import Ghost from './Ghosts.vue'
 
   const score = ref(0);
+  const gameOver = ref(false);
 
   const pacmanRef = ref();
   const ghostRef = ref();
@@ -69,15 +70,36 @@
   });
 
   function gameLoop(timestamp: number) {
-  if (timestamp - lastMoveTime > moveInterval) {
-    pacmanRef.value?.updatePacmanPosition();
-    ghostRef.value?.updateGhostPosition();
+    if (timestamp - lastMoveTime > moveInterval) {
+      pacmanRef.value?.updatePacmanPosition();
+      ghostRef.value?.updateGhostPosition();
+      const pacmanPos = pacmanRef.value?.position;
+      const ghostPos = ghostRef.value?.position;
+    if (pacmanPos && ghostPos && pacmanAndGhostCollide(pacmanPos, ghostPos)) {
+      gameOver.value = true;
+      console.log('Game Over! Pacman wurde vom Geist gefangen.');
+      return;
+    }
     lastMoveTime = timestamp;
-  }
+    }
     requestAnimationFrame(gameLoop);
-  } onMounted(() => {
-    requestAnimationFrame(gameLoop);
+    } onMounted(() => {
+      const waitForRefs = setInterval(() => {
+    if (pacmanRef.value && ghostRef.value) {
+      clearInterval(waitForRefs);
+      requestAnimationFrame(gameLoop);
+    }
+  }, 10);
   });
+
+  function pacmanAndGhostCollide(pos1, pos2) {
+    const pacmanCol = Math.floor(pos1.x / 25);
+    const pacmanRow = Math.floor(pos1.y / 25);
+    const ghostCol = Math.floor(pos2.x / 25);
+    const ghostRow = Math.floor(pos2.y / 25);
+    return pacmanCol === ghostCol && pacmanRow === ghostRow;
+  }
+
 
   function updateGrid({ row, col, value }) { 
     grid.value[row][col] = value;

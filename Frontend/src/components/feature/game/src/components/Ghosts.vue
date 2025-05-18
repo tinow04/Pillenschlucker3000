@@ -112,7 +112,7 @@
           currentDirection = null;
         }
     }
-  } defineExpose({ updateGhostPosition })
+  } 
 
   const keyToDirection: Record<string, Direction> = {
     w: 'up',
@@ -126,6 +126,8 @@
       nextDirection = keyToDirection[e.key]; 
     }
   });
+
+  defineExpose({ updateGhostPosition ,position })
 </script>
 
 <template>
