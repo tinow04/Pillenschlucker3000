@@ -4,8 +4,12 @@
   type Direction = 'up' | 'down' | 'left' | 'right' | null;
 
   const isMoving = ref(false);
-  const props = defineProps<{ grid: number[][] }>();
-  const position = ref({ x: 345, y: 330 });
+  
+  const props = defineProps<{ grid: number[][] ,
+  ghostIndex: number,
+  startPosition: { x: number, y: number },
+  image: string}>();
+  const position = ref({ ... props.startPosition });
   const hitboxOffsetUp = -8;
   const hitboxOffsetLeft = -8;
   let currentDirection: Direction = null;
@@ -131,13 +135,13 @@
 </script>
 
 <template>
-   <div :style="{ left: position.x + 'px', top: position.y + 'px' }">
-    <img class="blinky" src="@/assets/Blinky.png" alt="Red Ghost">
+  <div :style="{ left: position.x + 'px', top: position.y + 'px' }">
+  <img class="ghost" :src="props.image" :alt="`Ghost ${props.ghostIndex}`" />
   </div>
 </template>
 
 <style scoped>
-    .blinky {
+    .ghost {
         position:absolute;
         top: 0px;
         left: 0px;

@@ -4,12 +4,26 @@
   import PacmanPoints from './PacmanPoints.vue';
   import PacmanPowerUp from './PacmanPowerUp.vue';
   import Ghost from './Ghosts.vue'
+  import type { ComponentPublicInstance } from 'vue';
+  import Blinky from '@/assets/Blinky.png'; 
+  import Pinky from '@/assets/Pinky.png';
+  import Inky from '@/assets/Inky.png';
+  import Clyde from '@/assets/Clyde.png';
+
+  type GhostInstance = ComponentPublicInstance<{ updateGhostPosition: () => void; position: { x: number, y: number } }>;
 
   const score = ref(0);
   const gameOver = ref(false);
 
+  const ghosts = [
+    { id: 1, startPosition: { x: 345, y: 310 }, image: Blinky },   
+    { id: 2, startPosition: { x: 345, y: 350 }, image: Pinky },    
+    { id: 3, startPosition: { x: 320, y: 310 }, image: Inky },     
+    { id: 4, startPosition: { x: 320, y: 350 }, image: Clyde }
+  ]   
+
   const pacmanRef = ref();
-  const ghostRef = ref();
+  const ghostRefs = ref<GhostInstance[]>([]);
 
   let lastMoveTime = 0;
   const moveInterval = 20;
@@ -70,22 +84,26 @@
   });
 
   function gameLoop(timestamp: number) {
+    if (gameOver.value) return;
     if (timestamp - lastMoveTime > moveInterval) {
       pacmanRef.value?.updatePacmanPosition();
-      ghostRef.value?.updateGhostPosition();
+      ghostRefs.value.forEach(ref => {
+      ref?.updateGhostPosition();
+      });
       const pacmanPos = pacmanRef.value?.position;
-      const ghostPos = ghostRef.value?.position;
-    if (pacmanPos && ghostPos && pacmanAndGhostCollide(pacmanPos, ghostPos)) {
-      gameOver.value = true;
-      console.log('Game Over! Pacman wurde vom Geist gefangen.');
-      return;
+    for (const ref of ghostRefs.value) {
+      if (ref && pacmanAndGhostCollide(pacmanPos, ref.position)) {
+        gameOver.value = true;
+        console.log('Game Over! Pacman wurde vom Geist gefangen.');
+        return; 
+      }
     }
     lastMoveTime = timestamp;
     }
     requestAnimationFrame(gameLoop);
     } onMounted(() => {
       const waitForRefs = setInterval(() => {
-    if (pacmanRef.value && ghostRef.value) {
+    if (pacmanRef.value && ghostRefs.value) {
       clearInterval(waitForRefs);
       requestAnimationFrame(gameLoop);
     }
@@ -127,7 +145,17 @@
     <div class="pacman-container">
       <img class="pacman-maze" src="@/assets/PacManMaze.png">
       <PacmanObject ref="pacmanRef" class="pacman" :grid="grid" @update-grid="updateGrid"></PacmanObject>
-      <Ghost ref="ghostRef" class="ghost" :grid="grid" @update-grid="updateGrid"></Ghost> 
+      <Ghost
+        v-for="(ghost, index) in ghosts"
+        :key="ghost.id"
+        ref="ghostRefs"
+        class="ghost"
+        :ghost-index="index"
+        :start-position="ghost.startPosition"
+        :image="ghost.image"
+        :grid="grid"
+        @update-grid="updateGrid"
+      />
       <div v-for="(cell, index) in showPoints" :key="`point-${index}`" class="showPoints" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
         <PacmanPoints></PacmanPoints>
       </div>
