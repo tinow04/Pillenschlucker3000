@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref } from "vue";
 
-  type Direction = 'up' | 'down' | 'left' | 'right' | null;
+  type Direction = 'up' | 'down' | 'left' | 'right' ;
 
   const canMoveToDirections: Record<Direction, { x1: number; y1: number; x2: number; y2: number }> = {
     up:     { x1: -2.5,  y1: -5,    x2:  20,   y2: -5},
@@ -29,8 +29,8 @@
   const position = ref({ x: 20, y: 20 });
   const hitboxOffsetUp = -8;
   const hitboxOffsetLeft = -8;
-  let currentDirection: Direction = null;
-  let nextDirection: Direction = null;
+  let currentDirection: Direction | null = null;
+  let nextDirection: Direction | null = null;
   const emit = defineEmits(['update-grid']);
 
   const canMoveTo = (x: number, y: number) => {
