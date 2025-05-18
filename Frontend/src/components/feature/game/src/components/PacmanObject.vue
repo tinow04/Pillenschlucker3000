@@ -51,13 +51,9 @@
     const row = Math.floor((y - hitboxOffsetUp) / 25);
     if(props.grid[row] && props.grid[row][col] === 3){
       emit('update-grid', { row, col, value: 4 });
-      //props.grid[row][col] = 4;
-      console.log("Über Punkt gelaufen");
     }
     if(props.grid[row] && props.grid[row][col] === 5){
       emit('update-grid', { row, col, value: 6 });
-      //props.grid[row][col] = 6;
-      console.log("Über PowerUp gelaufen");
     }
   };
 
@@ -69,7 +65,6 @@
 
     // Versuche, in currentDirection zu laufen
     if (currentDirection) {
-      console.log(currentDirection);
       const vec = moveToDirection[currentDirection];
       const newX1 = position.value.x + (2 * vec.x);
       const newY1 = position.value.y + (2 * vec.y);

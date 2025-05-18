@@ -3,6 +3,7 @@
   import PacmanObject from './PacmanObject.vue';
   import PacmanPoints from './PacmanPoints.vue';
   import PacmanPowerUp from './PacmanPowerUp.vue';
+  import Ghost from './Ghosts.vue'
 
   const score = ref(0);
 
@@ -61,8 +62,7 @@
     ).filter((cell): cell is { row: number, col: number } => cell !== null);
   });
 
-  function updateGrid({ row, col, value }) {
-    console.log("test"+value);  
+  function updateGrid({ row, col, value }) { 
     grid.value[row][col] = value;
     if(value == 4||value ==6){
       updatePoints(value);
@@ -70,7 +70,6 @@
   }
 
   function updatePoints(value){
-    console.log("Moin"+value)
     if(value==4){
       score.value += 10;
     } else {
@@ -89,6 +88,7 @@
     <div class="pacman-container">
       <img class="pacman-maze" src="@/assets/PacManMaze.png">
       <PacmanObject class="pacman" :grid="grid" @update-grid="updateGrid"></PacmanObject>
+      <Ghost class="ghost" :grid="grid" @update-grid="updateGrid"></Ghost> 
       <div v-for="(cell, index) in showPoints" :key="`point-${index}`" class="showPoints" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
         <PacmanPoints></PacmanPoints>
       </div>
@@ -137,6 +137,10 @@
   }
 
   .pacman{
+    position: absolute;
+  }
+
+  .ghost{
     position: absolute;
   }
 
