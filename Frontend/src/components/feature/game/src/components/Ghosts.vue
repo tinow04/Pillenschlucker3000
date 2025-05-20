@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import { ref } from "vue";
 
-  type Direction = 'up' | 'down' | 'left' | 'right' | null;
+  type Direction = 'up' | 'down' | 'left' | 'right';
 
   const isMoving = ref(false);
   
@@ -12,8 +12,8 @@
   const position = ref({ ... props.startPosition });
   const hitboxOffsetUp = -8;
   const hitboxOffsetLeft = -8;
-  let currentDirection: Direction = null;
-  let nextDirection: Direction = null;
+  let currentDirection: Direction | null = null;
+  let nextDirection: Direction | null = null;
   let currentCollisions :Direction[] = [];
   let prevCollisions :Direction[] = [];
   let isAllowedToMoveOver = 2;
@@ -79,7 +79,7 @@
       currentDirection = ways[Math.floor(Math.random()*ways.length)];
       prevCollisions = [];
       if(isAllowedToMoveOver === 2){
-        isAllowedToMoveOver=3;//Der Geist hat mit der ersten Richtungsänderung sein Zuhause verlassen und soll nicht mehr zurück können
+        isAllowedToMoveOver = 3; //Der Geist hat mit der ersten Richtungsänderung sein Zuhause verlassen und soll nicht mehr zurück können
       }
     }
   }

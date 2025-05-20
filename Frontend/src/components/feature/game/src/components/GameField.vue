@@ -3,10 +3,10 @@
   import PacmanObject from './PacmanObject.vue';
   import PacmanPoints from './PacmanPoints.vue';
   import PacmanPowerUp from './PacmanPowerUp.vue';
-  import Ghost from './Ghosts.vue'
+  import Ghost from './Ghosts.vue';
   import type { ComponentPublicInstance } from 'vue';
-  import Blinky from '@/assets/Blinky.png'; 
-  import Pinky from '@/assets/Pinky.png';
+  import Blinky from '@/assets/Blinky.png'; //Error kann durch Entwicklungsumgebung kann angezeigt werden -> env.d.ts öffnen und er ist weg
+  import Pinky from '@/assets/Pinky.png';  //Kann trotzdem gestartet werden und funktionieren
   import Inky from '@/assets/Inky.png';
   import Clyde from '@/assets/Clyde.png';
 
@@ -26,7 +26,7 @@
   const ghostRefs = ref<GhostInstance[]>([]);
 
   let lastMoveTime = 0;
-  const moveInterval = 20;
+  const moveInterval = 25;
 
   const grid = ref([
   // 1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28
@@ -85,12 +85,14 @@
 
   function gameLoop(timestamp: number) {
     if (gameOver.value) return;
+
     if (timestamp - lastMoveTime > moveInterval) {
       pacmanRef.value?.updatePacmanPosition();
       ghostRefs.value.forEach(ref => {
       ref?.updateGhostPosition();
       });
-      const pacmanPos = pacmanRef.value?.position;
+
+    const pacmanPos = pacmanRef.value?.position;
     for (const ref of ghostRefs.value) {
       if (ref && pacmanAndGhostCollide(pacmanPos, ref.position)) {
         gameOver.value = true;
@@ -98,6 +100,7 @@
         return; 
       }
     }
+
     lastMoveTime = timestamp;
     }
     requestAnimationFrame(gameLoop);

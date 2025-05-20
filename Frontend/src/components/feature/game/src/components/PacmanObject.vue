@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref } from "vue";
 
-  type Direction = 'up' | 'down' | 'left' | 'right' ;
+  type Direction = 'up' | 'down' | 'left' | 'right';
 
   const canMoveToDirections: Record<Direction, { x1: number; y1: number; x2: number; y2: number }> = {
     up:     { x1: -2.5,  y1: -5,    x2:  20,   y2: -5},
@@ -82,7 +82,7 @@
         currentDirection = null;
       }
     }
-  } 
+  }
 
   const keyToDirection: Record<string, Direction> = {
     w: 'up',
