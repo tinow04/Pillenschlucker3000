@@ -1,10 +1,32 @@
 <script setup lang="ts">
-  import { ref,computed } from 'vue';
+  import { ref,computed,onMounted } from 'vue';
   import PacmanObject from './PacmanObject.vue';
   import PacmanPoints from './PacmanPoints.vue';
   import PacmanPowerUp from './PacmanPowerUp.vue';
+  import Ghost from './Ghosts.vue';
+  import type { ComponentPublicInstance } from 'vue';
+  import Blinky from '@/assets/Blinky.png'; //Error kann durch Entwicklungsumgebung kann angezeigt werden -> env.d.ts öffnen und er ist weg
+  import Pinky from '@/assets/Pinky.png';  //Kann trotzdem gestartet werden und funktionieren
+  import Inky from '@/assets/Inky.png';
+  import Clyde from '@/assets/Clyde.png';
+
+  type GhostInstance = ComponentPublicInstance<{ updateGhostPosition: () => void; position: { x: number, y: number } }>;
 
   const score = ref(0);
+  const gameOver = ref(false);
+
+  const ghosts = [
+    { id: 1, startPosition: { x: 345, y: 310 }, image: Blinky },   
+    { id: 2, startPosition: { x: 345, y: 350 }, image: Pinky },    
+    { id: 3, startPosition: { x: 320, y: 310 }, image: Inky },     
+    { id: 4, startPosition: { x: 320, y: 350 }, image: Clyde }
+  ]   
+
+  const pacmanRef = ref();
+  const ghostRefs = ref<GhostInstance[]>([]);
+
+  let lastMoveTime = 0;
+  const moveInterval = 25;
 
   const grid = ref([
   // 1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28
@@ -61,8 +83,46 @@
     ).filter((cell): cell is { row: number, col: number } => cell !== null);
   });
 
-  function updateGrid({ row, col, value }) {
-    console.log("test"+value);  
+  function gameLoop(timestamp: number) {
+    if (gameOver.value) return;
+
+    if (timestamp - lastMoveTime > moveInterval) {
+      pacmanRef.value?.updatePacmanPosition();
+      ghostRefs.value.forEach(ref => {
+      ref?.updateGhostPosition();
+      });
+
+    const pacmanPos = pacmanRef.value?.position;
+    for (const ref of ghostRefs.value) {
+      if (ref && pacmanAndGhostCollide(pacmanPos, ref.position)) {
+        gameOver.value = true;
+        console.log('Game Over! Pacman wurde vom Geist gefangen.');
+        return; 
+      }
+    }
+
+    lastMoveTime = timestamp;
+    }
+    requestAnimationFrame(gameLoop);
+    } onMounted(() => {
+      const waitForRefs = setInterval(() => {
+    if (pacmanRef.value && ghostRefs.value) {
+      clearInterval(waitForRefs);
+      requestAnimationFrame(gameLoop);
+    }
+  }, 10);
+  });
+
+  function pacmanAndGhostCollide(pos1, pos2) {
+    const pacmanCol = Math.floor(pos1.x / 25);
+    const pacmanRow = Math.floor(pos1.y / 25);
+    const ghostCol = Math.floor(pos2.x / 25);
+    const ghostRow = Math.floor(pos2.y / 25);
+    return pacmanCol === ghostCol && pacmanRow === ghostRow;
+  }
+
+
+  function updateGrid({ row, col, value }) { 
     grid.value[row][col] = value;
     if(value == 4||value ==6){
       updatePoints(value);
@@ -70,7 +130,6 @@
   }
 
   function updatePoints(value){
-    console.log("Moin"+value)
     if(value==4){
       score.value += 10;
     } else {
@@ -88,7 +147,18 @@
     </div>
     <div class="pacman-container">
       <img class="pacman-maze" src="@/assets/PacManMaze.png">
-      <PacmanObject class="pacman" :grid="grid" @update-grid="updateGrid"></PacmanObject>
+      <PacmanObject ref="pacmanRef" class="pacman" :grid="grid" @update-grid="updateGrid"></PacmanObject>
+      <Ghost
+        v-for="(ghost, index) in ghosts"
+        :key="ghost.id"
+        ref="ghostRefs"
+        class="ghost"
+        :ghost-index="index"
+        :start-position="ghost.startPosition"
+        :image="ghost.image"
+        :grid="grid"
+        @update-grid="updateGrid"
+      />
       <div v-for="(cell, index) in showPoints" :key="`point-${index}`" class="showPoints" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
         <PacmanPoints></PacmanPoints>
       </div>
@@ -137,6 +207,10 @@
   }
 
   .pacman{
+    position: absolute;
+  }
+
+  .ghost{
     position: absolute;
   }
 

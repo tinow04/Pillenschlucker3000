@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref } from "vue";
 
-  type Direction = 'up' | 'down' | 'left' | 'right' | null;
+  type Direction = 'up' | 'down' | 'left' | 'right';
 
   const canMoveToDirections: Record<Direction, { x1: number; y1: number; x2: number; y2: number }> = {
     up:     { x1: -2.5,  y1: -5,    x2:  20,   y2: -5},
@@ -29,10 +29,8 @@
   const position = ref({ x: 20, y: 20 });
   const hitboxOffsetUp = -8;
   const hitboxOffsetLeft = -8;
-  let currentDirection: Direction = null;
-  let nextDirection: Direction = null;
-  let lastMoveTime = 0;
-  const moveInterval = 20;
+  let currentDirection: Direction | null = null;
+  let nextDirection: Direction | null = null;
   const emit = defineEmits(['update-grid']);
 
   const canMoveTo = (x: number, y: number) => {
@@ -51,13 +49,9 @@
     const row = Math.floor((y - hitboxOffsetUp) / 25);
     if(props.grid[row] && props.grid[row][col] === 3){
       emit('update-grid', { row, col, value: 4 });
-      //props.grid[row][col] = 4;
-      console.log("Über Punkt gelaufen");
     }
     if(props.grid[row] && props.grid[row][col] === 5){
       emit('update-grid', { row, col, value: 6 });
-      //props.grid[row][col] = 6;
-      console.log("Über PowerUp gelaufen");
     }
   };
 
@@ -69,7 +63,6 @@
 
     // Versuche, in currentDirection zu laufen
     if (currentDirection) {
-      console.log(currentDirection);
       const vec = moveToDirection[currentDirection];
       const newX1 = position.value.x + (2 * vec.x);
       const newY1 = position.value.y + (2 * vec.y);
@@ -77,7 +70,9 @@
       const newY2 = position.value.y + (2 * vec.y) + 20;
 
       const rotation = directionToRotation[currentDirection];
-      pacmanGif.value.style.transform = `rotate(${rotation}deg)`;
+      if (pacmanGif.value) {
+       pacmanGif.value.style.transform = `rotate(${rotation}deg)`;
+      }
 
       if (canMoveTo(newX1, newY1) && canMoveTo(newX2, newY2)) {
         moveOverPoint(newX1,newY1);
@@ -87,14 +82,6 @@
         currentDirection = null;
       }
     }
-  }
-
-  function gameLoop(timestamp: number) {
-    if (timestamp - lastMoveTime > moveInterval) {
-      updatePacmanPosition();
-      lastMoveTime = timestamp;
-    }
-    requestAnimationFrame(gameLoop);
   }
 
   const keyToDirection: Record<string, Direction> = {
@@ -109,7 +96,8 @@
       nextDirection = keyToDirection[e.key];
     }
   });
-  requestAnimationFrame(gameLoop);
+
+  defineExpose({ updatePacmanPosition ,position })
 </script>
 
 <template>
