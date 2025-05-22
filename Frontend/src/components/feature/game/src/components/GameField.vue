@@ -13,6 +13,8 @@
   type GhostInstance = ComponentPublicInstance<{ updateGhostPosition: () => void; position: { x: number, y: number } }>;
 
   const score = ref(0);
+  const lives = ref(3);
+  const invulnerable = ref(false);
   const gameOver = ref(false);
   let pointsEaten : number = 0;
   let numberOfPoints : number = 0;
@@ -96,13 +98,8 @@
       ref?.updateGhostPosition();
       });
 
-    const pacmanPos = pacmanRef.value?.position;
-    for (const ref of ghostRefs.value) {
-      if (ref && pacmanAndGhostCollide(pacmanPos, ref.position)) {
-        gameOver.value = true;
-        console.log('Game Over! Pacman wurde vom Geist gefangen.');
-        return; 
-      }
+    if (checkCollisionAndHandle()) {
+      return;
     }
 
     lastMoveTime = timestamp;
@@ -126,6 +123,26 @@
     return pacmanCol === ghostCol && pacmanRow === ghostRow;
   }
 
+  function checkCollisionAndHandle(): boolean {
+    const pacmanPos = pacmanRef.value?.position;
+    for (const ref of ghostRefs.value) {
+      if (ref && pacmanAndGhostCollide(pacmanPos, ref.position)) {
+        if (!invulnerable.value) {
+          if (lives.value === 0) {
+            gameOver.value = true;
+            console.log('Game Over! Pacman wurde vom Geist gefangen.');
+            return true; // Game Over, Gameloop soll abbrechen
+          }
+          lives.value = lives.value - 1;
+          invulnerable.value = true;
+          setTimeout(() => {
+            invulnerable.value = false;
+          }, 500);
+        }
+      }
+    }
+    return false; 
+  }
 
   function updateGrid({ row, col, value }) { 
     grid.value[row][col] = value;
@@ -185,8 +202,18 @@
   <body id="game-field" class="game-field">
   <div class="game-wrapper">
     <div class="score-display">
-     Punkte: {{ score }}
+      <span>Punkte: {{ score }}</span>
+      <div class="lives">
+      <img
+        v-for="n in [3,2,1]"
+        :key="n"
+        src = '@/assets/Herz.png'
+        alt="Herz"
+        class="heart"
+        :class="{ lost: n > lives }"
+      />
     </div>
+  </div>
     <div class="pacman-container">
       <img class="pacman-maze" src="@/assets/PacManMaze.png">
       <PacmanObject ref="pacmanRef" class="pacman" :grid="grid" @update-grid="updateGrid"></PacmanObject>
@@ -274,6 +301,8 @@
 
   .score-display {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
     font-size: 3rem;         
     font-weight: bold;
@@ -281,6 +310,21 @@
     margin-bottom: 20px;     
     letter-spacing: 2px;
     background-color: black;
+  }
+
+  .lives {
+    display: flex;
+    gap: 10px;
+  }
+
+  .heart {
+    width: 40px;
+    height: 40px;
+    transition: opacity 0.3s;
+  }
+
+  .heart.lost {
+    opacity: 0.2;
   }
 
 </style>
