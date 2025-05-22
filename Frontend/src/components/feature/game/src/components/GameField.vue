@@ -14,6 +14,8 @@
 
   const score = ref(0);
   const gameOver = ref(false);
+  let pointsEaten : number = 0;
+  let numberOfPoints : number = 0;
 
   const ghosts = [
     { id: 1, startPosition: { x: 345, y: 310 }, image: Blinky },   
@@ -86,6 +88,8 @@
   function gameLoop(timestamp: number) {
     if (gameOver.value) return;
 
+    checkPoints();
+ 
     if (timestamp - lastMoveTime > moveInterval) {
       pacmanRef.value?.updatePacmanPosition();
       ghostRefs.value.forEach(ref => {
@@ -109,6 +113,7 @@
     if (pacmanRef.value && ghostRefs.value) {
       clearInterval(waitForRefs);
       requestAnimationFrame(gameLoop);
+      countPointsInGrid(grid.value);
     }
   }, 10);
   });
@@ -132,9 +137,46 @@
   function updatePoints(value){
     if(value==4){
       score.value += 10;
+      pointsEaten ++;
     } else {
       score.value += 50;
+      pointsEaten ++;
     }
+  }
+
+  function checkPoints(){
+    if(pointsEaten >= numberOfPoints){
+      resetPoints(grid.value);
+    }
+  }
+
+  function resetPoints(grid: number[][]){
+    for (let row = 0; row < grid.length; row++) {
+      for (let col = 0; col < grid[row].length; col++) {
+        if (grid[row][col] === 4) {
+         grid[row][col] = 3;
+        } else if (grid[row][col] === 6) {
+          grid[row][col] = 5;
+        }
+      }
+    }
+    pointsEaten = 0;
+  }
+
+  function countPointsInGrid(grid: number[][]) {
+    let count3 = 0;
+    let count5 = 0;
+
+    for (const row of grid) {
+        for (const cell of row) {
+            if (cell === 3) count3++;
+            if (cell === 5) count5++;
+        }
+    }
+
+    const total = count3 * 10 + count5 * 50;
+    console.log(count3, count5, total);
+    numberOfPoints = count3 + count5;
   }
 
 </script>
