@@ -10,7 +10,14 @@
   import Inky from '@/assets/Inky.png';
   import Clyde from '@/assets/Clyde.png';
 
-  type GhostInstance = ComponentPublicInstance<{ updateGhostPosition: () => void; position: { x: number, y: number } }>;
+  type GhostInstance = ComponentPublicInstance<{
+    updateGhostPosition: () => void;
+    position: { x: number, y: number };
+    resetPosition: (startPosition: { x: number, y: number }) => void;
+  }>;
+
+  const isGameStarted = ref(false);
+  const areGhostsPaused = ref(false);
 
   const score = ref(0);
   const lives = ref(3);
@@ -24,7 +31,9 @@
     { id: 2, startPosition: { x: 345, y: 350 }, image: Pinky },    
     { id: 3, startPosition: { x: 320, y: 310 }, image: Inky },     
     { id: 4, startPosition: { x: 320, y: 350 }, image: Clyde }
-  ]   
+  ] 
+  
+  const pacmanStartPosition = { x: 20, y: 20 };
 
   const pacmanRef = ref();
   const ghostRefs = ref<GhostInstance[]>([]);
@@ -87,6 +96,10 @@
     ).filter((cell): cell is { row: number, col: number } => cell !== null);
   });
 
+  function startGame() {
+    isGameStarted.value = true;
+  }
+
   function gameLoop(timestamp: number) {
     if (gameOver.value) return;
 
@@ -94,9 +107,11 @@
  
     if (timestamp - lastMoveTime > moveInterval) {
       pacmanRef.value?.updatePacmanPosition();
-      ghostRefs.value.forEach(ref => {
-      ref?.updateGhostPosition();
-      });
+      if(isGameStarted.value&& !areGhostsPaused.value){
+        ghostRefs.value.forEach(ref => {
+        ref?.updateGhostPosition();
+        });
+      }
 
     if (checkCollisionAndHandle()) {
       return;
@@ -135,9 +150,16 @@
           }
           lives.value = lives.value - 1;
           invulnerable.value = true;
+          areGhostsPaused.value = true;
           setTimeout(() => {
+            areGhostsPaused.value = false;
             invulnerable.value = false;
-          }, 500);
+          }, 3000);
+
+          pacmanRef.value?.resetPosition(pacmanStartPosition);
+          ghostRefs.value.forEach((ghostRef, idx) => {
+          ghostRef?.resetPosition(ghosts[idx].startPosition);
+          });
         }
       }
     }
@@ -178,6 +200,14 @@
       }
     }
     pointsEaten = 0;
+    pacmanRef.value?.resetPosition(pacmanStartPosition);
+    ghostRefs.value.forEach((ghostRef, idx) => {
+      ghostRef?.resetPosition(ghosts[idx].startPosition);
+    });
+    areGhostsPaused.value = true;
+      setTimeout(() => {
+      areGhostsPaused.value = false;
+    }, 1000);
   }
 
   function countPointsInGrid(grid: number[][]) {
@@ -195,6 +225,13 @@
     console.log(count3, count5, total);
     numberOfPoints = count3 + count5;
   }
+
+  window.addEventListener('keydown', (e) => {
+  if (!isGameStarted.value) {
+    startGame();
+  }
+
+  });
 
 </script>
 

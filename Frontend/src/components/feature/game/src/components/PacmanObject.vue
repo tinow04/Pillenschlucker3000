@@ -84,6 +84,13 @@
     }
   }
 
+  function resetPosition(startPosition: { x: number, y: number }) {
+    position.value.x = startPosition.x;
+    position.value.y = startPosition.y;
+    currentDirection = null;
+    nextDirection = null;
+  }
+
   const keyToDirection: Record<string, Direction> = {
     w: 'up',
     s: 'down',
@@ -97,7 +104,11 @@
     }
   });
 
-  defineExpose({ updatePacmanPosition ,position })
+  defineExpose({
+  updatePacmanPosition,
+  position,
+  resetPosition
+  });
 </script>
 
 <template>
