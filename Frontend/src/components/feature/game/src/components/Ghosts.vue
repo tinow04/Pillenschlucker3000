@@ -3,20 +3,19 @@
 
   type Direction = 'up' | 'down' | 'left' | 'right';
 
-  const isMoving = ref(false);
-  
   const props = defineProps<{ grid: number[][] ,
-  ghostIndex: number,
-  startPosition: { x: number, y: number },
-  image: string}>();
+    ghostIndex: number,
+    startPosition: { x: number, y: number },
+    image: string
+  }>();
   const position = ref({ ... props.startPosition });
+  const vulnerable = ref(false);
   const hitboxOffsetUp = -8;
   const hitboxOffsetLeft = -8;
-  let currentDirection: Direction | null = null;
-  let nextDirection: Direction | null = null;
+  let currentDirection: Direction | null = 'up';
   let currentCollisions :Direction[] = [];
   let prevCollisions :Direction[] = [];
-  let isAllowedToMoveOver = 2;
+  let isAllowedToMoveOver :number = 2;
 
   const canMoveToDirections: Record<Direction, { x1: number; y1: number; x2: number; y2: number }> = {
     up:     { x1: -2.5,  y1: -5,    x2:  20,   y2: -5},
@@ -87,13 +86,6 @@
   function updateGhostPosition() {
     getNextDirection();
     // Ist nextDirection erlaubt?
-    if(!isMoving.value){
-      if (nextDirection && canMoveInDirection(nextDirection, position.value)) {
-        currentDirection = nextDirection;
-        isMoving.value = true;
-      }
-    }
-
     // Versuche, in currentDirection zu laufen
     if (currentDirection) {
       if(position.value.x===5&&position.value.y===345){
@@ -118,20 +110,29 @@
     }
   } 
 
-  const keyToDirection: Record<string, Direction> = {
-    w: 'up',
-    s: 'up',
-    a: 'up',
-    d: 'up',
-  };
+  function resetPosition(startPosition: { x: number, y: number }) {
+    isAllowedToMoveOver = 2; 
+    position.value.x = startPosition.x;
+    position.value.y = startPosition.y;
+    currentDirection = 'up';
+    prevCollisions = []; 
+  }
 
-  window.addEventListener('keydown', (e) => {
-    if (keyToDirection[e.key]&&!isMoving.value) {
-      nextDirection = keyToDirection[e.key]; 
-    }
+  function setVulnerable(state: boolean) {
+    vulnerable.value = state;
+  }
+
+  function isVulnerable() {
+    return vulnerable.value;
+  }
+
+  defineExpose({
+    updateGhostPosition,
+    position,
+    resetPosition,
+    setVulnerable,
+    isVulnerable
   });
-
-  defineExpose({ updateGhostPosition ,position })
 </script>
 
 <template>
