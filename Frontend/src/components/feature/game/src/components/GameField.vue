@@ -9,11 +9,14 @@
   import Pinky from '@/assets/Pinky.png';  //Kann trotzdem gestartet werden und funktionieren
   import Inky from '@/assets/Inky.png';
   import Clyde from '@/assets/Clyde.png';
+  import VulnerableGhost from '@/assets/Vulnerable.png';
 
   type GhostInstance = ComponentPublicInstance<{
     updateGhostPosition: () => void;
     position: { x: number, y: number };
     resetPosition: (startPosition: { x: number, y: number }) => void;
+    setVulnerable: (state: boolean) => void;
+    isVulnerable: () => boolean;  
   }>;
 
   const isGameStarted = ref(false);
@@ -23,15 +26,25 @@
   const lives = ref(3);
   const invulnerable = ref(false);
   const gameOver = ref(false);
+
   let pointsEaten : number = 0;
   let numberOfPoints : number = 0;
+  let powerUp: boolean = false;
+  let ghostsEaten : number = 0;
+  let timeoutId: number | undefined;
 
-  const ghosts = [
+  interface GhostData {
+    id: number;
+    startPosition: { x: number, y: number };
+    image: any;
+  }
+
+  const ghosts = ref<GhostData[]>([
     { id: 1, startPosition: { x: 345, y: 310 }, image: Blinky },   
     { id: 2, startPosition: { x: 345, y: 350 }, image: Pinky },    
     { id: 3, startPosition: { x: 320, y: 310 }, image: Inky },     
     { id: 4, startPosition: { x: 320, y: 350 }, image: Clyde }
-  ] 
+  ]);
   
   const pacmanStartPosition = { x: 20, y: 20 };
 
@@ -140,30 +153,86 @@
 
   function checkCollisionAndHandle(): boolean {
     const pacmanPos = pacmanRef.value?.position;
-    for (const ref of ghostRefs.value) {
+    for (let idx = 0; idx < ghostRefs.value.length; idx++) {
+      const ref = ghostRefs.value[idx];
       if (ref && pacmanAndGhostCollide(pacmanPos, ref.position)) {
-        if (!invulnerable.value) {
-          if (lives.value === 0) {
-            gameOver.value = true;
-            console.log('Game Over! Pacman wurde vom Geist gefangen.');
-            return true; // Game Over, Gameloop soll abbrechen
-          }
-          lives.value = lives.value - 1;
-          invulnerable.value = true;
-          areGhostsPaused.value = true;
-          setTimeout(() => {
-            areGhostsPaused.value = false;
-            invulnerable.value = false;
-          }, 3000);
+        if(powerUp  && ref.isVulnerable()){
+          eatGhost(idx);
+          ref.setVulnerable(false);
+        } else{
+          if (!invulnerable.value) {
+            if (lives.value === 0) {
+              gameOver.value = true;
+              console.log('Game Over! Pacman wurde vom Geist gefangen.');
+              return true; // Game Over, Gameloop soll abbrechen
+            }
+            lives.value = lives.value - 1;
+            invulnerable.value = true;
+            areGhostsPaused.value = true;
+            setTimeout(() => {
+              areGhostsPaused.value = false;
+              invulnerable.value = false;
+            }, 3000);
 
-          pacmanRef.value?.resetPosition(pacmanStartPosition);
-          ghostRefs.value.forEach((ghostRef, idx) => {
-          ghostRef?.resetPosition(ghosts[idx].startPosition);
-          });
+            pacmanRef.value?.resetPosition(pacmanStartPosition);
+            if(powerUp){
+              resetPowerUp();
+            }
+            ghostRefs.value.forEach((ghostRef, idx) => {
+            ghostRef?.resetPosition(ghosts.value[idx].startPosition);
+            });
+          }
         }
       }
     }
     return false; 
+  }
+
+  function eatGhost(ghostIdx: number){
+    switch (ghostsEaten) {
+      case 0:
+        score.value += 200;
+        ghostsEaten++;
+        console.log("Geist gegessen (0)");
+        break;
+      case 1:
+        score.value += 400;
+        ghostsEaten++;
+        console.log("Geist gegessen (1)");
+        break;
+      case 2:
+        score.value += 800;
+        ghostsEaten++;
+        console.log("Geist gegessen (2)");
+        break;
+      case 3:
+        score.value += 1600;
+        ghostsEaten = 0;
+        console.log("Geist gegessen (3)");
+        break;
+      default: 
+        console.log("Unexpexted state of ghostsEaten:");
+        console.log(ghostsEaten);
+    }
+    switch (ghostIdx){
+      case 0:
+        ghosts.value[ghostIdx].image = Blinky;
+        break;
+      case 1:
+        ghosts.value[ghostIdx].image = Pinky;
+        break;
+      case 2:
+        ghosts.value[ghostIdx].image = Inky;
+        break;
+      case 3:
+        ghosts.value[ghostIdx].image = Clyde;
+        break;
+      default:
+        console.log("Unexpexted state of ghostIndex:");
+        console.log(ghostIdx);         
+    }
+    console.log(ghostIdx);
+    ghostRefs.value[ghostIdx]?.resetPosition(ghosts.value[ghostIdx].startPosition);
   }
 
   function updateGrid({ row, col, value }) { 
@@ -180,7 +249,39 @@
     } else {
       score.value += 50;
       pointsEaten ++;
+      startPowerUp();
     }
+  }
+
+  function startPowerUp(){
+    console.log("PowerUp gegessen");
+    clearTimeout(timeoutId); 
+    powerUp = true;
+    ghostsEaten = 0;
+    ghostRefs.value.forEach(ref => ref?.setVulnerable(true));
+
+    ghosts.value[0].image = VulnerableGhost;
+    ghosts.value[1].image = VulnerableGhost;
+    ghosts.value[2].image = VulnerableGhost;
+    ghosts.value[3].image = VulnerableGhost;
+
+
+    timeoutId = window.setTimeout(() => {
+      resetPowerUp();
+    }, 10000);
+  }
+
+  function resetPowerUp(){
+    powerUp = false;
+    ghostsEaten = 0;
+
+    ghosts.value[0].image = Blinky;
+    ghosts.value[1].image = Pinky;
+    ghosts.value[2].image = Inky;
+    ghosts.value[3].image = Clyde;
+
+    console.log("PowerUp zu Ende");
+    ghostRefs.value.forEach(ref => ref?.setVulnerable(false));
   }
 
   function checkPoints(){
@@ -202,7 +303,7 @@
     pointsEaten = 0;
     pacmanRef.value?.resetPosition(pacmanStartPosition);
     ghostRefs.value.forEach((ghostRef, idx) => {
-      ghostRef?.resetPosition(ghosts[idx].startPosition);
+      ghostRef?.resetPosition(ghosts.value[idx].startPosition);
     });
     areGhostsPaused.value = true;
       setTimeout(() => {
