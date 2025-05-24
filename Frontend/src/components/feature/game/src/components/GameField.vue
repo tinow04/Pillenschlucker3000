@@ -10,6 +10,7 @@
   import Inky from '@/assets/Inky.png';
   import Clyde from '@/assets/Clyde.png';
   import VulnerableGhost from '@/assets/Vulnerable.png';
+  import GameOver from '@/components/feature/game/src/pages/GameOver.vue';
 
   type GhostInstance = ComponentPublicInstance<{
     updateGhostPosition: () => void;
@@ -26,8 +27,10 @@
   const lives = ref(3);
   const invulnerable = ref(false);
   const gameOver = ref(false);
+  const level = ref(0);
+  const pointsEatenTotal = ref(0);
+  const ghostsEatenTotal = ref(0);
 
-  let level : number = 0;
   let pointsEaten : number = 0;
   let numberOfPoints : number = 0;
   let powerUp: boolean = false;
@@ -128,7 +131,6 @@
     if (gameOver.value) return;
 
     checkPoints();
- 
     if (timestamp - lastMoveTime > moveInterval) {
       pacmanRef.value?.updatePacmanPosition();
       if(isGameStarted.value&& !areGhostsPaused.value){
@@ -150,6 +152,7 @@
       clearInterval(waitForRefs);
       requestAnimationFrame(gameLoop);
       countPointsInGrid(grid.value);
+      console.log("Game Start!");
     }
   }, 10);
   });
@@ -180,6 +183,7 @@
             lives.value = lives.value - 1;
             invulnerable.value = true;
             areGhostsPaused.value = true;
+            floatingScores.value = [];
             setTimeout(() => {
               areGhostsPaused.value = false;
               invulnerable.value = false;
@@ -201,6 +205,7 @@
 
   function eatGhost(ghostIdx: number){
     let scoreValue = 0;
+    ghostsEatenTotal.value += 1;
     switch (ghostsEaten) {
       case 0:
         scoreValue = 200;
@@ -278,6 +283,7 @@
     if(value==4){
       score.value += 10;
       pointsEaten ++;
+      pointsEatenTotal.value += 1;
     } else {
       score.value += 50;
       pointsEaten ++;
@@ -319,6 +325,7 @@
   function checkPoints(){
     if(pointsEaten >= numberOfPoints){
       resetPoints(grid.value);
+      resetPowerUp();
     }
   }
 
@@ -333,8 +340,8 @@
       }
     }
     pointsEaten = 0;
-    resetPowerUp();
-    level ++;
+    level.value += 1;
+    floatingScores.value = [];
     pacmanRef.value?.resetPosition(pacmanStartPosition);
     ghostRefs.value.forEach((ghostRef, idx) => {
       ghostRef?.resetPosition(ghosts.value[idx].startPosition);
@@ -361,6 +368,23 @@
     numberOfPoints = count3 + count5;
   }
 
+  function restartGame(){
+    resetPowerUp();
+    resetPoints(grid.value);
+    floatingScores.value = [];
+
+    score.value = 0;
+    lives.value = 3;
+    level.value = 0;
+    ghostsEatenTotal.value = 0;
+    pointsEatenTotal.value = 0;
+    invulnerable.value = false;
+    isGameStarted.value = false;
+
+    gameOver.value = false;
+    requestAnimationFrame(gameLoop);
+  }
+
   window.addEventListener('keydown', (e) => {
   if (!isGameStarted.value) {
     startGame();
@@ -371,22 +395,31 @@
 </script>
 
 <template>
-  <body id="game-field" class="game-field">
-  <div class="game-wrapper">
-    <div class="score-display">
-      <span>Punkte: {{ score }}</span>
-      <div class="lives">
-      <img
-        v-for="n in [3,2,1]"
-        :key="n"
-        src = '@/assets/Herz.png'
-        alt="Herz"
-        class="heart"
-        :class="{ lost: n > lives }"
-      />
-    </div>
-  </div>
-    <div class="pacman-container">
+  <div v-bind="$attrs">
+  <GameOver 
+    v-if="gameOver"
+    :score="score"
+    :level="level"
+    :ghosts-eaten-total="ghostsEatenTotal"
+    :points-eaten-total="pointsEatenTotal"
+    @restart="restartGame"
+  />
+  <div id="game-field" class="game-field">
+    <div class="game-wrapper">
+      <div class="score-display">
+        <span>Points: {{ score }}</span>
+        <div class="lives">
+        <img
+          v-for="n in [3,2,1]"
+          :key="n"
+          src = '@/assets/Herz.png'
+          alt="Herz"
+          class="heart"
+          :class="{ lost: n > lives }"
+        />
+        </div>
+      </div>
+      <div class="pacman-container">
       <img class="pacman-maze" src="@/assets/PacManMaze.png">
       <PacmanObject ref="pacmanRef" class="pacman" :grid="grid" :start-position="pacmanStartPosition" @update-grid="updateGrid"></PacmanObject>
       <Ghost
@@ -419,7 +452,8 @@
       </div>
     </div>
   </div>  
-  </body>
+</div>
+</div>
 </template>
 
 <style scoped>
@@ -509,6 +543,7 @@
   .heart.lost {
     opacity: 0.2;
   }
+
   .floating-score {
     position: absolute;
     color: yellow;
@@ -516,7 +551,5 @@
     font-weight: bold;
     z-index: 100;
   }
-
-
 
 </style>
