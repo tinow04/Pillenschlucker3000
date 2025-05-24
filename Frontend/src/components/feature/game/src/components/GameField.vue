@@ -34,6 +34,16 @@
   let ghostsEaten : number = 0;
   let timeoutId: number | undefined;
 
+  interface FloatingScore {
+    x: number;
+    y: number;
+    value: number;
+    id: number;
+  }
+
+  const floatingScores = ref<FloatingScore[]>([]);
+  let floatingScoreId = 0;
+
   interface GhostData {
     id: number;
     startPosition: { x: number, y: number };
@@ -190,23 +200,28 @@
   }
 
   function eatGhost(ghostIdx: number){
+    let scoreValue = 0;
     switch (ghostsEaten) {
       case 0:
+        scoreValue = 200;
         score.value += 200;
         ghostsEaten++;
         console.log("Geist gegessen (0)");
         break;
       case 1:
+        scoreValue = 400;
         score.value += 400;
         ghostsEaten++;
         console.log("Geist gegessen (1)");
         break;
       case 2:
+        scoreValue = 800;
         score.value += 800;
         ghostsEaten++;
         console.log("Geist gegessen (2)");
         break;
       case 3:
+        scoreValue = 1600;
         score.value += 1600;
         ghostsEaten = 0;
         console.log("Geist gegessen (3)");
@@ -215,6 +230,7 @@
         console.log("Unexpexted state of ghostsEaten:");
         console.log(ghostsEaten);
     }
+    scorePopUp(ghostIdx,scoreValue);
     switch (ghostIdx){
       case 0:
         ghosts.value[ghostIdx].image = Blinky;
@@ -234,6 +250,21 @@
     }
     console.log(ghostIdx);
     ghostRefs.value[ghostIdx]?.resetPosition(ghosts.value[ghostIdx].startPosition);
+  }
+
+  function scorePopUp(ghostIdx: number, scoreValue :number){
+    const ghostPos = ghostRefs.value[ghostIdx]?.position;
+    if (ghostPos) {
+    floatingScores.value.push({
+      x: ghostPos.x,
+      y: ghostPos.y,
+      value: scoreValue,
+      id: floatingScoreId++
+    });
+    setTimeout(() => {
+      floatingScores.value = floatingScores.value.filter(fs => fs.id !== floatingScoreId - 1);
+    }, 1000);
+  }
   }
 
   function updateGrid({ row, col, value }) { 
@@ -375,6 +406,17 @@
       <div v-for="(cell, index) in showPowerUp" :key="`powerup-${index}`" class="showPowerUp" :style="{ gridRow: cell.row + 1, gridColumn: cell.col + 1 }">
         <PacmanPowerUp></PacmanPowerUp>
       </div>
+      <div
+        v-for="score in floatingScores"
+        :key="score.id"
+        class="floating-score"
+        :style="{
+        left: score.x + 'px',
+        top: score.y + 'px'
+        }"
+      >
+      {{ score.value }}
+      </div>
     </div>
   </div>  
   </body>
@@ -467,5 +509,14 @@
   .heart.lost {
     opacity: 0.2;
   }
+  .floating-score {
+    position: absolute;
+    color: yellow;
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 100;
+  }
+
+
 
 </style>
