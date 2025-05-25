@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router';
 
   const props = defineProps<{
     score: number,
+    highscore: number,
     level: number,
     ghostsEatenTotal: number,
     pointsEatenTotal: number
@@ -19,6 +20,7 @@ import { useRouter } from 'vue-router';
     <div class="gameover-overlay">
         <div class="gameover-content">
             <h1>Game Over</h1>
+            <p>Highscore: {{ highscore }}</p>
             <p>Points: {{ score }}</p>
             <p>Levels won: {{ level }}</p>
             <p>Ghosts eaten: {{ ghostsEatenTotal }}</p>
@@ -34,7 +36,6 @@ import { useRouter } from 'vue-router';
 .gameover-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #162034;
   z-index: 9999;
   display: flex;
   align-items: center;

@@ -3,6 +3,7 @@
   import PacmanObject from './PacmanObject.vue';
   import PacmanPoints from './PacmanPoints.vue';
   import PacmanPowerUp from './PacmanPowerUp.vue';
+  import GameOver from '@/components/feature/game/src/pages/GameOver.vue';
   import Ghost from './Ghosts.vue';
   import type { ComponentPublicInstance } from 'vue';
   import Blinky from '@/assets/Blinky.png'; //Error kann durch Entwicklungsumgebung kann angezeigt werden -> env.d.ts öffnen und er ist weg
@@ -10,7 +11,6 @@
   import Inky from '@/assets/Inky.png';
   import Clyde from '@/assets/Clyde.png';
   import VulnerableGhost from '@/assets/Vulnerable.png';
-  import GameOver from '@/components/feature/game/src/pages/GameOver.vue';
 
   type GhostInstance = ComponentPublicInstance<{
     updateGhostPosition: () => void;
@@ -24,6 +24,7 @@
   const areGhostsPaused = ref(false);
 
   const score = ref(0);
+  const highscore = ref(0);
   const lives = ref(3);
   const invulnerable = ref(false);
   const gameOver = ref(false);
@@ -177,6 +178,9 @@
           if (!invulnerable.value) {
             if (lives.value === 0) {
               gameOver.value = true;
+              if(highscore.value < score.value){
+                highscore.value = score.value;
+              }
               console.log('Game Over! Pacman wurde vom Geist gefangen.');
               return true; // Game Over, Gameloop soll abbrechen
             }
@@ -258,6 +262,7 @@
   }
 
   function scorePopUp(ghostIdx: number, scoreValue :number){
+    floatingScores.value = [];
     const ghostPos = ghostRefs.value[ghostIdx]?.position;
     if (ghostPos) {
     floatingScores.value.push({
@@ -399,6 +404,7 @@
   <GameOver 
     v-if="gameOver"
     :score="score"
+    :highscore="highscore"
     :level="level"
     :ghosts-eaten-total="ghostsEatenTotal"
     :points-eaten-total="pointsEatenTotal"
