@@ -24,9 +24,9 @@
     right: 0,
   };
 
-  const props = defineProps<{ grid: number[][] }>();
+  const props = defineProps<{ grid: number[][] ,startPosition: { x: number, y: number }}>();
   const pacmanGif = ref<HTMLElement | null>(null);
-  const position = ref({ x: 20, y: 20 });
+  const position = ref({ ...props.startPosition });
   const hitboxOffsetUp = -8;
   const hitboxOffsetLeft = -8;
   let currentDirection: Direction | null = null;
@@ -63,6 +63,14 @@
 
     // Versuche, in currentDirection zu laufen
     if (currentDirection) {
+      if(position.value.x===5&&position.value.y===345){
+        position.value.x=670;
+      }else {
+        if(position.value.x===670&&position.value.y===345){
+          position.value.x=10;
+        }
+      }
+
       const vec = moveToDirection[currentDirection];
       const newX1 = position.value.x + (2 * vec.x);
       const newY1 = position.value.y + (2 * vec.y);

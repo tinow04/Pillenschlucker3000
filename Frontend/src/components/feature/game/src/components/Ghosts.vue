@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref } from "vue";
+    import { ref , computed, watch  } from "vue";
 
   type Direction = 'up' | 'down' | 'left' | 'right';
 
@@ -10,9 +10,16 @@
   }>();
   const position = ref({ ... props.startPosition });
   const vulnerable = ref(false);
+  const isFlipped = ref(false);
+  const ghostImageStyle = computed(() => ({
+  transform: isFlipped.value ? 'scaleX(-1)' : 'scaleX(1)'
+  }));
+
   const hitboxOffsetUp = -8;
   const hitboxOffsetLeft = -8;
-  let currentDirection: Direction | null = 'up';
+
+  const currentDirection = ref<Direction|null>('up');
+
   let currentCollisions :Direction[] = [];
   let prevCollisions :Direction[] = [];
   let isAllowedToMoveOver :number = 2;
@@ -60,22 +67,22 @@
       prevCollisions = currentCollisions;
     }
     if(JSON.stringify(currentCollisions) !== JSON.stringify(prevCollisions)){
-      if(currentDirection === 'right'&&!prevCollisions.includes('right')){
+      if(currentDirection.value === 'right'&&!prevCollisions.includes('right')){
         prevCollisions.push('right');
       }
-      if(currentDirection === 'down' && !prevCollisions.includes('down')){
+      if(currentDirection.value === 'down' && !prevCollisions.includes('down')){
         prevCollisions.push('down');
       }
-      if(currentDirection === 'left'&&!prevCollisions.includes('left')){
+      if(currentDirection.value === 'left'&&!prevCollisions.includes('left')){
         prevCollisions.push('left');
       }
-      if(currentDirection === 'up'&&!prevCollisions.includes('up')){
+      if(currentDirection.value === 'up'&&!prevCollisions.includes('up')){
         prevCollisions.push('up');
       }
       const ways = prevCollisions.filter(dir =>{
         return !currentCollisions.includes(dir)
       })
-      currentDirection = ways[Math.floor(Math.random()*ways.length)];
+      currentDirection.value = ways[Math.floor(Math.random()*ways.length)];
       prevCollisions = [];
       if(isAllowedToMoveOver === 2){
         isAllowedToMoveOver = 3; //Der Geist hat mit der ersten Richtungsänderung sein Zuhause verlassen und soll nicht mehr zurück können
@@ -87,7 +94,7 @@
     getNextDirection();
     // Ist nextDirection erlaubt?
     // Versuche, in currentDirection zu laufen
-    if (currentDirection) {
+    if (currentDirection.value) {
       if(position.value.x===5&&position.value.y===345){
         position.value.x=670;
       } else {
@@ -95,7 +102,7 @@
           position.value.x=10;
         }
       }
-      const vec = moveToDirection[currentDirection];
+      const vec = moveToDirection[currentDirection.value];
       const newX1 = position.value.x + (2 * vec.x);
       const newY1 = position.value.y + (2 * vec.y);
       const newX2 = position.value.x + (2 * vec.x) + 20;
@@ -105,17 +112,30 @@
         position.value.x = newX1;
         position.value.y = newY1;
         } else {
-          currentDirection = null;
+          currentDirection.value = null;
         }
     }
   } 
+
+  watch(
+  () => currentDirection.value,
+  (newDir) => {
+    if (newDir === 'left') {
+      isFlipped.value = false;
+    } else if (newDir === 'right') {
+      isFlipped.value = true;
+    }
+    // Für up/down bleibt der aktuelle Zustand erhalten
+  }
+);
 
   function resetPosition(startPosition: { x: number, y: number }) {
     isAllowedToMoveOver = 2; 
     position.value.x = startPosition.x;
     position.value.y = startPosition.y;
-    currentDirection = 'up';
-    prevCollisions = []; 
+    currentDirection.value = 'up';
+    prevCollisions = [];
+    isFlipped.value = false; 
   }
 
   function setVulnerable(state: boolean) {
@@ -137,7 +157,7 @@
 
 <template>
   <div :style="{ left: position.x + 'px', top: position.y + 'px' }">
-  <img class="ghost" :src="props.image" :alt="`Ghost ${props.ghostIndex}`" />
+  <img class="ghost" :src="props.image" :alt="`Ghost ${props.ghostIndex}`" :style="ghostImageStyle" />
   </div>
 </template>
 
