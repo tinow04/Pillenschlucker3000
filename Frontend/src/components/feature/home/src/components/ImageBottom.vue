@@ -13,7 +13,7 @@ export default {
 <style scoped>
 .bottom-image {
   position: absolute;
-  bottom: 1rem;
+  bottom: 0%;
   left: 50%;
   transform: translateX(-50%);
 }
