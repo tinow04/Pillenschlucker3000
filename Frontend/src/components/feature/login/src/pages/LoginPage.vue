@@ -20,7 +20,7 @@
 import { ref } from "vue";
 import Header from "@/components/feature/login/src/components/Header.vue";
 import Home from "@/components/feature/login/src/components/Home.vue";
-import LoginForm from "@/components/feature/login/src/components/loginform.vue";
+import LoginForm from "@/components/feature/login/src/components/LoginForm.vue";
 import RegisterForm from "@/components/feature/login/src/components/registerform.vue";
 
 export default {

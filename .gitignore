@@ -1,0 +1,3 @@
+# Node-Modules nicht tracken
+node_modules/
+.idea/

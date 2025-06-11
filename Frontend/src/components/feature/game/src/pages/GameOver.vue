@@ -11,9 +11,24 @@ import { useRouter } from 'vue-router';
   const emit = defineEmits(['restart']);
   const router = useRouter();
 
-  function goHome() {
-    router.push('/'); 
-  }
+fetch('http://localhost:80/api/highscore', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    // Ihre Daten hier
+    score: 100,
+    playerName: 'Spieler1'
+  })
+})
+  .then(response => response.json())
+  .then(data => console.log('Erfolg:', data))
+  .catch(error => console.error('Fehler:', error));
+
+function goHome() {
+  router.push('/');
+}
 </script>
 
 <template>
@@ -47,7 +62,7 @@ import { useRouter } from 'vue-router';
   flex-direction: column;
   justify-content: space-between;
   font-family: "Jersey 10", serif;
-  padding: 3rem 5rem 7rem 5rem; 
+  padding: 3rem 5rem 7rem 5rem;
   border-radius: 2rem;
   text-align: center;
   box-shadow: 0 0 30px #000;
