@@ -3,6 +3,7 @@ import {ref} from "vue";
 
 const username = ref('')
 const password = ref('')
+const errorMessage = ref('');
 
 const handleLoginSubmit = async () => {
   try {
@@ -23,13 +24,11 @@ const handleLoginSubmit = async () => {
 
     const data = await response.json();
     console.log("Erfolg:", data);
-    // Weiterleitung oder Erfolgshandling
   } catch (error) {
     console.error('Fehler:', error);
     errorMessage.value = "Login fehlgeschlagen. Bitte versuchen Sie es erneut.";
   }
 };
-
 </script>
 
 <template>
