@@ -3,6 +3,7 @@
     <button class="button" @click="startTransition">PLAY</button>
     <button class="button">HOW TO</button>
     <button class="button">SETTINGS</button>
+    <button class="button" @click="switchPage">LOCKER</button>
   </div>
 </template>
 
@@ -12,6 +13,10 @@ export default {
   methods: {
     startTransition() {
       this.$emit("start-game"); // Event für die Animation und Seitenwechsel
+    },
+    switchPage(){
+      //this.$router.push('/pacmanShop');
+      this.$router.push('/locker');
     },
   },
 };
