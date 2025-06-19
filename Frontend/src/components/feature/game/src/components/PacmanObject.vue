@@ -1,6 +1,8 @@
 <script setup lang="ts">
   import { ref } from "vue";
+  import { useSkinStore } from '../../../../../stores/skinStores';
 
+  const skinStore = useSkinStore();
   type Direction = 'up' | 'down' | 'left' | 'right';
 
   const canMoveToDirections: Record<Direction, { x1: number; y1: number; x2: number; y2: number }> = {
@@ -20,7 +22,7 @@
   const directionToRotation: Record<Direction, number> = {
     up: -90,
     down: 90,
-    left: 180,
+    left: 0,
     right: 0,
   };
 
@@ -121,7 +123,7 @@
 
 <template>
   <div ref="pacmanObject" :style="{ left: position.x + 'px', top: position.y + 'px' }">
-    <img class="pacman-gif" ref="pacmanGif" src="@/assets/PacManEating.gif" alt="Pacman gif">
+    <img class="pacman-gif" ref="pacmanGif" :src="skinStore.selectedSkinSrc" alt="Pacman gif">
   </div>
 </template>
 
