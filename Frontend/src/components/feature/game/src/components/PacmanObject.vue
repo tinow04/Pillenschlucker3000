@@ -1,8 +1,11 @@
 <script setup lang="ts">
-  import { ref } from "vue";
-  import { useSkinStore } from '../../../../../stores/skinStores';
+  import { ref, onMounted } from "vue";
+  import skin9Path from '@/assets/PacManEating.gif';
 
-  const skinStore = useSkinStore();
+  const defaultSelectedSkin = skin9Path;
+
+
+
   type Direction = 'up' | 'down' | 'left' | 'right';
 
   const canMoveToDirections: Record<Direction, { x1: number; y1: number; x2: number; y2: number }> = {
@@ -11,6 +14,23 @@
     left:   { x1: -5,    y1: -2.5,  x2: -5,    y2:  20},
     right:  { x1:  22.5, y1: -2.5,  x2:  22.5, y2:  20},
   };
+
+  const selectedSkinSrc = ref<string>(localStorage.getItem('selectedSkin') || defaultSelectedSkin)
+
+  if (!localStorage.getItem('selectedSkin')) {
+    localStorage.setItem('selectedSkin', defaultSelectedSkin)
+  }
+
+  onMounted(() => {
+    selectedSkinSrc.value = localStorage.getItem('selectedSkin') || ''
+  })
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'selectedSkin') {
+      selectedSkinSrc.value = e.newValue || ''
+    }
+  })
+
 
   const moveToDirection: Record<Direction, { x: number; y: number }> = {
     up: { x: 0, y: -2.5 },
@@ -22,7 +42,7 @@
   const directionToRotation: Record<Direction, number> = {
     up: -90,
     down: 90,
-    left: 0,
+    left: -180,
     right: 0,
   };
 
@@ -123,7 +143,7 @@
 
 <template>
   <div ref="pacmanObject" :style="{ left: position.x + 'px', top: position.y + 'px' }">
-    <img class="pacman-gif" ref="pacmanGif" :src="skinStore.selectedSkinSrc" alt="Pacman gif">
+    <img class="pacman-gif" ref="pacmanGif" :src="selectedSkinSrc" alt="Pacman gif">
   </div>
 </template>
 
