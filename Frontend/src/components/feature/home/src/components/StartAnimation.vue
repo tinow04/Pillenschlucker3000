@@ -2,13 +2,14 @@
   <div>
     <div class="black-overlay" v-show="showOverlay" ref="overlay"></div>
     <div class="pacman-container" v-show="showPacman">
-      <svg id="pacman" viewBox="0 0 100 100" xmlns="http:
+      <svg id="pacman" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <circle cx="50" cy="50" r="50" fill="yellow" />
         <polygon id="mouth" :points="mouthPoints" fill="black" />
       </svg>
     </div>
   </div>
 </template>
+
 
 <script>
 export default {
@@ -18,8 +19,8 @@ export default {
       showOverlay: false,
       showPacman: false,
       mouthPoints: "50,50 100,20 100,80",
-      pacmanDuration: 1.5,  
-      designWidth: 1920     
+      pacmanDuration: 1.5,
+      designWidth: 1920
     };
   },
   methods: {
@@ -30,21 +31,21 @@ export default {
         const pacman = document.getElementById("pacman");
         const overlay = this.$refs.overlay;
 
-        
+
         const W = overlay.clientWidth;
-        
+
         const distance = W + 100;
-        
+
         const duration = this.pacmanDuration * (W / this.designWidth);
 
-        
+
         pacman.style.setProperty("--pacman-distance", `${distance}px`);
         pacman.style.animationDuration = `${duration}s`;
 
-        
+
         pacman.classList.add("move");
 
-        
+
         let open = true;
         const eatInterval = setInterval(() => {
           this.mouthPoints = open
@@ -53,11 +54,11 @@ export default {
           open = !open;
         }, 150);
 
-        
+
         this.createPixels(overlay);
         overlay.classList.add("fill");
 
-        
+
         setTimeout(() => {
           clearInterval(eatInterval);
           this.$router.push("/ingame");
@@ -66,22 +67,22 @@ export default {
     },
 
     createPixels(overlay) {
-      
+
       const W = overlay.clientWidth;
       const H = overlay.clientHeight;
 
-      
+
       const pixelSize = Math.max(W, H) / 15;
       const cols = Math.ceil(W / pixelSize);
       const rows = Math.ceil(H / pixelSize);
 
-      
+
       overlay.style.display = "grid";
       overlay.style.gridTemplateColumns = `repeat(${cols}, ${pixelSize}px)`;
       overlay.style.gridTemplateRows    = `repeat(${rows}, ${pixelSize}px)`;
       overlay.style.gridGap             = "-2px";
 
-      
+
       overlay.innerHTML = "";
       for (let i = 0; i < cols * rows; i++) {
         const px = document.createElement("div");
@@ -142,7 +143,7 @@ export default {
 #pacman {
   width: 100px;
   height: 100px;
-  
+
   --pacman-distance: 2000px;
 }
 
@@ -150,7 +151,7 @@ export default {
   animation-name: moveAcross;
   animation-timing-function: ease-in-out;
   animation-fill-mode: forwards;
-  
+
 }
 
 @keyframes moveAcross {

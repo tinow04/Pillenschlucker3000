@@ -1,10 +1,13 @@
 <template>
-
-
   <div class="button-container">
-    <button class="button" @click="startTransition">PLAY</button>
-    <button class="button" @click="emitHowTo">HOW TO</button>
-    <button class="button" @click="emitSettings">SETTINGS</button>
+    <button
+      v-for="btn in buttons"
+      :key="btn.label"
+      class="button"
+      @click="btn.handler"
+    >
+      {{ btn.label }}
+    </button>
   </div>
 </template>
 
@@ -12,16 +15,25 @@
 export default {
   name: "ButtonsComponent",
   methods: {
-    startTransition() {
-      this.$emit("start-game"); 
+    startGame() {
+      this.$emit("start-game");
     },
-    emitHowTo() {
-      this.$emit('howto-click');
+    showHowTo() {
+      this.$emit("howto-click");
     },
-    emitSettings() {
-      this.$emit('settings-click');
-    },
+    showSettings() {
+      this.$emit("settings-click");
+    }
   },
+  computed: {
+    buttons() {
+      return [
+        { label: "PLAY",     handler: this.startGame },
+        { label: "HOW TO",   handler: this.showHowTo },
+        { label: "SETTINGS", handler: this.showSettings }
+      ];
+    }
+  }
 };
 </script>
 
@@ -53,11 +65,9 @@ export default {
   transition: 0.2s ease-in-out;
   transform-origin: center;
 }
-
 .button:hover {
   transform: scale(1.02);
   font-size: 3.2rem;
   background-color: #222;
 }
-
 </style>
