@@ -21,9 +21,9 @@
   </div>
 </template>
 
-<script>
-import { onMounted } from "vue";
 
+import { onMounted } from "vue";
+<script lang="ts">
 import Header from "@/components/feature/home/src/components/Header.vue";
 import Buttons from "@/components/feature/home/src/components/Buttons.vue";
 import Profile from "@/components/feature/home/src/components/Profile.vue";

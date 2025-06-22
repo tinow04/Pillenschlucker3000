@@ -1,13 +1,10 @@
 <template>
   <div class="button-container">
-    <button
-      v-for="btn in buttons"
-      :key="btn.label"
-      class="button"
-      @click="btn.handler"
-    >
-      {{ btn.label }}
-    </button>
+
+    <button class="button" @click="startTransition">PLAY</button>
+    <button class="button">HOW TO</button>
+    <button class="button">SETTINGS</button>
+    <button class="button" @click="switchPage">LOCKER</button>
   </div>
 </template>
 
@@ -18,12 +15,10 @@ export default {
     startGame() {
       this.$emit("start-game");
     },
-    showHowTo() {
-      this.$emit("howto-click");
+    switchPage(){
+      //this.$router.push('/pacmanShop');
+      this.$router.push('/locker');
     },
-    showSettings() {
-      this.$emit("settings-click");
-    }
   },
   computed: {
     buttons() {

@@ -1,14 +1,39 @@
 <script setup lang="ts">
+  import { ref } from "vue";
+  import { useSkinStore } from '../../../../../stores/skinStores';
 
-  import { onMounted, onUnmounted, ref} from "vue";
-  const props = defineProps<{ grid: number[][] }>();
-  const speed = 1.67;
-  const position = ref({ x: 20, y: 20 });
-  const mazeWidth = 700;
-  const mazeHeight = 755;
-  const pacmanSize = 35;
+  const skinStore = useSkinStore();
+  type Direction = 'up' | 'down' | 'left' | 'right';
+
+  const canMoveToDirections: Record<Direction, { x1: number; y1: number; x2: number; y2: number }> = {
+    up:     { x1: -2.5,  y1: -5,    x2:  20,   y2: -5},
+    down:   { x1: -2.5,  y1:  22.5, x2:  20,   y2:  22.5},
+    left:   { x1: -5,    y1: -2.5,  x2: -5,    y2:  20},
+    right:  { x1:  22.5, y1: -2.5,  x2:  22.5, y2:  20},
+  };
+
+  const moveToDirection: Record<Direction, { x: number; y: number }> = {
+    up: { x: 0, y: -2.5 },
+    down: { x: 0, y: 2.5 },
+    left: { x: -2.5, y: 0 },
+    right: { x: 2.5, y: 0 },
+  };
+
+  const directionToRotation: Record<Direction, number> = {
+    up: -90,
+    down: 90,
+    left: 0,
+    right: 0,
+  };
+
+  const props = defineProps<{ grid: number[][] ,startPosition: { x: number, y: number }}>();
+  const pacmanGif = ref<HTMLElement | null>(null);
+  const position = ref({ ...props.startPosition });
   const hitboxOffsetUp = -8;
   const hitboxOffsetLeft = -8;
+  let currentDirection: Direction | null = null;
+  let nextDirection: Direction | null = null;
+  const emit = defineEmits(['update-grid']);
 
   const canMoveTo = (x: number, y: number) => {
     const col = Math.floor((x - hitboxOffsetLeft) / 25);
@@ -16,203 +41,104 @@
     return props.grid[row] && props.grid[row][col] >= 3;
   };
 
+  function canMoveInDirection(dir: Direction, pos: { x: number, y: number }) {
+    const vec = canMoveToDirections[dir];
+    return canMoveTo(pos.x + vec.x1, pos.y + vec.y1) && canMoveTo(pos.x + vec.x2, pos.y + vec.y2);
+  }
+
   function moveOverPoint(x: number, y: number):void {
     const col = Math.floor((x - hitboxOffsetLeft) / 25);
     const row = Math.floor((y - hitboxOffsetUp) / 25);
     if(props.grid[row] && props.grid[row][col] === 3){
-      props.grid[row][col]=4;
-      console.log("Über Punkt gelaufen");  
+      emit('update-grid', { row, col, value: 4 });
     }
     if(props.grid[row] && props.grid[row][col] === 5){
-      props.grid[row][col]=6;
-      console.log("Über PowerUp gelaufen");  
+      emit('update-grid', { row, col, value: 6 });
     }
   };
 
-  function gameLoop(x: number, y: number):void {
-    moveOverPoint(x,y);
+  function updatePacmanPosition() {
+    // Ist nextDirection erlaubt?
+    if (nextDirection && canMoveInDirection(nextDirection, position.value)) {
+      currentDirection = nextDirection;
+    }
+
+    // Versuche, in currentDirection zu laufen
+    if (currentDirection) {
+      if(position.value.x===5&&position.value.y===345){
+        position.value.x=670;
+      }else {
+        if(position.value.x===670&&position.value.y===345){
+          position.value.x=10;
+        }
+      }
+
+      const vec = moveToDirection[currentDirection];
+      const newX1 = position.value.x + (2 * vec.x);
+      const newY1 = position.value.y + (2 * vec.y);
+      const newX2 = position.value.x + (2 * vec.x) + 20;
+      const newY2 = position.value.y + (2 * vec.y) + 20;
+
+      const rotation = directionToRotation[currentDirection];
+      if (pacmanGif.value) {
+       pacmanGif.value.style.transform = `rotate(${rotation}deg)`;
+      }
+
+      if (canMoveTo(newX1, newY1) && canMoveTo(newX2, newY2)) {
+        moveOverPoint(newX1,newY1);
+        position.value.x = newX1;
+        position.value.y = newY1;
+      } else {
+        currentDirection = null;
+      }
+    }
   }
 
-  const imageURLPacman = ref<string>('https://i.gifer.com/XOsf.gif');
-  const imagePacman = ref<HTMLImageElement | null>(null);
-  let alreadyRotatedW = false;
-  let alreadyRotatedD = false;
-  let alreadyRotatedS = false;
-  let alreadyRotatedA = false;
+  function resetPosition(startPosition: { x: number, y: number }) {
+    position.value.x = startPosition.x;
+    position.value.y = startPosition.y;
+    currentDirection = null;
+    nextDirection = null;
+  }
 
-  let durationMoveW: number | null =null;
-  let durationMoveD: number | null =null;
-  let durationMoveS: number | null =null;
-  let durationMoveA: number | null =null;
+  const keyToDirection: Record<string, Direction> = {
+    w: 'up',
+    s: 'down',
+    a: 'left',
+    d: 'right',
+  };
 
-  onMounted(() =>{
-    window.addEventListener("keyup", Direction);
+  window.addEventListener('keydown', (e) => {
+    if (keyToDirection[e.key]) {
+      nextDirection = keyToDirection[e.key];
+    }
   });
 
-  onUnmounted (()=> {
-    window.removeEventListener("keyup", Direction)
+  defineExpose({
+  updatePacmanPosition,
+  position,
+  resetPosition
   });
-
-  const Direction = (event: KeyboardEvent) =>{
-
-    if((event.key == "W" || event.key =="w" || event.key == "ArrowUp") && alreadyRotatedW == false && position.value.y > 0 && canMoveTo(position.value.x, position.value.y - speed)){
-      if(durationMoveA != null){
-        clearInterval(durationMoveA);
-      }
-      if(durationMoveD != null){
-        clearInterval(durationMoveD);
-      }
-      if(durationMoveS != null){
-        clearInterval(durationMoveS);
-      }
-
-        durationMoveW = setInterval(() =>{
-          if(imagePacman.value == null){
-            if(durationMoveW != null){
-              clearInterval(durationMoveW);
-              }
-            }else {
-              if (position.value.y > 0 && canMoveTo(position.value.x, position.value.y - speed)) {
-                if(imagePacman.value && alreadyRotatedW == false) {
-                  position.value.y -= speed;
-                  imagePacman.value.style.transform = `rotate(270deg)`;
-                  alreadyRotatedW = true;
-                  alreadyRotatedD = false;
-                  alreadyRotatedS = false;
-                  alreadyRotatedA = false;
-                }
-                position.value.y -= speed;
-                imagePacman.value!.style.top = `${position.value.y}px`;
-              }
-            };
-          },10);
-      }
-
-      if((event.key == "D" || event.key =="d" || event.key == "ArrowRight") && alreadyRotatedD == false && position.value.x < mazeWidth - pacmanSize && canMoveTo(position.value.x + speed + pacmanSize -18, position.value.y)){
-        if(durationMoveA != null){
-          clearInterval(durationMoveA);
-        }
-        if(durationMoveS != null){
-          clearInterval(durationMoveS);
-        }
-        if(durationMoveW != null){
-          clearInterval(durationMoveW);
-        }
-
-          durationMoveD = setInterval(()=>{
-            if(imagePacman.value == null){
-              if(durationMoveD != null)
-              clearInterval(durationMoveD);
-            }else {
-                if (position.value.x < mazeWidth - pacmanSize && canMoveTo(position.value.x + speed + pacmanSize - 18, position.value.y)) {
-                  if(imagePacman.value && alreadyRotatedD == false) {
-                    position.value.x += speed;
-                    imagePacman.value.style.transform = `rotate(360deg)`;
-                    alreadyRotatedW = false;
-                    alreadyRotatedD = true;
-                    alreadyRotatedS = false;
-                    alreadyRotatedA = false;
-                  }
-                  position.value.x += speed;
-                  imagePacman.value!.style.left = `${position.value.x}px`;
-                }
-              }
-          },10);
-      }
-
-      if((event.key == "S" || event.key =="s" || event.key == "ArrowDown") && alreadyRotatedS == false && position.value.y < mazeHeight - pacmanSize && canMoveTo(position.value.x, position.value.y + speed + pacmanSize -15)){
-        if(durationMoveD != null){
-          clearInterval(durationMoveD);
-        }
-        if(durationMoveA != null){
-          clearInterval(durationMoveA);
-        }
-        if(durationMoveW != null){
-          clearInterval(durationMoveW);
-        }
-
-
-          durationMoveS = setInterval(()=>{
-            if(imagePacman.value == null){
-              if(durationMoveS != null){
-                clearInterval(durationMoveS);
-              }
-            }else {
-              if (position.value.y < mazeHeight - pacmanSize && canMoveTo(position.value.x, position.value.y + speed + pacmanSize - 15)) {
-                if(imagePacman.value && alreadyRotatedS == false) {
-                  position.value.y += speed;
-                  imagePacman.value.style.transform = `rotate(90deg)`;
-                  alreadyRotatedW = false;
-                  alreadyRotatedD = false;
-                  alreadyRotatedS = true;
-                  alreadyRotatedA = false;
-                }
-                position.value.y += speed;
-                imagePacman.value!.style.top = `${position.value.y}px`;
-              }
-            }
-          },10);
-      }
-
-      if((event.key == "A" || event.key =="a" || event.key == "ArrowLeft") && alreadyRotatedA == false && position.value.x > 0 && canMoveTo(position.value.x - speed, position.value.y)){
-        if(durationMoveS != null){
-          clearInterval(durationMoveS);
-        }
-        if(durationMoveD != null){
-          clearInterval(durationMoveD);
-        }
-        if(durationMoveW != null){
-          clearInterval(durationMoveW);
-        }
-
-          durationMoveA = setInterval(()=>{
-            if(imagePacman.value == null){
-              if(durationMoveA != null){
-                clearInterval(durationMoveA);
-              }
-            }else {
-              if (position.value.x > 0 && canMoveTo(position.value.x - speed, position.value.y)) {
-                if(imagePacman.value && alreadyRotatedA == false) {
-                  position.value.x -= speed;
-                  imagePacman.value.style.transform = `rotate(180deg)`;
-                  alreadyRotatedW = false;
-                  alreadyRotatedD = false;
-                  alreadyRotatedS = false;
-                  alreadyRotatedA = true;
-                }
-                position.value.x -= speed;
-                imagePacman.value!.style.left = `${position.value.x}px`;
-              }
-            }
-          },10);
-        }
-    };
 </script>
 
 <template>
-  <div class="pacman-container" ref="imagePacman" :style="{ left: position.x + 'px', top: position.y + 'px' }">
-    <img  :src="imageURLPacman" id="pacmanGIf" alt="Pacman Gif">
+  <div ref="pacmanObject" :style="{ left: position.x + 'px', top: position.y + 'px' }">
+    <img class="pacman-gif" ref="pacmanGif" :src="skinStore.selectedSkinSrc" alt="Pacman gif">
   </div>
 </template>
 
 <style scoped>
-  .pacman-container {
-    position: absolute;
-    width: 35px;
-    height: 35px;
-  }
 
-  #pacmanGIf {
+  .pacman-gif {
     position:absolute;
     top: 0px;
     left: 0px;
     width: 35px;
     height: 35px;
+    /* transition: transform 0.15s ease; */
     image-rendering: optimizeSpeed;
     image-rendering: -o-crisp-edges;
-    image-rendering: -webkit-optimize-contrast;
     image-rendering: pixelated;
     -ms-interpolation-mode: nearest-neighbor;
   }
-
 </style>
