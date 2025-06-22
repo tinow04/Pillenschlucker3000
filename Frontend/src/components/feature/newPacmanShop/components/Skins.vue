@@ -128,7 +128,6 @@
     margin-top: 0.9375rem;
   }
 
-  /*Verwendung vo @media*/
 
   @media (max-width: 1366px)  {
     .stylingGIF {

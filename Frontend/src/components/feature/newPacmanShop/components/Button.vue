@@ -39,14 +39,11 @@
 
 <style scoped>
 
-  /*Home-Button CSS Style*/
-
   .Home-Button {
     position: relative;
     margin-top: 10px;
     margin-left: 10px;
     width: 10vw;
-    /*height: 4.1667vw;*/
     height: auto;
     background-color: black;
     color: white;
@@ -54,7 +51,6 @@
     border: none;
     border-radius: 1rem;
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
-    /*font-size: 48px;*/
     font-size: clamp(24px, 4vw, 48px);
     cursor: pointer;
     transition: 0.2s ease-in-out;
@@ -101,8 +97,6 @@
 
     }
   }
-
-  /*Select-Button CSS Style*/
 
   .Select-Button {
     width: 10rem;

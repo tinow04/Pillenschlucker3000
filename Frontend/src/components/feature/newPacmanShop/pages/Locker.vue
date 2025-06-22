@@ -45,8 +45,6 @@
     overflow-x: hidden;
   }
 
-  /*Verwendung von @media*/
-
   @media (max-width: 1366px)  {
     .button-container {
       height: calc(100vh - 87vh);
