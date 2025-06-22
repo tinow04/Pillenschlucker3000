@@ -14,24 +14,10 @@
 <script>
 export default {
   name: "ButtonsComponent",
-  methods: {
-    startGame() {
-      this.$emit("start-game");
-    },
-    showHowTo() {
-      this.$emit("howto-click");
-    },
-    showSettings() {
-      this.$emit("settings-click");
-    }
-  },
-  computed: {
-    buttons() {
-      return [
-        { label: "PLAY",     handler: this.startGame },
-        { label: "HOW TO",   handler: this.showHowTo },
-        { label: "SETTINGS", handler: this.showSettings }
-      ];
+  props: {
+    buttons: {
+      type: Array,
+      required: true,
     }
   }
 };
@@ -65,6 +51,7 @@ export default {
   transition: 0.2s ease-in-out;
   transform-origin: center;
 }
+
 .button:hover {
   transform: scale(1.02);
   font-size: 3.2rem;

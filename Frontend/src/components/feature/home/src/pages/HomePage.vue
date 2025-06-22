@@ -2,11 +2,10 @@
   <div id="scaler">
     <div class="home-page">
       <Header />
-      <Buttons
-        @start-game="startGame"
-        @howto-click="showHowTo = true"
-        @settings-click="showSettings = true"
-      />
+
+      <!-- hier übergeben wir jetzt die Button-Liste -->
+      <Buttons :buttons="buttonList" />
+
       <Profile />
       <Boards />
       <ImageBottom />
@@ -22,8 +21,6 @@
 </template>
 
 <script>
-import { onMounted } from "vue";
-
 import Header from "@/components/feature/home/src/components/Header.vue";
 import Buttons from "@/components/feature/home/src/components/Buttons.vue";
 import Profile from "@/components/feature/home/src/components/Profile.vue";
@@ -42,18 +39,39 @@ export default {
     ImageBottom,
     StartAnimation,
     HowTo,
-    Settings
+    Settings,
   },
   data() {
     return {
       isGameStarted: false,
       showHowTo: false,
-      showSettings: false
+      showSettings: false,
     };
+  },
+  computed: {
+    buttonList() {
+      return [
+        { label: "PLAY", handler: this.startGame },
+        { label: "HOW TO", handler: this.openHowTo },
+        { label: "SETTINGS", handler: this.openSettings },
+        {
+          label: "LOCKER",
+          handler: () => {
+            // Hier könnte später Locker-Funktionalität eingefügt werden
+          },
+        },
+      ];
+    },
   },
   methods: {
     startGame() {
       this.isGameStarted = true;
+    },
+    openHowTo() {
+      this.showHowTo = true;
+    },
+    openSettings() {
+      this.showSettings = true;
     },
     updateScale() {
       const baseWidth = 1920;
@@ -68,7 +86,7 @@ export default {
         scaler.style.transform = `scale(${scale})`;
       }
       document.documentElement.style.setProperty("--scale-factor", scale);
-    }
+    },
   },
   mounted() {
     this.updateScale();
@@ -76,7 +94,7 @@ export default {
   },
   unmounted() {
     window.removeEventListener("resize", this.updateScale);
-  }
+  },
 };
 </script>
 
