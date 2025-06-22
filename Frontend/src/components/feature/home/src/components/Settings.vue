@@ -1,4 +1,6 @@
 <template>
+
+
   <div class="popup">
     <div class="popup-inner">
       <button class="close" @click="$emit('close')">×</button>
@@ -75,4 +77,5 @@ input[type="range"] {
   width: 100%;
   margin-top: 1rem;
 }
+
 </style>

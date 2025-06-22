@@ -4,6 +4,7 @@
   </div>
 </template>
 
+
 <script>
 export default {
   name: "ImageBottomComponent",
@@ -11,10 +12,23 @@ export default {
 </script>
 
 <style scoped>
+.fixed-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5%;
+  position: relative;
+}
+
 .bottom-image {
   position: absolute;
-  bottom: 0%;
+  bottom: 5%; 
   left: 50%;
   transform: translateX(-50%);
+  pointer-events: none;
+  max-width: 100%;
+  height: auto;
 }
+
 </style>

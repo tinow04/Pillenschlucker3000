@@ -1,4 +1,6 @@
 <template>
+
+
   <div class="button-container">
     <button class="button" @click="startTransition">PLAY</button>
     <button class="button" @click="emitHowTo">HOW TO</button>
@@ -11,7 +13,7 @@ export default {
   name: "ButtonsComponent",
   methods: {
     startTransition() {
-      this.$emit("start-game"); // Event für die Animation und Seitenwechsel
+      this.$emit("start-game"); 
     },
     emitHowTo() {
       this.$emit('howto-click');
@@ -57,4 +59,5 @@ export default {
   font-size: 3.2rem;
   background-color: #222;
 }
+
 </style>

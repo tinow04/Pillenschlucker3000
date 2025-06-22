@@ -1,4 +1,6 @@
 <template>
+
+
   <div class="popup">
     <div class="popup-inner">
       <button class="close" @click="$emit('close')">×</button>
@@ -50,4 +52,5 @@ export default {
   display: block;
   margin: 0 auto;
 }
+
 </style>

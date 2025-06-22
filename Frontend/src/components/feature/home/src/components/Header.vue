@@ -1,4 +1,6 @@
 <template>
+
+
   <header class="title">
     <h1>PACMAN</h1>
   </header>
@@ -20,4 +22,5 @@ export default {
   left: 50%;
   transform: translateX(-50%);
 }
+
 </style>

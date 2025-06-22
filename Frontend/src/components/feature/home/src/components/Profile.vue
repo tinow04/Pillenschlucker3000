@@ -1,6 +1,8 @@
 <template>
+
+
   <div class="profile-picture">
-    <span class="username">{{ username }}</span> <!-- Dynamisch statt Eierkopf123 -->
+    <span class="username">{{ username }}</span> 
     <button class="profile-button" @click="togglePopup">
       <img src="@/assets/profile.png" alt="Image could not load" />
     </button>
@@ -23,7 +25,7 @@ export default {
   name: "ProfileComponent",
   setup() {
     const showPopup = ref(false);
-    const username = ref(null); // NEU
+    const username = ref(null); 
 
     const togglePopup = () => {
       showPopup.value = !showPopup.value;
@@ -35,7 +37,7 @@ export default {
       showToast("Erfolgreich abgemeldet", "info");
     };
 
-    // NEU: beim Laden nach eingeloggtem User schauen
+    
     onMounted(() => {
       const user = localStorage.getItem("user");
       if (user) {
@@ -120,4 +122,5 @@ export default {
 .popup-link:hover {
   text-decoration: underline;
 }
+
 </style>
