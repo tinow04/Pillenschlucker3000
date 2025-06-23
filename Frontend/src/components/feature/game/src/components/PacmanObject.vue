@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
-  import skin9Path from '@/assets/PacManEating.gif';
+  import skin9Path from '@/assets/GIFs/PacManEating.gif';
 
   const defaultSelectedSkin = skin9Path;
 
