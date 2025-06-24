@@ -1,6 +1,9 @@
+<script setup lang="ts">
+
+</script>
+
 <template>
   <div class="board-container">
-    <!-- Leaderboard -->
     <div class="board right">
       <h2 class="board-title">Leaderboard</h2>
       <ol class="leaderboard-list">
@@ -54,11 +57,7 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "BoardsComponent",
-};
-</script>
+
 
 <style scoped>
 .board-container {
@@ -88,7 +87,7 @@ export default {
   background-color: #183446;
   width: 24rem;
   margin-top: -41rem;
-  color: #FFFF;
+  color: #FFFFFF;
   text-align: center;
   position: fixed;
   padding: 0rem 0;

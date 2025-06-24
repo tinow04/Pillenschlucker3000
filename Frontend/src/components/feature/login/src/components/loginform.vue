@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import {ref} from "vue";
+import { useUserStore } from '../../../../../piniaStore'
 
 const username = ref('')
 const password = ref('')
 const errorMessage = ref('');
+
+const userStore = useUserStore()
 
 const handleLoginSubmit = async () => {
   try {
@@ -24,6 +27,9 @@ const handleLoginSubmit = async () => {
 
     const data = await response.json();
     console.log("Erfolg:", data);
+    console.log(data.id)
+    const userID = data.id
+    userStore.setUserId(userID);
   } catch (error) {
     console.error('Fehler:', error);
     errorMessage.value = "Login fehlgeschlagen. Bitte versuchen Sie es erneut.";

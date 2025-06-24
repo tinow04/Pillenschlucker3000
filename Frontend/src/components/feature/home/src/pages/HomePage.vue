@@ -3,9 +3,9 @@
     <Header />
     <Buttons @start-game="startGame" /> <!-- Empfang des Events -->
     <Profile />
-    <Boards />
-    <ImageBottom />
 
+    <ImageBottom />
+    <LeaderboardBox />
     <!-- Zeigt die Animation an, wenn isGameStarted true ist -->
     <StartAnimation v-if="isGameStarted" />
   </div>
@@ -15,7 +15,7 @@
 import Header from "@/components/feature/home/src/components/Header.vue";
 import Buttons from "@/components/feature/home/src/components/Buttons.vue";
 import Profile from "@/components/feature/home/src/components/Profile.vue";
-import Boards from "@/components/feature/home/src/components/Boards.vue";
+import LeaderboardBox from "@/components/feature/home/src/components/stats/LeaderboardBox.vue";
 import ImageBottom from "@/components/feature/home/src/components/ImageBottom.vue";
 import StartAnimation from "@/components/feature/home/src/components/StartAnimation.vue"; // Importiere StartAnimation
 
@@ -24,7 +24,7 @@ export default {
     Header,
     Buttons,
     Profile,
-    Boards,
+    LeaderboardBox,
     ImageBottom,
     StartAnimation,  // Hier die StartAnimation einfügen
   },
@@ -50,7 +50,30 @@ export default {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
 }
+
+.board-container {
+  display: flex;
+  justify-content: center;
+  gap: 55rem;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8rem;
+
+}
+
+.board {
+  background-color: #183446;
+  width: 29rem;
+  height: 42rem;
+  color: #BFBFBF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2rem;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
 </style>
