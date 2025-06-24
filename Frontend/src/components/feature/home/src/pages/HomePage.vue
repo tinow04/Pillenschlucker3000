@@ -1,23 +1,33 @@
 <template>
-  <div class="home-page">
-    <Header />
-    <Buttons @start-game="startGame" /> <!-- Empfang des Events -->
-    <Profile />
-    <Boards />
-    <ImageBottom />
+  <div id="scaler">
+    <div class="home-page">
+      <Header />
 
-    <!-- Zeigt die Animation an, wenn isGameStarted true ist -->
-    <StartAnimation v-if="isGameStarted" />
+      <Buttons :buttons="buttonList" />
+
+      <Profile />
+      <Boards />
+      <ImageBottom />
+      <StartAnimation v-if="isGameStarted" />
+
+      <!-- How To Popup -->
+      <HowTo v-if="showHowTo" @close="showHowTo = false" />
+
+      <!-- Settings Popup -->
+      <Settings v-if="showSettings" @close="showSettings = false" />
+    </div>
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import Header from "@/components/feature/home/src/components/Header.vue";
 import Buttons from "@/components/feature/home/src/components/Buttons.vue";
 import Profile from "@/components/feature/home/src/components/Profile.vue";
 import Boards from "@/components/feature/home/src/components/Boards.vue";
 import ImageBottom from "@/components/feature/home/src/components/ImageBottom.vue";
-import StartAnimation from "@/components/feature/home/src/components/StartAnimation.vue"; // Importiere StartAnimation
+import StartAnimation from "@/components/feature/home/src/components/StartAnimation.vue";
+import HowTo from "@/components/feature/home/src/components/HowTo.vue";
+import Settings from "@/components/feature/home/src/components/Settings.vue";
 
 export default {
   components: {
@@ -26,22 +36,77 @@ export default {
     Profile,
     Boards,
     ImageBottom,
-    StartAnimation,  // Hier die StartAnimation einfügen
+    StartAnimation,
+    HowTo,
+    Settings,
   },
   data() {
     return {
-      isGameStarted: false, // Steuert, ob die StartAnimation angezeigt wird
+      isGameStarted: false,
+      showHowTo: false,
+      showSettings: false,
     };
+  },
+  computed: {
+    buttonList() {
+      return [
+        { label: "PLAY", handler: this.startGame },
+        { label: "HOW TO", handler: this.openHowTo },
+        { label: "SETTINGS", handler: this.openSettings },
+        {
+          label: "LOCKER",
+          handler: () => {
+          },
+        },
+      ];
+    },
   },
   methods: {
     startGame() {
-      this.isGameStarted = true; // Setzt isGameStarted auf true, wenn der Play-Button gedrückt wird
-    }
-  }
+      this.isGameStarted = true;
+    },
+    openHowTo() {
+      this.showHowTo = true;
+    },
+    openSettings() {
+      this.showSettings = true;
+    },
+    updateScale() {
+      const baseWidth = 1920;
+      const baseHeight = 1080;
+      const scaleX = window.innerWidth / baseWidth;
+      const scaleY = window.innerHeight / baseHeight;
+      const scale = Math.max(scaleX, scaleY);
+      const scaler = document.getElementById("scaler");
+      if (scaler) {
+        scaler.style.top = "0";
+        scaler.style.left = "0";
+        scaler.style.transform = `scale(${scale})`;
+      }
+      document.documentElement.style.setProperty("--scale-factor", scale);
+    },
+  },
+  mounted() {
+    this.updateScale();
+    window.addEventListener("resize", this.updateScale);
+  },
+  unmounted() {
+    window.removeEventListener("resize", this.updateScale);
+  },
 };
 </script>
 
 <style scoped>
+#scaler {
+  width: 1920px;
+  height: 1080px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  overflow: hidden;
+}
+
 .home-page {
   background-color: #162034;
   font-family: "Jersey 10", serif;

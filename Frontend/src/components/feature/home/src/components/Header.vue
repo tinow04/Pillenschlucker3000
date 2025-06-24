@@ -1,4 +1,6 @@
 <template>
+
+
   <header class="title">
     <h1>PACMAN</h1>
   </header>
@@ -15,9 +17,10 @@ export default {
   color: yellow;
   font-size: 6rem;
   text-align: center;
-  margin-top: -40rem;
-  position: fixed;
+  position: absolute;
+  top: 0%;
   left: 50%;
   transform: translateX(-50%);
 }
+
 </style>
