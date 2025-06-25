@@ -1,7 +1,5 @@
 <template>
-
-
-  <div class="profile-picture">
+  <div ref="container" class="profile-picture">
     <span class="username">{{ username }}</span>
     <button class="profile-button" @click="togglePopup">
       <img src="@/assets/profile.png" alt="Image could not load" />
@@ -18,18 +16,20 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
-import { showToast} from "@/components/ToastManager.vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { showToast } from "@/components/ToastManager.vue";
 
 export default {
   name: "ProfileComponent",
   setup() {
     const showPopup = ref(false);
     const username = ref(null);
+    const container = ref(null);
 
     const togglePopup = () => {
       showPopup.value = !showPopup.value;
     };
+
     const logout = () => {
       localStorage.removeItem("user");
       username.value = null;
@@ -37,24 +37,38 @@ export default {
       showToast("Erfolgreich abgemeldet", "info");
     };
 
+    const handleClickOutside = (event) => {
+      if (
+        showPopup.value &&
+        container.value &&
+        !container.value.contains(event.target)
+      ) {
+        showPopup.value = false;
+      }
+    };
 
     onMounted(() => {
       const user = localStorage.getItem("user");
       if (user) {
         username.value = JSON.parse(user).username;
       }
+      document.addEventListener("mousedown", handleClickOutside);
+    });
+
+    onBeforeUnmount(() => {
+      document.removeEventListener("mousedown", handleClickOutside);
     });
 
     return {
       showPopup,
       togglePopup,
       username,
-      logout
+      logout,
+      container
     };
   },
 };
 </script>
-
 
 <style scoped>
 .profile-picture {
@@ -122,5 +136,4 @@ export default {
 .popup-link:hover {
   text-decoration: underline;
 }
-
 </style>

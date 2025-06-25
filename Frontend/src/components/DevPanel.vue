@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { showToast } from "@/components/ToastManager.vue";
+import { showToast } from "@/ToastManager.vue";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 
 export default {
@@ -26,7 +26,8 @@ export default {
     };
 
     const handleKey = (e) => {
-      if (e.altKey && e.key.toLowerCase() === "d") {
+      console.log("Taste gedrückt:", e.key, "Alt:", e.altKey, "Shift:", e.shiftKey);
+      if (e.altKey && e.key.toLowerCase() === "p") {
         toggle();
       }
     };

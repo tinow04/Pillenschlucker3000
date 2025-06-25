@@ -56,6 +56,7 @@ export default {
         {
           label: "LOCKER",
           handler: () => {
+            this.$router.push("/locker");
           },
         },
       ];
