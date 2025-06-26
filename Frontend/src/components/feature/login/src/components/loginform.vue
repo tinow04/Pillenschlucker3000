@@ -1,18 +1,18 @@
 <template>
   <div class="form-box">
     <h2>Anmelden</h2>
-    <form @submit.prevent="loginUser"> <!-- // NEU -->
-      <input v-model="email" type="email" placeholder="Email" required> <!-- // NEU -->
+    <form @submit.prevent="loginUser">
+      <input v-model="email" type="email" placeholder="Email" required>
       <input v-model="password" type="password" placeholder="Passwort" required>
       <button type="submit" class="button">Login</button>
     </form>
-    <p>{{ message }}</p> <!-- // NEU -->
+    <p>{{ message }}</p>
     <p>Noch kein Konto? <a @click="$emit('toggle-form')">Registrieren</a></p>
   </div>
 </template>
 
 <script>
-// NEU
+
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -41,9 +41,8 @@ export default {
           message.value = "Login erfolgreich!";
           console.log("Eingeloggt:", data);
 
-          // 🔐 Benutzer speichern
           localStorage.setItem("user", JSON.stringify(data.user));
-          router.push("/"); // ✅ richtige Weiterleitung
+          router.push("/");
 
         } else {
           message.value = data.message;
@@ -62,7 +61,6 @@ export default {
     };
   },
 };
-// ENDE NEU
 </script>
 
 <style scoped>
