@@ -15,7 +15,7 @@
 
 <script>
 import { ref } from "vue";
-import { showToast} from "@/components/ToastManager.vue";
+import { showToast} from "@/components/devPanel/ToastManager.vue";
 
 export default {
   name: "RegisterForm",

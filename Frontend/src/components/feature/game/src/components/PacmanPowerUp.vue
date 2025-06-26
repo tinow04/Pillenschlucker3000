@@ -11,6 +11,7 @@
 .powerup-img {
   width: 15px;
   height:  15px;
-  margin: auto; 
+  margin: auto;
+  -webkit-user-drag: none;
 }
 </style>

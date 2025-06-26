@@ -11,5 +11,6 @@
 .points-img {
   width: 8px;
   height: 8px;
+  -webkit-user-drag: none;
 }
 </style>

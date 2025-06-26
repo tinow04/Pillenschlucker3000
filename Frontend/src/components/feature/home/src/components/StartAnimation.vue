@@ -112,7 +112,7 @@ export default {
   grid-gap: -2px;
 }
 
-::v-deep .pixel {
+:deep(.pixel) {
   width: calc(var(--pixel-size) + 2px);
   height: calc(var(--pixel-size) + 2px);
   margin: -1px;
@@ -121,7 +121,7 @@ export default {
   transform: scale(0);
 }
 
-::v-deep .fill .pixel {
+:deep(.fill .pixel) {
   animation: pixelFade 0.6s forwards;
 }
 
