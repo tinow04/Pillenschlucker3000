@@ -1,9 +1,9 @@
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
-  import skin9Path from '@/assets/GIFs/PacManEating.gif';
+  import skin9Path from '@/assets/GIFs/pacman.gif';
 
+  const selectedSkinStorage = 'selectedSkin:v2';
   const defaultSelectedSkin = skin9Path;
-
 
 
   type Direction = 'up' | 'down' | 'left' | 'right';
@@ -15,19 +15,17 @@
     right:  { x1:  22.5, y1: -2.5,  x2:  22.5, y2:  20},
   };
 
-  const selectedSkinSrc = ref<string>(localStorage.getItem('selectedSkin') || defaultSelectedSkin)
-
-  if (!localStorage.getItem('selectedSkin')) {
-    localStorage.setItem('selectedSkin', defaultSelectedSkin)
-  }
+  const selectedSkinSrc = ref<string>(localStorage.getItem(selectedSkinStorage) || defaultSelectedSkin)
+  if (!localStorage.getItem(selectedSkinStorage)) {localStorage.setItem(selectedSkinStorage, defaultSelectedSkin);}
 
   onMounted(() => {
-    selectedSkinSrc.value = localStorage.getItem('selectedSkin') || ''
+    /*selectedSkinSrc.value = localStorage.getItem('selectedSkinStorage') || ''*/
+    selectedSkinSrc.value = localStorage.getItem(selectedSkinStorage) || defaultSelectedSkin;
   })
 
   window.addEventListener('storage', (e) => {
-    if (e.key === 'selectedSkin') {
-      selectedSkinSrc.value = e.newValue || ''
+    if (e.key === selectedSkinStorage) {
+      selectedSkinSrc.value = e.newValue || defaultSelectedSkin;
     }
   })
 
@@ -42,7 +40,7 @@
   const directionToRotation: Record<Direction, number> = {
     up: -90,
     down: 90,
-    left: -180,
+    left: 180,
     right: 0,
   };
 
