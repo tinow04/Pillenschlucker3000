@@ -1,7 +1,41 @@
+<script setup lang="ts">
+import {ref} from "vue";
+
+const username = ref('')
+const password = ref('')
+const errorMessage = ref('');
+
+const handleLoginSubmit = async () => {
+  try {
+    const response = await fetch('http://localhost/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: username.value,
+        password: password.value,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Erfolg:", data);
+    console.log(data.user.id)
+  } catch (error) {
+    console.error('Fehler:', error);
+    errorMessage.value = "Login fehlgeschlagen. Bitte versuchen Sie es erneut.";
+  }
+};
+</script>
+
 <template>
   <div class="form-box">
     <h2>Anmelden</h2>
-    <form @submit.prevent="loginUser">
+    <form @submit.prevent="handleLoginSubmit">
       <input v-model="email" type="email" placeholder="Email" required>
       <input v-model="password" type="password" placeholder="Passwort" required>
       <button type="submit" class="button">Login</button>
@@ -10,58 +44,6 @@
     <p>Noch kein Konto? <a @click="$emit('toggle-form')">Registrieren</a></p>
   </div>
 </template>
-
-<script>
-
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-
-export default {
-  name: "LoginForm",
-  setup() {
-    const email = ref("");
-    const password = ref("");
-    const message = ref("");
-    const router = useRouter();
-
-    const loginUser = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: email.value,
-            password: password.value
-          })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          message.value = "Login erfolgreich!";
-          console.log("Eingeloggt:", data);
-
-          localStorage.setItem("user", JSON.stringify(data.user));
-          router.push("/");
-
-        } else {
-          message.value = data.message;
-        }
-      } catch (error) {
-        message.value = "Login fehlgeschlagen";
-        console.error(error);
-      }
-    };
-
-    return {
-      email,
-      password,
-      message,
-      loginUser
-    };
-  },
-};
-</script>
 
 <style scoped>
 .form-box {
