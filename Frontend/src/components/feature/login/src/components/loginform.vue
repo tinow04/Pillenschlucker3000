@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import {ref} from "vue";
+import { useRouter } from "vue-router";
 
-const username = ref('')
+const email = ref('')
 const password = ref('')
 const errorMessage = ref('');
+const router = useRouter();
 
 const handleLoginSubmit = async () => {
   try {
@@ -13,7 +15,7 @@ const handleLoginSubmit = async () => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        username: username.value,
+        email: email.value,
         password: password.value,
       }),
     });
@@ -25,6 +27,7 @@ const handleLoginSubmit = async () => {
     const data = await response.json();
     console.log("Erfolg:", data);
     console.log(data.user.id)
+    router.push("/");
   } catch (error) {
     console.error('Fehler:', error);
     errorMessage.value = "Login fehlgeschlagen. Bitte versuchen Sie es erneut.";
