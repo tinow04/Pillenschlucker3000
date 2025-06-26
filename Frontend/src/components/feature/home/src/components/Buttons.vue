@@ -1,24 +1,25 @@
 <template>
   <div class="button-container">
-    <button class="button" @click="startTransition">PLAY</button>
-    <button class="button">HOW TO</button>
-    <button class="button">SETTINGS</button>
-    <button class="button" @click="switchPage">LOCKER</button>
+    <button
+      v-for="btn in buttons"
+      :key="btn.label"
+      class="button"
+      @click="btn.handler"
+    >
+      {{ btn.label }}
+    </button>
   </div>
 </template>
 
 <script>
 export default {
   name: "ButtonsComponent",
-  methods: {
-    startTransition() {
-      this.$emit("start-game"); // Event für die Animation und Seitenwechsel
-    },
-    switchPage(){
-      //this.$router.push('/pacmanShop');
-      this.$router.push('/locker');
-    },
-  },
+  props: {
+    buttons: {
+      type: Array,
+      required: true,
+    }
+  }
 };
 </script>
 

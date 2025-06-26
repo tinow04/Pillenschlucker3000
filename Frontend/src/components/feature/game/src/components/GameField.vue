@@ -17,7 +17,7 @@
     position: { x: number, y: number };
     resetPosition: (startPosition: { x: number, y: number }) => void;
     setVulnerable: (state: boolean) => void;
-    isVulnerable: () => boolean;  
+    isVulnerable: () => boolean;
   }>;
 
   const isGameStarted = ref(false);
@@ -55,12 +55,12 @@
   }
 
   const ghosts = ref<GhostData[]>([
-    { id: 1, startPosition: { x: 345, y: 310 }, image: Blinky },   
-    { id: 2, startPosition: { x: 345, y: 350 }, image: Pinky },    
-    { id: 3, startPosition: { x: 320, y: 310 }, image: Inky },     
+    { id: 1, startPosition: { x: 345, y: 310 }, image: Blinky },
+    { id: 2, startPosition: { x: 345, y: 350 }, image: Pinky },
+    { id: 3, startPosition: { x: 320, y: 310 }, image: Inky },
     { id: 4, startPosition: { x: 320, y: 350 }, image: Clyde }
   ]);
-  
+
   const pacmanStartPosition = { x: 330, y: 570 };
 
   const pacmanRef = ref();
@@ -210,7 +210,7 @@
         }
       }
     }
-    return false; 
+    return false;
   }
 
   function eatGhost(ghostIdx: number){
@@ -241,7 +241,7 @@
         ghostsEaten = 0;
         console.log("Geist gegessen (3)");
         break;
-      default: 
+      default:
         console.log("Unexpexted state of ghostsEaten:");
         console.log(ghostsEaten);
     }
@@ -261,7 +261,7 @@
         break;
       default:
         console.log("Unexpexted state of ghostIndex:");
-        console.log(ghostIdx);         
+        console.log(ghostIdx);
     }
     console.log(ghostIdx);
     ghostRefs.value[ghostIdx]?.resetPosition(ghosts.value[ghostIdx].startPosition);
@@ -283,7 +283,7 @@
   }
   }
 
-  function updateGrid({ row, col, value }) { 
+  function updateGrid({ row, col, value }) {
     grid.value[row][col] = value;
     if(value == 4||value ==6){
       updatePoints(value);
@@ -304,7 +304,7 @@
 
   function startPowerUp(){
     console.log("PowerUp gegessen");
-    clearTimeout(timeoutId); 
+    clearTimeout(timeoutId);
     powerUp = true;
     ghostsEaten = 0;
     ghostRefs.value.forEach(ref => ref?.setVulnerable(true));
@@ -407,7 +407,7 @@
 
 <template>
   <div v-bind="$attrs">
-  <GameOver 
+  <GameOver
     v-if="gameOver"
     :score="score"
     :highscore="highscore"
@@ -463,7 +463,7 @@
       {{ score.value }}
       </div>
     </div>
-  </div>  
+  </div>
 </div>
 </div>
 </template>
@@ -489,6 +489,7 @@
     image-rendering: crisp-edges;
     image-rendering: pixelated;
     background-color: black;
+    -webkit-user-drag: none;
   }
 
   .pacman-container {
@@ -533,10 +534,10 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    font-size: 3rem;         
+    font-size: 3rem;
     font-weight: bold;
-    color: white;          
-    margin-bottom: 20px;     
+    color: white;
+    margin-bottom: 20px;
     letter-spacing: 2px;
     background-color: black;
   }
@@ -550,6 +551,7 @@
     width: 40px;
     height: 40px;
     transition: opacity 0.3s;
+    -webkit-user-drag: none;
   }
 
   .heart.lost {

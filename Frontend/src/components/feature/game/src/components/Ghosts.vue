@@ -115,7 +115,7 @@
           currentDirection.value = null;
         }
     }
-  } 
+  }
 
   watch(
   () => currentDirection.value,
@@ -130,12 +130,12 @@
 );
 
   function resetPosition(startPosition: { x: number, y: number }) {
-    isAllowedToMoveOver = 2; 
+    isAllowedToMoveOver = 2;
     position.value.x = startPosition.x;
     position.value.y = startPosition.y;
     currentDirection.value = 'up';
     prevCollisions = [];
-    isFlipped.value = false; 
+    isFlipped.value = false;
   }
 
   function setVulnerable(state: boolean) {
@@ -168,5 +168,6 @@
         left: 0px;
         width: 35px;
         height: 35px;
+      -webkit-user-drag: none;
     }
 </style>

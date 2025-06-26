@@ -160,5 +160,6 @@
     image-rendering: -o-crisp-edges;
     image-rendering: pixelated;
     -ms-interpolation-mode: nearest-neighbor;
+    -webkit-user-drag: none;
   }
 </style>
