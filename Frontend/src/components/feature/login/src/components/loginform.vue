@@ -27,8 +27,8 @@ const handleLoginSubmit = async () => {
 
     const data = await response.json();
     console.log("Erfolg:", data);
-    console.log(data.id)
-    const userID = data.id
+    console.log(data.user.id)
+    const userID = data.user.id
     userStore.setUserId(userID);
   } catch (error) {
     console.error('Fehler:', error);
