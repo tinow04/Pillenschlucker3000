@@ -3,7 +3,8 @@
   import PacmanObject from './PacmanObject.vue';
   import PacmanPoints from './PacmanPoints.vue';
   import PacmanPowerUp from './PacmanPowerUp.vue';
-  import GameOver from '@/components/feature/game/src/pages/GameOver.vue';
+  import GameOver from '../pages/GameOver.vue';
+  import PauseOverlay from '../pages/PauseOverlay.vue';
   import Ghost from './Ghosts.vue';
   import type { ComponentPublicInstance } from 'vue';
   import Blinky from '@/assets/Blinky.png'; //Error kann durch Entwicklungsumgebung kann angezeigt werden -> env.d.ts öffnen und er ist weg
@@ -28,6 +29,7 @@
   const lives = ref(3);
   const invulnerable = ref(false);
   const gameOver = ref(false);
+  const gamePaused = ref(false);
   const level = ref(0);
   const pointsEatenTotal = ref(0);
   const ghostsEatenTotal = ref(0);
@@ -36,7 +38,11 @@
   let numberOfPoints : number = 0;
   let powerUp: boolean = false;
   let ghostsEaten : number = 0;
+
   let timeoutId: number | undefined;
+  let powerUpTimeoutStart: number;
+  let powerUpTimeoutDuration: number = 10000;
+  let powerUpTimeLeft: number = 0;
 
   interface FloatingScore {
     x: number;
@@ -130,7 +136,8 @@
 
   function gameLoop(timestamp: number) {
     if (gameOver.value) return;
-
+    if (gamePaused.value) return;
+  
     checkPoints();
     if (timestamp - lastMoveTime > moveInterval) {
       pacmanRef.value?.updatePacmanPosition();
@@ -182,8 +189,9 @@
           ref.setVulnerable(false);
         } else{
           if (!invulnerable.value) {
-            if (lives.value === 0) {
+            if (lives.value === 1) {
               gameOver.value = true;
+              lives.value = lives.value - 1;
               if(highscore.value < score.value){
                 highscore.value = score.value;
               }
@@ -314,10 +322,11 @@
     ghosts.value[2].image = VulnerableGhost;
     ghosts.value[3].image = VulnerableGhost;
 
-
+    powerUpTimeoutStart = Date.now();
+    powerUpTimeoutDuration = 10000;
     timeoutId = window.setTimeout(() => {
       resetPowerUp();
-    }, 10000);
+    }, powerUpTimeoutDuration);
   }
 
   function resetPowerUp(){
@@ -331,6 +340,9 @@
 
     console.log("PowerUp zu Ende");
     ghostRefs.value.forEach(ref => ref?.setVulnerable(false));
+
+    powerUpTimeLeft = 0;
+    powerUpTimeoutDuration = 10000;
   }
 
   function checkPoints(){
@@ -396,17 +408,58 @@
     requestAnimationFrame(gameLoop);
   }
 
-  window.addEventListener('keydown', (e) => {
-  if (!isGameStarted.value) {
-    startGame();
+  function pauseGame() {
+    gamePaused.value = true;
+    console.log("Game paused");
+    pausePowerUp();
   }
 
-  });
+  function resumeGame() {
+    gamePaused.value = false;
+    console.log("Game resumed");
+    resumePowerUp();
+    requestAnimationFrame(gameLoop);
+  }
 
+  function pausePowerUp(){
+    if (powerUp){
+      clearTimeout(timeoutId);
+      const timePassed = Date.now() - powerUpTimeoutStart;
+      powerUpTimeLeft = powerUpTimeoutDuration - timePassed;
+      console.log("PowerUp paused, time left: " + powerUpTimeLeft);
+    }
+  }
+
+  function resumePowerUp(){
+    if (powerUp && powerUpTimeLeft > 0){
+      powerUpTimeoutStart = Date.now();
+      powerUpTimeoutDuration = powerUpTimeLeft;
+      timeoutId = window.setTimeout(() => {
+        resetPowerUp();
+      }, powerUpTimeoutDuration);
+      powerUpTimeLeft = 0;
+      console.log("Game resumed");
+    }
+  }
+
+  window.addEventListener('keydown', (e) => {
+  const key = e.key.toLowerCase();
+  if (!isGameStarted.value && ['w', 'a', 's', 'd'].includes(key)) {
+    startGame();
+  }
+  if (e.key === "Escape") {
+    if (!gamePaused.value) {
+      pauseGame();
+    } else {
+      resumeGame();
+    }
+  }
+  });
 </script>
 
 <template>
   <div v-bind="$attrs">
+
   <GameOver
     v-if="gameOver"
     :score="score"
@@ -416,6 +469,13 @@
     :points-eaten-total="pointsEatenTotal"
     @restart="restartGame"
   />
+
+  <PauseOverlay
+    v-if="gamePaused"
+    :score="score"
+    @resume="resumeGame"
+  />
+
   <div id="game-field" class="game-field">
     <div class="game-wrapper">
       <div class="score-display">
@@ -431,6 +491,7 @@
         />
         </div>
       </div>
+
       <div class="pacman-container">
       <img class="pacman-maze" src="@/assets/PacManMaze.png">
       <PacmanObject ref="pacmanRef" class="pacman" :grid="grid" :start-position="pacmanStartPosition" @update-grid="updateGrid"></PacmanObject>
