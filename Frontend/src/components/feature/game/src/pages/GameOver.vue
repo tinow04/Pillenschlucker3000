@@ -44,8 +44,6 @@ import { useRouter } from 'vue-router';
 
 .gameover-content {
   position: relative;
-  flex-direction: column;
-  justify-content: space-between;
   font-family: "Jersey 10", serif;
   padding: 3rem 5rem 7rem 5rem; 
   border-radius: 2rem;
@@ -58,14 +56,12 @@ import { useRouter } from 'vue-router';
 
 .gameover-content h1 {
   font-size: 5rem;
-  margin-bottom: 3rem;
   letter-spacing: 2px;
   color: yellow;
 }
 
 .gameover-content p {
   font-size: 2rem;
-  margin-bottom: 2rem;
   color: white;
 }
 
@@ -84,7 +80,6 @@ import { useRouter } from 'vue-router';
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
   transition: 0.2s ease-in-out;
   cursor: pointer;
-  margin: 0;
 }
 
 .restart {
