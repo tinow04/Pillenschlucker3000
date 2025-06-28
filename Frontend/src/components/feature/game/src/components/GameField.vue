@@ -448,7 +448,7 @@
     startGame();
   }
   if (e.key === "Escape") {
-    if (!gamePaused.value) {
+    if (!gamePaused.value && !gameOver.value) {
       pauseGame();
     } else {
       resumeGame();
