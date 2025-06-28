@@ -451,7 +451,9 @@
     if (!gamePaused.value && !gameOver.value) {
       pauseGame();
     } else {
-      resumeGame();
+      if (!gameOver.value){
+        resumeGame();
+      }
     }
   }
   });
