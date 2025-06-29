@@ -1,57 +1,66 @@
-<script setup lang="ts">
-import {ref} from "vue";
-import { useRouter } from "vue-router";
-import { useUserStore } from '@/piniaStore'
+<template>
+  <div class="form-box">
+    <h2>Anmelden</h2>
+    <form @submit.prevent="handleLoginSubmit">
+      <input
+        v-model="email"
+        type="email"
+        placeholder="Email"
+        required
+      />
+      <input
+        v-model="password"
+        type="password"
+        placeholder="Passwort"
+        required
+      />
+      <button type="submit" class="button">Login</button>
+    </form>
+    <p>
+      Noch kein Konto?
+      <a @click="$emit('toggle-form')">Registrieren</a>
+    </p>
+  </div>
+</template>
 
-const email = ref('')
-const password = ref('')
-const errorMessage = ref('');
+<script setup lang="ts">
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/piniaStore";
+import { showToast } from "@/components/devPanel/ToastManager.vue";
+
+const email = ref("");
+const password = ref("");
 
 const router = useRouter();
-const userStore = useUserStore()
+const userStore = useUserStore();
 
 const handleLoginSubmit = async () => {
   try {
-    const response = await fetch('http://localhost/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const response = await fetch("http://localhost/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: email.value,
         password: password.value,
       }),
     });
 
+    const data = await response.json();
     if (!response.ok) {
-      throw new Error(`HTTP Error: ${response.status}`);
+      showToast(data.message || "Login fehlgeschlagen", "error");
+      return;
     }
 
-    const data = await response.json();
-    console.log("Erfolg:", data);
-    console.log(data.user.id)
-    const userID = data.user.id
-    userStore.setUserId(userID);
+    userStore.setUserId(data.user.id);
+    showToast("Login erfolgreich", "success");
     router.push("/");
   } catch (error) {
-    console.error('Fehler:', error);
-    errorMessage.value = "Login fehlgeschlagen. Bitte versuchen Sie es erneut.";
+    console.error("Fehler:", error);
+    showToast("Login fehlgeschlagen. Bitte versuchen Sie es erneut.", "error");
   }
 };
 </script>
-
-<template>
-  <div class="form-box">
-    <h2>Anmelden</h2>
-    <form @submit.prevent="handleLoginSubmit">
-      <input v-model="email" type="email" placeholder="Email" required>
-      <input v-model="password" type="password" placeholder="Passwort" required>
-      <button type="submit" class="button">Login</button>
-      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-    </form>
-    <p>Noch kein Konto? <a @click="$emit('toggle-form')">Registrieren</a></p>
-  </div>
-</template>
 
 <style scoped>
 .form-box {
@@ -98,17 +107,12 @@ input {
   background-color: #222;
 }
 
-p {
-  padding-top: 0.5rem;
-}
-
 a {
   color: yellow;
   cursor: pointer;
   text-decoration: none;
   font-size: 1.5rem;
 }
-
 a:hover {
   text-decoration: underline;
 }
