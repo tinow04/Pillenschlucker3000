@@ -48,6 +48,8 @@
   let powerUpTimeoutDuration: number = 10000;
   let powerUpTimeLeft: number = 0;
 
+  let oldHighscore: number = 0;
+
   interface FloatingScore {
     x: number;
     y: number;
@@ -233,6 +235,13 @@
     if (highscore.value < score.value) {
       highscore.value = score.value;
     }
+    fetchHighscore().then((backendhighscore) => {
+      oldHighscore = backendhighscore;
+      console.log("Highscore from backend: " + oldHighscore);
+      if (oldHighscore > highscore.value) {
+        highscore.value = oldHighscore;
+      }
+    });
     sendGameData();
   }
 
@@ -501,6 +510,33 @@
       console.log('Game data sent successfully');
     } catch (error) {
       console.error('Error sending game data:', error);
+    }
+  };
+
+  const fetchHighscore = async () => {
+    if (!playerId) {
+      console.log("Player ID fehlt. Highscore kann nicht abgefragt werden.");
+      return;
+    }
+    console.log('Highscore abgerufen');
+    try {
+      const response = await fetch(`http://localhost/api/gameover?playerID=${playerId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+      }
+
+      const highscore = await response.json();
+
+      console.log('Highscore:', highscore);
+      return highscore;
+    } catch (error) {
+      console.error('Fehler beim Abrufen des Highscores:', error);
     }
   };
 </script>
