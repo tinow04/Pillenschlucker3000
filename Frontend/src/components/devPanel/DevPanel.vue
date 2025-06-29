@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { showToast } from "@/ToastManager.vue";
+import { showToast } from "@/components/devPanel/ToastManager.vue";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 
 export default {
@@ -26,7 +26,6 @@ export default {
     };
 
     const handleKey = (e) => {
-      console.log("Taste gedrückt:", e.key, "Alt:", e.altKey, "Shift:", e.shiftKey);
       if (e.altKey && e.key.toLowerCase() === "p") {
         toggle();
       }
@@ -40,7 +39,7 @@ export default {
       window.removeEventListener("keydown", handleKey);
     });
 
-    return { show, visible };
+    return { show, visible, toggle };
   }
 };
 </script>
@@ -68,9 +67,15 @@ export default {
   border-radius: 0.4rem;
   cursor: pointer;
 }
-.dev-btn.success { background: #4caf50; }
-.dev-btn.error { background: #f44336; }
-.dev-btn.info { background: #2196f3; }
+.dev-btn.success {
+  background: #4caf50;
+}
+.dev-btn.error {
+  background: #f44336;
+}
+.dev-btn.info {
+  background: #2196f3;
+}
 
 .dev-btn:hover {
   opacity: 0.9;

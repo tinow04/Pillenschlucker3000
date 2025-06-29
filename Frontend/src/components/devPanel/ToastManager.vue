@@ -1,4 +1,4 @@
-<template>
+ToastManager:<template>
   <div class="toast-wrapper">
     <div
       v-for="(toast, index) in toasts"
@@ -145,3 +145,5 @@ export default {
   background-color: #1565c0;
 }
 </style>
+
+

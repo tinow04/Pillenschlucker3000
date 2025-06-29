@@ -29,7 +29,6 @@
       <button type="submit" class="button">Registrieren</button>
     </form>
 
-    <p v-if="message" class="msg">{{ message }}</p>
     <p>
       Schon ein Konto?
       <a @click="$emit('toggle-form')">Anmelden</a>
@@ -41,40 +40,36 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { showToast } from "@/components/devPanel/ToastManager.vue";
-import {useUserStore} from "@/piniaStore";
+import { useUserStore } from "@/piniaStore";
 
 const username = ref("");
 const email = ref("");
 const password = ref("");
 const passwordRepeat = ref("");
-const message = ref("");
 
 const router = useRouter();
-const userStore = useUserStore()
+const userStore = useUserStore();
 
 const registerUser = async () => {
   if (password.value !== passwordRepeat.value) {
-    message.value = "Passwörter stimmen nicht überein";
+    showToast("Passwörter stimmen nicht überein", "error");
     return;
   }
 
   try {
-    const response = await fetch(
-      "http://localhost/api/register", // <-- Port 80, daher kein :3001!
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: username.value,
-          email: email.value,
-          password: password.value,
-        }),
-      }
-    );
+    const response = await fetch("http://localhost/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: username.value,
+        email: email.value,
+        password: password.value,
+      }),
+    });
 
     const data = await response.json();
     if (!response.ok) {
-      message.value = data.message || "Fehler bei der Registrierung";
+      showToast(data.message || "Fehler bei der Registrierung", "error");
       return;
     }
 
@@ -83,7 +78,7 @@ const registerUser = async () => {
     router.push("/");
   } catch (err) {
     console.error(err);
-    message.value = "Fehler bei der Registrierung";
+    showToast("Fehler bei der Registrierung", "error");
   }
 };
 </script>
@@ -131,12 +126,6 @@ input {
 
 .button:hover {
   background-color: #222;
-}
-
-.msg {
-  color: red;
-  margin-top: 0.5rem;
-  font-size: 1.2rem;
 }
 
 a {
