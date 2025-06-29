@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 
+  const emit = defineEmits(['resume']);
+  const router = useRouter();
+
   const props = defineProps<{
     score: number,
-    highscore: number,
-    level: number,
-    ghostsEatenTotal: number,
-    pointsEatenTotal: number
   }>();
-  const emit = defineEmits(['restart']);
-  const router = useRouter();
 
   function goHome() {
     router.push('/'); 
@@ -17,15 +14,13 @@ import { useRouter } from 'vue-router';
 </script>
 
 <template>
-    <div class="gameover-overlay">
-        <div class="gameover-content">
-            <h1>Game Over</h1>
-            <p>Highscore: {{ highscore }}</p>
-            <p>Points: {{ score }}</p>
-            <p>Levels won: {{ level }}</p>
-            <p>Ghosts eaten: {{ ghostsEatenTotal }}</p>
-            <p>Pills swallowed: {{ pointsEatenTotal }}</p>
-            <button class="button restart" @click="$emit('restart')">Restart</button>
+    <div class="pause-overlay">
+        <div class="pause-content">
+            <h1>Game Paused</h1>
+            <p>Press "Resume" to continue playing.</p>
+            <p>Press "Home" to go back to the main menu.</p>
+            <p>Current Points: {{ score }}</p>
+            <button class="button resume" @click="$emit('resume')">Resume</button>
             <button class="button home" @click="goHome">Home</button>
         </div>
     </div>
@@ -33,7 +28,7 @@ import { useRouter } from 'vue-router';
 
 <style scoped>
 
-.gameover-overlay {
+.pause-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   z-index: 9999;
@@ -42,7 +37,7 @@ import { useRouter } from 'vue-router';
   justify-content: center;
 }
 
-.gameover-content {
+.pause-content {
   position: relative;
   font-family: "Jersey 10", serif;
   padding: 3rem 5rem 7rem 5rem; 
@@ -54,13 +49,13 @@ import { useRouter } from 'vue-router';
   min-height: 350px;
 }
 
-.gameover-content h1 {
+.pause-content h1 {
   font-size: 5rem;
   letter-spacing: 2px;
   color: yellow;
 }
 
-.gameover-content p {
+.pause-content p {
   font-size: 2rem;
   color: white;
 }
@@ -82,7 +77,7 @@ import { useRouter } from 'vue-router';
   cursor: pointer;
 }
 
-.restart {
+.resume {
   right: 2rem;
   bottom: 2rem;
 }

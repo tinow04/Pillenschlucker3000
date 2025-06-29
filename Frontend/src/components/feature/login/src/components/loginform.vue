@@ -1,32 +1,52 @@
+<script setup lang="ts">
+import {ref} from "vue";
+import { useRouter } from "vue-router";
+
+const email = ref('')
+const password = ref('')
+const errorMessage = ref('');
+const router = useRouter();
+
+const handleLoginSubmit = async () => {
+  try {
+    const response = await fetch('http://localhost/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email.value,
+        password: password.value,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Erfolg:", data);
+    console.log(data.user.id)
+    router.push("/");
+  } catch (error) {
+    console.error('Fehler:', error);
+    errorMessage.value = "Login fehlgeschlagen. Bitte versuchen Sie es erneut.";
+  }
+};
+</script>
+
 <template>
   <div class="form-box">
     <h2>Anmelden</h2>
-    <form @submit.prevent="handleLogin">
-      <input v-model="username" type="text" placeholder="Benutzername" required>
+    <form @submit.prevent="handleLoginSubmit">
+      <input v-model="email" type="email" placeholder="Email" required>
       <input v-model="password" type="password" placeholder="Passwort" required>
       <button type="submit" class="button">Login</button>
     </form>
+    <p>{{ message }}</p>
     <p>Noch kein Konto? <a @click="$emit('toggle-form')">Registrieren</a></p>
   </div>
 </template>
-
-<script>
-import { ref } from "vue";
-
-export default {
-  name: "LoginForm",
-  setup() {
-    const username = ref("");
-    const password = ref("");
-
-    const handleLogin = () => {
-      console.log("Login mit:", username.value, password.value);
-    };
-
-    return { username, password, handleLogin };
-  },
-};
-</script>
 
 <style scoped>
 .form-box {

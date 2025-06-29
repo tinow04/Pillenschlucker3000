@@ -40,7 +40,7 @@
   const directionToRotation: Record<Direction, number> = {
     up: -90,
     down: 90,
-    left: 180,
+    left: 0,
     right: 0,
   };
 
@@ -141,7 +141,7 @@
 
 <template>
   <div ref="pacmanObject" :style="{ left: position.x + 'px', top: position.y + 'px' }">
-    <img class="pacman-gif" ref="pacmanGif" :src="selectedSkinSrc" alt="Pacman gif">
+    <img class="pacman-gif" ref="pacmanGif" :src="skinStore.selectedSkinSrc" alt="Pacman gif">
   </div>
 </template>
 
@@ -158,5 +158,6 @@
     image-rendering: -o-crisp-edges;
     image-rendering: pixelated;
     -ms-interpolation-mode: nearest-neighbor;
+    -webkit-user-drag: none;
   }
 </style>

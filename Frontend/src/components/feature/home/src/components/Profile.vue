@@ -1,27 +1,71 @@
 <template>
-  <div class="profile-picture">
+  <div ref="container" class="profile-picture">
+    <span class="username">{{ username }}</span>
     <button class="profile-button" @click="togglePopup">
       <img src="@/assets/profile.png" alt="Image could not load" />
     </button>
     <div v-if="showPopup" class="profile-popup">
-      <p>Noch kein Account?</p>
-      <router-link to="/login" class="popup-link">Login</router-link>
+      <p v-if="!username">Noch kein Account?</p>
+      <router-link v-if="!username" to="/login" class="popup-link">Login</router-link>
+      <div v-else>
+        <p>Eingeloggt als {{ username }}</p>
+        <a class="popup-link" @click.prevent="logout">Abmelden</a>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { showToast } from "@/components/devPanel/ToastManager.vue";
+
 export default {
   name: "ProfileComponent",
   setup() {
     const showPopup = ref(false);
+    const username = ref(null);
+    const container = ref(null);
 
     const togglePopup = () => {
       showPopup.value = !showPopup.value;
     };
 
-    return { showPopup, togglePopup };
+    const logout = () => {
+      localStorage.removeItem("user");
+      username.value = null;
+      showPopup.value = false;
+      showToast("Erfolgreich abgemeldet", "info");
+    };
+
+    const handleClickOutside = (event) => {
+      if (
+        showPopup.value &&
+        container.value &&
+        !container.value.contains(event.target)
+      ) {
+        showPopup.value = false;
+      }
+    };
+
+    onMounted(() => {
+      const user = localStorage.getItem("user");
+      if (user) {
+        username.value = JSON.parse(user).username;
+      }
+      document.addEventListener("mousedown", handleClickOutside);
+    });
+
+    onBeforeUnmount(() => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    });
+
+    return {
+      showPopup,
+      togglePopup,
+      username,
+      logout,
+      container
+    };
   },
 };
 </script>
@@ -31,6 +75,20 @@ export default {
   position: absolute;
   top: 1rem;
   right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.username {
+  font-size: 2rem;
+  color: white;
+  white-space: nowrap;
+  direction: rtl;
+  text-align: right;
+  max-width: 15rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .profile-button {
@@ -51,7 +109,6 @@ export default {
   transform: scale(1.1);
 }
 
-/* Popup-Styles passend zum restlichen Design */
 .profile-popup {
   position: absolute;
   top: 110%;
