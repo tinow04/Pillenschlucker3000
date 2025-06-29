@@ -1,73 +1,89 @@
 <template>
   <div class="form-box">
     <h2>Registrieren</h2>
-    <form @submit.prevent="registerUser"> <!-- // NEU -->
-      <input v-model="username" type="text" placeholder="Benutzername" required>
-      <input v-model="email" type="email" placeholder="Email" required> <!-- // NEU -->
-      <input v-model="password" type="password" placeholder="Passwort" required>
-      <input v-model="passwordRepeat" type="password" placeholder="Passwort wiederholen" required>
+    <form @submit.prevent="registerUser">
+      <input
+        v-model="username"
+        type="text"
+        placeholder="Benutzername"
+        required
+      />
+      <input
+        v-model="email"
+        type="email"
+        placeholder="Email"
+        required
+      />
+      <input
+        v-model="password"
+        type="password"
+        placeholder="Passwort"
+        required
+      />
+      <input
+        v-model="passwordRepeat"
+        type="password"
+        placeholder="Passwort wiederholen"
+        required
+      />
       <button type="submit" class="button">Registrieren</button>
     </form>
-    <p>{{ message }}</p> <!-- // NEU -->
-    <p>Schon ein Konto? <a @click="$emit('toggle-form')">Anmelden</a></p>
+
+    <p v-if="message" class="msg">{{ message }}</p>
+    <p>
+      Schon ein Konto?
+      <a @click="$emit('toggle-form')">Anmelden</a>
+    </p>
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { ref } from "vue";
-import { showToast} from "@/components/devPanel/ToastManager.vue";
+import { useRouter } from "vue-router";
+import { showToast } from "@/components/devPanel/ToastManager.vue";
 
-export default {
-  name: "RegisterForm",
-  setup(_, { emit }) {
-    const username = ref("");
-    const email = ref(""); // NEU
-    const password = ref("");
-    const passwordRepeat = ref("");
-    const message = ref(""); // NEU
+const username = ref("");
+const email = ref("");
+const password = ref("");
+const passwordRepeat = ref("");
+const message = ref("");
+const router = useRouter();
 
-    // NEU
-    const registerUser = async () => {
-      if (password.value !== passwordRepeat.value) {
-        message.value = "Passwörter stimmen nicht überein";
-        return;
+const registerUser = async () => {
+  if (password.value !== passwordRepeat.value) {
+    message.value = "Passwörter stimmen nicht überein";
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "http://localhost/api/register", // <-- Port 80, daher kein :3001!
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: username.value,
+          email: email.value,
+          password: password.value,
+        }),
       }
+    );
 
-      try {
-        const response = await fetch("http://localhost:3001/api/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: username.value,
-            email: email.value,
-            password: password.value
-          })
-        });
+    const data = await response.json();
+    if (!response.ok) {
+      message.value = data.message || "Fehler bei der Registrierung";
+      return;
+    }
 
-        const data = await response.json();
-        message.value = data.message;
-        console.log("Registrierung erfolgreich:", data);
-        showToast("Registrierung erfolgreich", "success")
-
-      } catch (error) {
-        message.value = "Fehler bei der Registrierung";
-        console.error(error);
-      }
-    };
-    // ENDE NEU
-
-    return {
-      username,
-      email, // NEU
-      password,
-      passwordRepeat,
-      message, // NEU
-      registerUser // NEU
-    };
-  },
+    showToast("Registrierung erfolgreich", "success");
+    // ggf. clear fields
+    router.push("/login");
+  } catch (err) {
+    console.error(err);
+    message.value = "Fehler bei der Registrierung";
+  }
 };
 </script>
-
 
 <style scoped>
 .form-box {
@@ -114,8 +130,10 @@ input {
   background-color: #222;
 }
 
-p {
-  padding-top: 0.5rem;
+.msg {
+  color: red;
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
 }
 
 a {
@@ -124,7 +142,6 @@ a {
   text-decoration: none;
   font-size: 1.5rem;
 }
-
 a:hover {
   text-decoration: underline;
 }
