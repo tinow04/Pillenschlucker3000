@@ -12,6 +12,7 @@
   import Inky from '@/assets/Inky.png';
   import Clyde from '@/assets/Clyde.png';
   import VulnerableGhost from '@/assets/Vulnerable.png';
+  import { useUserStore } from '@/piniaStore';
 
   type GhostInstance = ComponentPublicInstance<{
     updateGhostPosition: () => void;
@@ -20,6 +21,9 @@
     setVulnerable: (state: boolean) => void;
     isVulnerable: () => boolean;
   }>;
+
+  const userStore = useUserStore();
+  const playerId = userStore.userId;
 
   const isGameStarted = ref(false);
   const areGhostsPaused = ref(false);
@@ -190,35 +194,46 @@
         } else{
           if (!invulnerable.value) {
             if (lives.value === 1) {
-              gameOver.value = true;
-              lives.value = lives.value - 1;
-              if(highscore.value < score.value){
-                highscore.value = score.value;
-              }
-              console.log('Game Over! Pacman wurde vom Geist gefangen.');
+              gameOverHandler();
               return true; // Game Over, Gameloop soll abbrechen
             }
-            lives.value = lives.value - 1;
-            invulnerable.value = true;
-            areGhostsPaused.value = true;
-            floatingScores.value = [];
-            setTimeout(() => {
-              areGhostsPaused.value = false;
-              invulnerable.value = false;
-            }, 3000);
-
-            pacmanRef.value?.resetPosition(pacmanStartPosition);
-            if(powerUp){
-              resetPowerUp();
-            }
-            ghostRefs.value.forEach((ghostRef, idx) => {
-            ghostRef?.resetPosition(ghosts.value[idx].startPosition);
-            });
+            eatPacman();
           }
         }
       }
     }
     return false;
+  }
+
+  function eatPacman() {
+    lives.value = lives.value - 1;
+    invulnerable.value = true;
+    areGhostsPaused.value = true;
+    floatingScores.value = [];
+    setTimeout(() => {
+      areGhostsPaused.value = false;
+      invulnerable.value = false;
+    }, 3000);
+
+    if(powerUp){
+      resetPowerUp();
+    }
+
+    pacmanRef.value?.resetPosition(pacmanStartPosition);
+
+    ghostRefs.value.forEach((ghostRef, idx) => {
+      ghostRef?.resetPosition(ghosts.value[idx].startPosition);
+    });
+  }
+
+  function gameOverHandler() {
+    gameOver.value = true;
+    lives.value = lives.value - 1;
+    console.log('Game Over! Pacman wurde gefangen.');
+    if (highscore.value < score.value) {
+      highscore.value = score.value;
+    }
+    sendGameData();
   }
 
   function eatGhost(ghostIdx: number){
@@ -457,6 +472,37 @@
     }
   }
   });
+
+  const sendGameData = async () => {
+    if (!playerId){
+      console.log("Player ID is not set or Player is not logged in. Cannot send game data.");
+      return;
+    }
+    console.log("Sending game data...");
+    try {
+      const response = await fetch('http://localhost/api/gameover', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          playerID: playerId,
+          points: score.value,
+          ghostsEaten: ghostsEatenTotal.value,
+          levelsWon: level.value,
+          pillsSwallowed: pointsEatenTotal.value,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+      }
+
+      console.log('Game data sent successfully');
+    } catch (error) {
+      console.error('Error sending game data:', error);
+    }
+  };
 </script>
 
 <template>
