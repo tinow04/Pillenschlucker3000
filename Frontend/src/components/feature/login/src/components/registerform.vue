@@ -1,3 +1,47 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { showToast } from "@/components/devPanel/ToastManager.vue";
+
+const username = ref("");
+const email = ref("");
+const password = ref("");
+const passwordRepeat = ref("");
+
+const router = useRouter();
+
+const registerUser = async () => {
+  if (password.value !== passwordRepeat.value) {
+    showToast("Passwörter stimmen nicht überein", "error");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: username.value,
+        email: email.value,
+        password: password.value,
+      }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      showToast(data.message || "Fehler bei der Registrierung", "error");
+      return;
+    }
+
+    showToast("Registrierung erfolgreich", "success");
+    router.push("/login");
+  } catch (err) {
+    console.error(err);
+    showToast("Fehler bei der Registrierung", "error");
+  }
+};
+</script>
+
 <template>
   <div class="form-box">
     <h2>Registrieren</h2>
@@ -28,62 +72,12 @@
       />
       <button type="submit" class="button">Registrieren</button>
     </form>
-
-    <p v-if="message" class="msg">{{ message }}</p>
     <p>
       Schon ein Konto?
       <a @click="$emit('toggle-form')">Anmelden</a>
     </p>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { showToast } from "@/components/devPanel/ToastManager.vue";
-
-const username = ref("");
-const email = ref("");
-const password = ref("");
-const passwordRepeat = ref("");
-const message = ref("");
-const router = useRouter();
-
-const registerUser = async () => {
-  if (password.value !== passwordRepeat.value) {
-    message.value = "Passwörter stimmen nicht überein";
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      "http://localhost/api/register", // <-- Port 80, daher kein :3001!
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: username.value,
-          email: email.value,
-          password: password.value,
-        }),
-      }
-    );
-
-    const data = await response.json();
-    if (!response.ok) {
-      message.value = data.message || "Fehler bei der Registrierung";
-      return;
-    }
-
-    showToast("Registrierung erfolgreich", "success");
-    // ggf. clear fields
-    router.push("/login");
-  } catch (err) {
-    console.error(err);
-    message.value = "Fehler bei der Registrierung";
-  }
-};
-</script>
 
 <style scoped>
 .form-box {
@@ -92,19 +86,13 @@ const registerUser = async () => {
   align-items: center;
   width: 100%;
 }
-
-h2 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
+h2 { font-size: 3rem; margin-bottom: 1rem; }
 form {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-
 input {
   width: 90%;
   padding: 0.8rem;
@@ -114,7 +102,6 @@ input {
   font-size: 1.5rem;
   text-align: center;
 }
-
 .button {
   width: 90%;
   padding: 1rem;
@@ -125,24 +112,12 @@ input {
   border-radius: 1rem;
   cursor: pointer;
 }
-
-.button:hover {
-  background-color: #222;
-}
-
-.msg {
-  color: red;
-  margin-top: 0.5rem;
-  font-size: 1.2rem;
-}
-
+.button:hover { background-color: #222; }
 a {
   color: yellow;
   cursor: pointer;
   text-decoration: none;
   font-size: 1.5rem;
 }
-a:hover {
-  text-decoration: underline;
-}
+a:hover { text-decoration: underline; }
 </style>
