@@ -55,6 +55,7 @@ const handleLoginSubmit = async () => {
         placeholder="Passwort"
         required
       />
+
       <button type="submit" class="button">Login</button>
     </form>
     <p>Noch kein Konto? <a @click="$emit('toggle-form')">Registrieren</a></p>

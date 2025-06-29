@@ -72,12 +72,65 @@ const registerUser = async () => {
       />
       <button type="submit" class="button">Registrieren</button>
     </form>
+
     <p>
       Schon ein Konto?
       <a @click="$emit('toggle-form')">Anmelden</a>
     </p>
   </div>
 </template>
+
+
+<script setup lang="ts">
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { showToast } from "@/components/devPanel/ToastManager.vue";
+import {useUserStore} from "@/piniaStore";
+
+const username = ref("");
+const email = ref("");
+const password = ref("");
+const passwordRepeat = ref("");
+const message = ref("");
+
+const router = useRouter();
+const userStore = useUserStore()
+
+const registerUser = async () => {
+  if (password.value !== passwordRepeat.value) {
+    message.value = "Passwörter stimmen nicht überein";
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "http://localhost/api/register", // <-- Port 80, daher kein :3001!
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: username.value,
+          email: email.value,
+          password: password.value,
+        }),
+      }
+    );
+
+    const data = await response.json();
+    if (!response.ok) {
+      message.value = data.message || "Fehler bei der Registrierung";
+      return;
+    }
+
+    showToast("Registrierung erfolgreich", "success");
+    userStore.setUserId(data.user.id);
+    router.push("/");
+  } catch (err) {
+    console.error(err);
+    message.value = "Fehler bei der Registrierung";
+  }
+};
+</script>
 
 <style scoped>
 .form-box {
@@ -112,12 +165,19 @@ input {
   border-radius: 1rem;
   cursor: pointer;
 }
-.button:hover { background-color: #222; }
+
+.button:hover {
+  background-color: #222;
+}
+
 a {
   color: yellow;
   cursor: pointer;
   text-decoration: none;
   font-size: 1.5rem;
 }
-a:hover { text-decoration: underline; }
+
+a:hover {
+  text-decoration: underline;
+}
 </style>
