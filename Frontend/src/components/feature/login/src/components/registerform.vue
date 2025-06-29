@@ -41,13 +41,16 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { showToast } from "@/components/devPanel/ToastManager.vue";
+import {useUserStore} from "@/piniaStore";
 
 const username = ref("");
 const email = ref("");
 const password = ref("");
 const passwordRepeat = ref("");
 const message = ref("");
+
 const router = useRouter();
+const userStore = useUserStore()
 
 const registerUser = async () => {
   if (password.value !== passwordRepeat.value) {
@@ -76,8 +79,8 @@ const registerUser = async () => {
     }
 
     showToast("Registrierung erfolgreich", "success");
-    // ggf. clear fields
-    router.push("/login");
+    userStore.setUserId(data.user.id);
+    router.push("/");
   } catch (err) {
     console.error(err);
     message.value = "Fehler bei der Registrierung";
