@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import { useRouter } from "vue-router";
+import { useUserStore } from '@/piniaStore'
 
 const email = ref('')
 const password = ref('')
 const errorMessage = ref('');
+
 const router = useRouter();
+const userStore = useUserStore()
 
 const handleLoginSubmit = async () => {
   try {
@@ -27,6 +30,8 @@ const handleLoginSubmit = async () => {
     const data = await response.json();
     console.log("Erfolg:", data);
     console.log(data.user.id)
+    const userID = data.user.id
+    userStore.setUserId(userID);
     router.push("/");
   } catch (error) {
     console.error('Fehler:', error);
@@ -39,11 +44,11 @@ const handleLoginSubmit = async () => {
   <div class="form-box">
     <h2>Anmelden</h2>
     <form @submit.prevent="handleLoginSubmit">
-      <input v-model="email" type="email" placeholder="Email" required>
+      <input v-model="email" type="text" placeholder="Email" required>
       <input v-model="password" type="password" placeholder="Passwort" required>
       <button type="submit" class="button">Login</button>
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </form>
-    <p>{{ message }}</p>
     <p>Noch kein Konto? <a @click="$emit('toggle-form')">Registrieren</a></p>
   </div>
 </template>
