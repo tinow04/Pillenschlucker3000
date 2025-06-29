@@ -81,7 +81,6 @@ const registerUser = async () => {
     showToast("Registrierung erfolgreich", "success");
     userStore.setUserId(data.user.id);
     router.push("/");
-    router.push("/login");
   } catch (err) {
     console.error(err);
     message.value = "Fehler bei der Registrierung";
