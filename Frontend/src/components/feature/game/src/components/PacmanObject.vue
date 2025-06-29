@@ -1,4 +1,3 @@
-Pacmanobject.vue:
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import skin9Path from '@/assets/GIFs/pacman.gif';
@@ -41,7 +40,7 @@ const moveToDirection: Record<Direction, { x: number; y: number }> = {
 const directionToRotation: Record<Direction, number> = {
   up: -90,
   down: 90,
-  left: 0,
+  left: 180,
   right: 0,
 };
 
@@ -142,7 +141,7 @@ defineExpose({
 
 <template>
   <div ref="pacmanObject" :style="{ left: position.x + 'px', top: position.y + 'px' }">
-    <img class="pacman-gif" ref="pacmanGif" :src="skinStore.selectedSkinSrc" alt="Pacman gif">
+    <img class="pacman-gif" ref="pacmanGif" :src="selectedSkinSrc" alt="Pacman gif">
   </div>
 </template>
 
@@ -159,6 +158,5 @@ defineExpose({
   image-rendering: -o-crisp-edges;
   image-rendering: pixelated;
   -ms-interpolation-mode: nearest-neighbor;
-  -webkit-user-drag: none;
 }
 </style>

@@ -298,8 +298,8 @@ function isSkinUnlocked(id: number): boolean {
 
 .price-overlay {
   position: absolute;
-  top: 1.5rem;
-  left: 55%;
+  top: 0.5rem;
+  left: 52.5%;
   transform: translateX(-50%);
   z-index: 2;
 }
