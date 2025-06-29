@@ -23,11 +23,11 @@
 import Header from "@/components/feature/home/src/components/Header.vue";
 import Buttons from "@/components/feature/home/src/components/Buttons.vue";
 import Profile from "@/components/feature/home/src/components/Profile.vue";
-import Boards from "@/components/feature/home/src/components/Boards.vue";
 import ImageBottom from "@/components/feature/home/src/components/ImageBottom.vue";
 import StartAnimation from "@/components/feature/home/src/components/StartAnimation.vue";
 import HowTo from "@/components/feature/home/src/components/HowTo.vue";
 import Settings from "@/components/feature/home/src/components/Settings.vue";
+import Boards from "@/components/feature/home/src/components/Boards.vue";
 
 export default {
   components: {
@@ -116,7 +116,10 @@ export default {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+}
+
+.leaderboard-board {
+  justify-content: left;
 }
 </style>

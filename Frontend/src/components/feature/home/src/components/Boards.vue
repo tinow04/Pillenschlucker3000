@@ -1,23 +1,20 @@
 <template>
   <div class="fixed-wrapper">
-
-
     <div class="board-container">
-
       <div class="board right">
         <h2 class="board-title">Leaderboard</h2>
-        <ol class="leaderboard-list">
-          <li><span>1</span> <span>PlayerX</span> <span>98,750</span></li>
-          <li><span>2</span> <span>GhostHunter</span> <span>92,420</span></li>
-          <li><span>3</span> <span>PacMaster99</span> <span>87,310</span></li>
-          <li><span>4</span> <span>ChompKing</span> <span>79,850</span></li>
-          <li><span>5</span> <span>SpeedyGonzales</span> <span>75,600</span></li>
-          <li><span>6</span> <span>PowerPelletPro</span> <span>72,300</span></li>
-          <li><span>7</span> <span>DotEater</span> <span>68,940</span></li>
-          <li><span>8</span> <span>MazeRunner</span> <span>63,550</span></li>
-          <li><span>9</span> <span>PixelChaser</span> <span>59,200</span></li>
-          <li><span>10</span> <span>RetroGamer</span> <span>55,890</span></li>
-        </ol>
+        <div class="leader-box">
+          <StatCard :id="1" name="Tino" :points="1234"  />
+          <StatCard :id="2" name="Robin" :points="1234" />
+          <StatCard :id="3" name="Herr Fischer" :points="1234" />
+          <StatCard :id="4" name="Philipp" :points="2" />
+          <StatCard :id="5" name="Jonah" :points="312" />
+          <StatCard :id="6" name="Fischer" :points="54324" />
+          <StatCard :id="7" name="Herr Robin Fischer" :points="643" />
+          <StatCard :id="8" name="Herr Mann" :points="443" />
+          <StatCard :id="9" name="Fischers Fritz" :points="645" />
+          <StatCard :id="10" name="Fischermans Friend" :points="6" />
+        </div>
       </div>
 
 
@@ -59,8 +56,11 @@
 </template>
 
 <script>
+import StatCard from "@/components/feature/home/src/components/stats/StatCard.vue";
+
 export default {
   name: "BoardsComponent",
+  components: {StatCard},
 };
 </script>
 
@@ -145,5 +145,14 @@ export default {
 .stat-value {
   margin: 0;
   font-size: 1.6rem;
+}
+
+.leader-box {
+  margin-left: 0.5rem;
+  display: grid;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  gap: 0.5rem;
 }
 </style>
