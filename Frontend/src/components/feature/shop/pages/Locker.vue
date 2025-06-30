@@ -4,38 +4,45 @@
       <ButtonComponent label="HOME" class-name="Home-Button" @click="switchPageHome" />
     </div>
     <div class="grid-wrapper">
-      <SkinsComponent />
+      <SkinsComponent
+        @updateCoins="
+        (price, done) => {
+          updateCoins(price)
+          .then(success => done(success))
+          .catch(()   => done(false))
+        }
+        "
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import ButtonComponent from '../components/Button.vue'
-import SkinsComponent from '../components/Skins.vue'
-import { useRouter } from 'vue-router'
-import { useUserStore } from '@/piniaStore'
-import { onMounted, ref } from 'vue'
+import ButtonComponent from '../components/Button.vue';
+import SkinsComponent from '../components/Skins.vue';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/piniaStore';
+import { onMounted, ref } from 'vue';
 
 defineOptions({
   name: 'LockerComponent',
-})
+});
 
 const router = useRouter();
 const userStore = useUserStore();
 const playerId = userStore.userId;
 const coins = ref(30000);
-const price: number = 1000;
 
 function switchPageHome() {
-  router.push('/')
+  router.push('/');
 }
 
 const fetchCoins = async () => {
   if (!playerId) {
-    console.log('Player ID fehlt. Coins kann nicht abgefragt werden.')
-    return
+    console.log('Player ID fehlt. Coins kann nicht abgefragt werden.');
+    return;
   }
-  console.log('Coins abgerufen')
+  console.log('Coins abgerufen');
   try {
     const response = await fetch(`http://localhost/api/shop?playerID=${playerId}`, {
       method: 'GET',
@@ -45,22 +52,26 @@ const fetchCoins = async () => {
     })
 
     if (!response.ok) {
-      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`)
+      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
     }
 
-    const coins = await response.json()
+    const coins = await response.json();
 
-    console.log('Coins:', coins)
-    return coins
+    console.log('Coins:', coins);
+    return coins;
   } catch (error) {
-    console.error('Fehler beim Abrufen der Coins:', error)
+    console.error('Fehler beim Abrufen der Coins:', error);
   }
 }
 
-const updateCoins = async (skinPrice: number) => {
+const updateCoins = async (skinPrice: number): Promise<boolean> => {
   if (!playerId && !coins.value) {
-    console.log('Player ID is not set or no coins. Cannot update coins.')
-    return
+    console.log('Player ID is not set or no coins. Cannot update coins.');
+    return false;
+  }
+  if (coins.value < skinPrice) {
+    console.log('Not enough coins to purchase skin.');
+    return false;
   }
   try {
     const response = await fetch('http://localhost/api/shop', {
@@ -76,19 +87,21 @@ const updateCoins = async (skinPrice: number) => {
     })
 
     if (!response.ok) {
-      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`)
+      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+      return false;
     }
-    coins.value = await response.json()
-    console.log('Coins updated successfully. New Coins:', coins.value)
+    coins.value = await response.json();
+    console.log('Coins updated successfully. New Coins:', coins.value);
+    return true;
   } catch (error) {
-    console.error('Error updating coins :', error)
+    console.error('Error updating coins :', error);
+    return false;
   }
 }
 
 onMounted(() => {
   fetchCoins().then((playerCoins) => {
     coins.value = playerCoins;
-    updateCoins(price);
   });
 })
 </script>
