@@ -4,16 +4,16 @@
       <div class="board right">
         <h2 class="board-title">Leaderboard</h2>
         <div class="leader-box">
-          <StatCard :id="1" name="Tino" :points="1234"  />
-          <StatCard :id="2" name="Robin" :points="1234" />
-          <StatCard :id="3" name="Herr Fischer" :points="1234" />
-          <StatCard :id="4" name="Philipp" :points="2" />
-          <StatCard :id="5" name="Jonah" :points="312" />
-          <StatCard :id="6" name="Fischer" :points="54324" />
-          <StatCard :id="7" name="Herr Robin Fischer" :points="643" />
-          <StatCard :id="8" name="Herr Mann" :points="443" />
-          <StatCard :id="9" name="Fischers Fritz" :points="645" />
-          <StatCard :id="10" name="Fischermans Friend" :points="6" />
+          <StatCard :id="1" name="Tino" />
+          <StatCard :id="2" name="Robin" />
+          <StatCard :id="3" name="Herr Fischer" />
+          <StatCard :id="4" name="Philipp" />
+          <StatCard :id="5" name="Jonah" />
+          <StatCard :id="6" name="Fischer" />
+          <StatCard :id="7" name="Herr Robin Fischer" />
+          <StatCard :id="8" name="Herr Mann" />
+          <StatCard :id="9" name="Fischers Fritz" />
+          <StatCard :id="10" name="Fischermans Friend" />
         </div>
       </div>
 
