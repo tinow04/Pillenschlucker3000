@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
   isActive: false
 });
 
-const emit = defineEmits<{ (e: 'click'): void }>()
+const emit = defineEmits<{ (e: 'click'): void }>();
 
 function handleClick() {
   emit('click');

@@ -56,48 +56,52 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import ButtonComponent from './Button.vue'
+import { ref, onMounted } from 'vue';
+import ButtonComponent from './Button.vue';
 
-import skin1PathGIF from '@/assets/GIFs/Angel.gif'
-import skin1PathPNG from '@/assets/PNGs/Angel2.png'
-import skin2PathGIF from '@/assets/GIFs/Cheese.gif'
-import skin2PathPNG from '@/assets/PNGs/Cheese2.png'
-import skin3PathGIF from '@/assets/GIFs/Deathstar.gif'
-import skin3PathPNG from '@/assets/PNGs/Deathstart2.png'
-import skin4PathGIF from '@/assets/GIFs/Earth.gif'
-import skin4PathPNG from '@/assets/PNGs/Earth2.png'
-import skin5PathGIF from '@/assets/GIFs/Energy.gif'
-import skin5PathPNG from '@/assets/PNGs/Energy2.png'
-import skin6PathGIF from '@/assets/GIFs/Fish.gif'
-import skin6PathPNG from '@/assets/PNGs/Fish2.png'
-import skin7PathGIF from '@/assets/GIFs/Galaxy.gif'
-import skin7PathPNG from '@/assets/PNGs/GalaxyShiny2.png'
-import skin8PathGIF from '@/assets/GIFs/Hog.gif'
-import skin8PathPNG from '@/assets/PNGs/Hog2.png'
-import skin9PathGIF from '@/assets/GIFs/MissPacman.gif'
-import skin9PathPNG from '@/assets/PNGs/MissPacman2.png'
-import skin10PathGIF from '@/assets/GIFs/Moon.gif'
-import skin10PathPNG from '@/assets/PNGs/Moon2.png'
-import skin11PathGIF from '@/assets/GIFs/Pizza.gif'
-import skin11PathPNG from '@/assets/PNGs/Pizza2.png'
-import skin12PathGIF from '@/assets/GIFs/Pokeball.gif'
-import skin12PathPNG from '@/assets/PNGs/Pokeball2.png'
-import skin13PathGIF from '@/assets/GIFs/Shrek.gif'
-import skin13PathPNG from '@/assets/PNGs/Shrek2.png'
-import skin14PathGIF from '@/assets/GIFs/Tomato.gif'
-import skin14PathPNG from '@/assets/PNGs/Tomato2.png'
-import skin15PathGIF from '@/assets/GIFs/pacman.gif'
-import skin15PathPNG from '@/assets/PNGs/Pacman2.png'
+import skin1PathGIF from '@/assets/GIFs/Angel.gif';
+import skin1PathPNG from '@/assets/PNGs/Angel2.png';
+import skin2PathGIF from '@/assets/GIFs/Cheese.gif';
+import skin2PathPNG from '@/assets/PNGs/Cheese2.png';
+import skin3PathGIF from '@/assets/GIFs/Deathstar.gif';
+import skin3PathPNG from '@/assets/PNGs/Deathstart2.png';
+import skin4PathGIF from '@/assets/GIFs/Earth.gif';
+import skin4PathPNG from '@/assets/PNGs/Earth2.png';
+import skin5PathGIF from '@/assets/GIFs/Energy.gif';
+import skin5PathPNG from '@/assets/PNGs/Energy2.png';
+import skin6PathGIF from '@/assets/GIFs/Fish.gif';
+import skin6PathPNG from '@/assets/PNGs/Fish2.png';
+import skin7PathGIF from '@/assets/GIFs/Galaxy.gif';
+import skin7PathPNG from '@/assets/PNGs/GalaxyShiny2.png';
+import skin8PathGIF from '@/assets/GIFs/Hog.gif';
+import skin8PathPNG from '@/assets/PNGs/Hog2.png';
+import skin9PathGIF from '@/assets/GIFs/MissPacman.gif';
+import skin9PathPNG from '@/assets/PNGs/MissPacman2.png';
+import skin10PathGIF from '@/assets/GIFs/Moon.gif';
+import skin10PathPNG from '@/assets/PNGs/Moon2.png';
+import skin11PathGIF from '@/assets/GIFs/Pizza.gif';
+import skin11PathPNG from '@/assets/PNGs/Pizza2.png';
+import skin12PathGIF from '@/assets/GIFs/Pokeball.gif';
+import skin12PathPNG from '@/assets/PNGs/Pokeball2.png';
+import skin13PathGIF from '@/assets/GIFs/Shrek.gif';
+import skin13PathPNG from '@/assets/PNGs/Shrek2.png';
+import skin14PathGIF from '@/assets/GIFs/Tomato.gif';
+import skin14PathPNG from '@/assets/PNGs/Tomato2.png';
+import skin15PathGIF from '@/assets/GIFs/pacman.gif';
+import skin15PathPNG from '@/assets/PNGs/Pacman2.png';
 
 const selectedSkinStorage = 'selectedSkin:v2';
 
-const skinsUnlocked = ref<Set<number>>(new Set())
-const KeyUnlocked = 'skinsUnlocked:v1'
+const skinsUnlocked = ref<Set<number>>(new Set());
+const KeyUnlocked = 'skinsUnlocked:v1';
+
+const emit = defineEmits<{
+  (e: 'updateCoins', price: number, done: (success: boolean) => void): void
+}>();
 
 defineOptions({
   name: 'SkinsComponent'
-})
+});
 
 interface Skin {
   name: string;
@@ -106,7 +110,7 @@ interface Skin {
   price : number;
 }
 
-const ButtonID = ref<number | null>(null)
+const ButtonID = ref<number | null>(null);
 
 const displayedSkins :Skin[]= [
   { name: 'Angel', srcGIF: skin1PathGIF, srcPNG: skin1PathPNG, price: 20000 },
@@ -124,14 +128,13 @@ const displayedSkins :Skin[]= [
   { name: 'Shrek', srcGIF: skin13PathGIF, srcPNG: skin13PathPNG, price: 2000 },
   { name: 'Tomato', srcGIF: skin14PathGIF, srcPNG: skin14PathPNG, price: 750 },
   { name: 'Pacman', srcGIF: skin15PathGIF, srcPNG: skin15PathPNG, price: 0 }
-]
+];
 
-const playerPills = ref<number>(1000)
-const defaultIndex = displayedSkins.findIndex(s => s.price === 0) + 1
-const defaultSelectedSkin = displayedSkins[defaultIndex - 1].srcGIF
+const defaultIndex = displayedSkins.findIndex(s => s.price === 0) + 1;
+const defaultSelectedSkin = displayedSkins[defaultIndex - 1].srcGIF;
 
-const previewVisible = ref(false)
-const previewSrc     = ref<string | null>(null)
+const previewVisible = ref(false);
+const previewSrc     = ref<string | null>(null);
 
 
 onMounted(() => {
@@ -153,7 +156,7 @@ onMounted(() => {
     ButtonID.value = defaultIndex
     localStorage.setItem(selectedSkinStorage, defaultSelectedSkin)
   }
-})
+});
 
 function handleSelect(id: number, srcGIF: string) {
   ButtonID.value = id
@@ -179,13 +182,18 @@ function closePreview() {
 }
 
 function buySkin(id: number, price: number) {
-  if (playerPills.value < price) {
-    alert('Nicht genug Pillen!')
-    return
-  }
-  playerPills.value -= price
-  skinsUnlocked.value.add(id)
-  localStorage.setItem(KeyUnlocked, JSON.stringify(Array.from(skinsUnlocked.value)))
+  emit('updateCoins', price, (success) => {
+    if (success) {
+      skinsUnlocked.value.add(id);
+      localStorage.setItem(
+        KeyUnlocked,
+        JSON.stringify(Array.from(skinsUnlocked.value))
+      )
+      console.log('Skin gekauft und Coins geupdated.')
+    } else {
+      console.log('Konnte Coins nicht updaten – Skin nicht freigeschaltet.')
+    }
+  })
 }
 
 
