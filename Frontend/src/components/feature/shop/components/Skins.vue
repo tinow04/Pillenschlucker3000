@@ -304,7 +304,7 @@ function isSkinUnlocked(id: number): boolean {
 
 .price-tag {
   color: grey;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: bold;
   text-shadow: 0 0 4px #000;
   x: 2.5%;
