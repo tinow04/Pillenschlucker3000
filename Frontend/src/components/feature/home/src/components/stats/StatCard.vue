@@ -11,6 +11,7 @@ import {onMounted, ref} from 'vue';
   }>();
 
   const highscore = ref(0);
+  const user = ref(0);
 
   const formatScore = (val: number | null): string => {
     return val !== null ? val.toLocaleString("de-DE") : "...";
@@ -31,11 +32,15 @@ import {onMounted, ref} from 'vue';
       }
 
       const data = await response.json(); // z.B. { score: 3123 }
-      highscore.value = data.score;
 
-      //console.log('Highscore:', highscore);
-      data.value = highscore;
-      //console.log("highscore.value: ", highscore.value);
+      console.log("data.score: ", data.score);
+      console.log("data.username: ", data.name);
+
+      highscore.value = data.score;
+      user.value = data.name;
+
+      console.log('Highscore:', highscore);
+      console.log("highscore.value: ", highscore.value);
       return highscore;
     } catch (error) {
       console.error('Fehler beim Abrufen des Highscores:', error);
@@ -47,7 +52,7 @@ import {onMounted, ref} from 'vue';
 <template>
   <span class="grid">
     <a class="id"> {{ props.id }}. </a>
-    <a class="name"> {{ props.name }} </a>
+    <a class="name"> {{ user }} </a>
     <a class="points"> {{ formatScore(highscore) }} </a>
   </span>
 </template>
