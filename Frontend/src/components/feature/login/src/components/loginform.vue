@@ -53,6 +53,7 @@ const handleLoginSubmit = async () => {
     }
 
     userStore.setUserId(data.user.id);
+    userStore.setUsername(data.user.name);
     showToast("Login erfolgreich", "success");
     router.push("/");
   } catch (error) {
