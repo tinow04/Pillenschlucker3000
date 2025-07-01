@@ -11,6 +11,7 @@
   import Pinky from '@/assets/Pinky.png';  //Kann trotzdem gestartet werden und funktionieren
   import Inky from '@/assets/Inky.png';
   import Clyde from '@/assets/Clyde.png';
+  import VulnerableGhostGIF from '@/assets/GIFs/VulnerableGhost.gif';
   import VulnerableGhost from '@/assets/Vulnerable.png';
   import { useUserStore } from '@/piniaStore';
 
@@ -50,6 +51,11 @@
   let powerUpTimeoutStart: number;
   let powerUpTimeoutDuration: number = 10000;
   let powerUpTimeLeft: number = 0;
+
+  let vulnerableTimeoutId: number | undefined;
+  let vulnerableStartTime: number;
+  let vulnerableDelay: number = 7000; // 7 Sekunden
+  let vulnerableTimeLeft: number = vulnerableDelay;
 
   let oldHighscore: number = 0;
 
@@ -354,12 +360,23 @@
     ghosts.value[2].image = VulnerableGhost;
     ghosts.value[3].image = VulnerableGhost;
 
+    vulnerableStartTime = Date.now();
+    vulnerableDelay = 7000;
+    vulnerableTimeoutId = window.setTimeout(() => {
+      ghosts.value[0].image = VulnerableGhostGIF;
+      ghosts.value[1].image = VulnerableGhostGIF;
+      ghosts.value[2].image = VulnerableGhostGIF;
+      ghosts.value[3].image = VulnerableGhostGIF;
+    }, vulnerableDelay);
+
     powerUpTimeoutStart = Date.now();
     powerUpTimeoutDuration = 10000;
     timeoutId = window.setTimeout(() => {
       resetPowerUp();
     }, powerUpTimeoutDuration);
   }
+
+
 
   function resetPowerUp(){
     powerUp = false;
@@ -375,6 +392,7 @@
 
     powerUpTimeLeft = 0;
     powerUpTimeoutDuration = 10000;
+    vulnerableDelay = 7000;
   }
 
   function checkPoints(){
@@ -463,8 +481,10 @@
   function pausePowerUp(){
     if (powerUp){
       clearTimeout(timeoutId);
+      clearTimeout(vulnerableTimeoutId);
       const timePassed = Date.now() - powerUpTimeoutStart;
       powerUpTimeLeft = powerUpTimeoutDuration - timePassed;
+      vulnerableTimeLeft = vulnerableDelay - timePassed
       console.log("PowerUp paused, time left: " + powerUpTimeLeft);
     }
   }
@@ -477,6 +497,16 @@
         resetPowerUp();
       }, powerUpTimeoutDuration);
       powerUpTimeLeft = 0;
+      if (vulnerableTimeLeft>0){
+        vulnerableStartTime = Date.now();
+        vulnerableTimeoutId = window.setTimeout(() => {
+          ghosts.value[0].image = VulnerableGhostGIF;
+          ghosts.value[1].image = VulnerableGhostGIF;
+          ghosts.value[2].image = VulnerableGhostGIF;
+          ghosts.value[3].image = VulnerableGhostGIF;
+        }, vulnerableDelay);
+        vulnerableTimeLeft = 0;
+      }
       console.log("Game resumed");
     }
   }
