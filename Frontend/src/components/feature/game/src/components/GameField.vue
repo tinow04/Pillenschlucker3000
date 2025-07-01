@@ -468,7 +468,8 @@
 
   window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
-  if (!isGameStarted.value && ['w', 'a', 's', 'd'].includes(key)) {
+  const startKeys = ['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'];
+  if (!isGameStarted.value && startKeys.includes(key)) {
     startGame();
   }
   if (e.key === "Escape") {
