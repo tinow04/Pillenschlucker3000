@@ -178,6 +178,9 @@ function handleSelect(id: number, srcGIF: string) {
   }))
 }
 
+function changeValueOfButton(id: number) {
+  ButtonID.value = id
+}
 
 function showPreview(srcGIF: string) {
   previewSrc.value     = srcGIF

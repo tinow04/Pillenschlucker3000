@@ -138,11 +138,16 @@
     s: 'down',
     a: 'left',
     d: 'right',
+    arrowup: 'up',
+    arrowdown: 'down',
+    arrowleft: 'left',
+    arrowright: 'right',
   };
 
   window.addEventListener('keydown', (e) => {
-    if (keyToDirection[e.key]) {
-      nextDirection = keyToDirection[e.key];
+    const key = e.key.toLowerCase();
+    if (keyToDirection[key]) {
+      nextDirection = keyToDirection[key];
     }
   });
 
