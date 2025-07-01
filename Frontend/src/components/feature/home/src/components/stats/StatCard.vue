@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue';
-import {useUserStore} from "@/piniaStore";
-
 
   onMounted(() => {
     fetchScore();
@@ -15,8 +13,6 @@ import {useUserStore} from "@/piniaStore";
   const highscore = ref(0);
   const user = ref("Could not load data");
 
-  const userStore = useUserStore();
-
   const formatScore = (val: number | null): string => {
     return val !== null ? val.toLocaleString("de-DE") : "...";
   };
@@ -24,7 +20,6 @@ import {useUserStore} from "@/piniaStore";
   const fetchScore = async () => {
     const rankID = props.id
     try {
-      console.log("userId: ", userStore.userId);
       const response = await fetch(`http://localhost/api/homepage/leaderboard?rankID=${rankID}`, {
         method: 'GET',
         headers: {
@@ -38,14 +33,9 @@ import {useUserStore} from "@/piniaStore";
 
       const data = await response.json(); // z.B. { score: 3123 }
 
-      console.log("data.score: ", data.score);
-      console.log("data.username: ", data.name);
-
       highscore.value = data.score;
       user.value = data.name;
 
-      console.log('Highscore:', highscore);
-      console.log("highscore.value: ", highscore.value);
       return highscore;
     } catch (error) {
       console.error('Fehler beim Abrufen des Highscores:', error);

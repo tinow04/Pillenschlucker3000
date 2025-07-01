@@ -18,16 +18,16 @@
       </div>
       <div class="board">
         <h2 class="board-title">Statistics</h2>
-        <div v-if="playerID == null">
+        <div class="log-in-message" v-if="playerID == null">
           <a > Log in to see data </a>
         </div>
         <div class="stats-container" v-else>
-          <LeaderboardCard tag="Highscore" stat="12324"/>
-          <LeaderboardCard tag="Last Score" stat="12321"/>
-          <LeaderboardCard tag="Games Played" stat="54"/>
-          <LeaderboardCard tag="Total Play Time" stat="02h 21min"/>
-          <LeaderboardCard tag="Highest Level" stat="12"/>
-          <LeaderboardCard tag="Total Ghosts Eaten" stat="34"/>
+          <LeaderboardCard :statID="1" tag="Highscore" stat="12324"/>
+          <LeaderboardCard :statID="2" tag="Last Score" stat="12321"/>
+          <LeaderboardCard :statID="3" tag="Games Played" stat="54"/>
+          <LeaderboardCard :statID="4" tag="Total Play Time" stat="02h 21min"/>
+          <LeaderboardCard :statID="5" tag="Highest Level" stat="12"/>
+          <LeaderboardCard :statID="6" tag="Total Ghosts Eaten" stat="34"/>
         </div>
       </div>
     </div>
@@ -35,19 +35,15 @@
 </template>
 
 <script setup lang="ts">
-import StatCard from "@/components/feature/home/src/components/stats/StatCard.vue";
-import LeaderboardCard from "@/components/feature/home/src/components/stats/LeaderboardCard.vue";
-import {useUserStore} from "@/piniaStore.js";
+  import StatCard from "@/components/feature/home/src/components/stats/StatCard.vue";
+  import LeaderboardCard from "@/components/feature/home/src/components/stats/LeaderboardCard.vue";
+  import {useUserStore} from "@/piniaStore.ts";
 
-const userStore = useUserStore();
-const playerID = userStore.userId;
-console.log("playerID = ", playerID);
-
+  const userStore = useUserStore();
+  const playerID = userStore.userId;
 </script>
 
 <style scoped>
-
-
 .fixed-wrapper {
   width: 100%;
   display: flex;
@@ -135,5 +131,8 @@ console.log("playerID = ", playerID);
   margin-bottom: 0.5rem;
   font-size: 2rem;
   gap: 0.5rem;
+}
+.log-in-message {
+  font-size: 3rem;
 }
 </style>
