@@ -32,7 +32,6 @@ const router = useRouter();
 const userStore = useUserStore();
 const playerId = userStore.userId;
 const coins = ref(30000);
-const price: number = 1000;
 
 function switchPageHome() {
   router.push('/');
@@ -103,7 +102,6 @@ const updateCoins = async (skinPrice: number): Promise<boolean> => {
 onMounted(() => {
   fetchCoins().then((playerCoins) => {
     coins.value = playerCoins;
-    updateCoins(price);
   });
 })
 </script>
