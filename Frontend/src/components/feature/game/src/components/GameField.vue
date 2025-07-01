@@ -38,6 +38,9 @@
   const pointsEatenTotal = ref(0);
   const ghostsEatenTotal = ref(0);
 
+  let startTime: number | null = null;
+  let timePlayed: number = 0;
+
   let pointsEaten : number = 0;
   let numberOfPoints : number = 0;
   let powerUp: boolean = false;
@@ -138,6 +141,7 @@
 
   function startGame() {
     isGameStarted.value = true;
+    startTime = Date.now();
   }
 
   function gameLoop(timestamp: number) {
@@ -242,6 +246,10 @@
         highscore.value = oldHighscore;
       }
     });
+    if (!gamePaused.value && startTime !== null) {
+      timePlayed += Date.now() - startTime;
+      console.log("Time played in ms: " + timePlayed);
+    }
     sendGameData();
   }
 
@@ -427,12 +435,18 @@
     pointsEatenTotal.value = 0;
     invulnerable.value = false;
     isGameStarted.value = false;
+    startTime = Date.now();
+    timePlayed = 0;
 
     gameOver.value = false;
     requestAnimationFrame(gameLoop);
   }
 
   function pauseGame() {
+    if (startTime !== null) {
+      timePlayed += Date.now() - startTime;
+      console.log("Time played in ms: " + timePlayed);
+    }
     gamePaused.value = true;
     console.log("Game paused");
     pausePowerUp();
@@ -442,6 +456,7 @@
     gamePaused.value = false;
     console.log("Game resumed");
     resumePowerUp();
+    startTime = Date.now();
     requestAnimationFrame(gameLoop);
   }
 
@@ -468,7 +483,8 @@
 
   window.addEventListener('keydown', (e) => {
   const key = e.key.toLowerCase();
-  if (!isGameStarted.value && ['w', 'a', 's', 'd'].includes(key)) {
+  const startKeys = ['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'];
+  if (!isGameStarted.value && startKeys.includes(key)) {
     startGame();
   }
   if (e.key === "Escape") {
@@ -500,6 +516,7 @@
           ghostsEaten: ghostsEatenTotal.value,
           levelsWon: level.value,
           pillsSwallowed: pointsEatenTotal.value,
+          timePlayed: timePlayed
         }),
       });
 

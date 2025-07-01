@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
+  import { useRouter } from 'vue-router';
+  import { ref } from 'vue';
+
+  const visualScore = ref("");
+  const visualGhostsEaten = ref("");
+  const visualPillsSwallowed = ref("");
+  const visualHighscore = ref("");
+  const visualLevel = ref("");
 
   const props = defineProps<{
     score: number,
@@ -8,6 +15,16 @@ import { useRouter } from 'vue-router';
     ghostsEatenTotal: number,
     pointsEatenTotal: number
   }>();
+
+  const formatScore = (val: number | null): string => {
+    return val !== null ? val.toLocaleString("de-DE") : "...";
+  };
+  visualScore.value = formatScore(props.score);
+  visualHighscore.value = formatScore(props.highscore);
+  visualLevel.value = formatScore(props.level);
+  visualGhostsEaten.value = formatScore(props.ghostsEatenTotal);
+  visualPillsSwallowed.value = formatScore(props.pointsEatenTotal);
+
   const emit = defineEmits(['restart']);
   const router = useRouter();
 
@@ -20,11 +37,11 @@ import { useRouter } from 'vue-router';
     <div class="gameover-overlay">
         <div class="gameover-content">
             <h1>Game Over</h1>
-            <p>Highscore: {{ highscore }}</p>
-            <p>Points: {{ score }}</p>
-            <p>Levels won: {{ level }}</p>
-            <p>Ghosts eaten: {{ ghostsEatenTotal }}</p>
-            <p>Pills swallowed: {{ pointsEatenTotal }}</p>
+            <p>Highscore: {{ visualHighscore }}</p>
+            <p>Points: {{ visualScore }}</p>
+            <p>Levels won: {{ visualLevel }}</p>
+            <p>Ghosts eaten: {{ visualGhostsEaten }}</p>
+            <p>Pills swallowed: {{ visualPillsSwallowed }}</p>
             <button class="button restart" @click="$emit('restart')">Restart</button>
             <button class="button home" @click="goHome">Home</button>
         </div>
