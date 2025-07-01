@@ -7,14 +7,12 @@
       class="flex-container"
       :class="{ locked: !isSkinUnlocked(index + 1) }"
     >
-      <!-- Skin-Bild (GIF wenn aktiv, sonst PNG) -->
       <img
         :src="ButtonID === index + 1 ? skin.srcGIF : skin.srcPNG"
         class="stylingGIF"
         :alt="skin.name"
       />
 
-      <!-- 1) Gesperrt: Lock-Overlay mit Klick zum Preview -->
       <template v-if="!isSkinUnlocked(index + 1)">
         <div class="lock-overlay" @click="showPreview(skin.srcGIF)">
           <div class="lock-icon">
@@ -31,7 +29,6 @@
         </div>
       </template>
 
-      <!-- 2) Freigeschaltet: Auswählen/Active-Button -->
       <template v-else>
         <ButtonComponent
           :label="ButtonID === index + 1 ? 'ACTIVE' : 'SELECT'"
@@ -44,7 +41,6 @@
     </div>
   </div>
 
-  <!-- Preview-Popup (global, einmalig) -->
   <template v-if="previewVisible">
     <div class="modal-backdrop" @click="closePreview">
       <div class="modal-content" @click.stop>
@@ -58,6 +54,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import ButtonComponent from './Button.vue';
+import { useUserStore } from '@/piniaStore';
+
 
 import skin1PathGIF from '@/assets/GIFs/Angel.gif';
 import skin1PathPNG from '@/assets/PNGs/Angel2.png';
@@ -93,7 +91,10 @@ import skin15PathPNG from '@/assets/PNGs/Pacman2.png';
 const selectedSkinStorage = 'selectedSkin:v2';
 
 const skinsUnlocked = ref<Set<number>>(new Set());
-const KeyUnlocked = 'skinsUnlocked:v1';
+
+
+const userStore = useUserStore();
+const playerId = userStore.userId;
 
 const emit = defineEmits<{
   (e: 'updateCoins', price: number, done: (success: boolean) => void): void
@@ -138,15 +139,24 @@ const previewSrc     = ref<string | null>(null);
 
 
 onMounted(() => {
-  const raw = localStorage.getItem(KeyUnlocked)
-  if (raw) {
-    skinsUnlocked.value = new Set<number>(JSON.parse(raw))
-  } else {
-    skinsUnlocked.value = new Set([ defaultIndex ])
-    localStorage.setItem(KeyUnlocked, JSON.stringify([ defaultIndex ]))
+  if(!playerId) {
+    skinsUnlocked.value.add(15);
   }
+  localStorage.removeItem('skinsUnlocked:v1');
+  for (let i = 1; i <= displayedSkins.length; i++) {
+    fetchSkin(i).then(isUnlocked => {
+      if (isUnlocked) {
+        skinsUnlocked.value.add(i);
+      }
+    });
+  }
+
+
   const storedSkin = localStorage.getItem(selectedSkinStorage)
-  if (storedSkin) {
+  if(!playerId){
+    ButtonID.value = defaultIndex
+    localStorage.setItem(selectedSkinStorage, defaultSelectedSkin)
+  } else if (storedSkin) {
     const i = displayedSkins.findIndex(s => s.srcGIF === storedSkin)
     ButtonID.value = i !== -1 ? i + 1 : defaultIndex
     if (i === -1) {
@@ -167,9 +177,6 @@ function handleSelect(id: number, srcGIF: string) {
   }))
 }
 
-function changeValueOfButton(id: number) {
-  ButtonID.value = id
-}
 
 function showPreview(srcGIF: string) {
   previewSrc.value     = srcGIF
@@ -185,10 +192,7 @@ function buySkin(id: number, price: number) {
   emit('updateCoins', price, (success) => {
     if (success) {
       skinsUnlocked.value.add(id);
-      localStorage.setItem(
-        KeyUnlocked,
-        JSON.stringify(Array.from(skinsUnlocked.value))
-      )
+      unlockSkin(id);
       console.log('Skin gekauft und Coins geupdated.')
     } else {
       console.log('Konnte Coins nicht updaten – Skin nicht freigeschaltet.')
@@ -201,6 +205,55 @@ function isSkinUnlocked(id: number): boolean {
   return skinsUnlocked.value.has(id)
 }
 
+const unlockSkin = async (id: number) => {
+  console.log("Unlocking skin with ID:", id);
+  try {
+    const response = await fetch('http://localhost/api/skin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        playerID: playerId,
+        skinID: id
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+    }
+
+    console.log('Skin unlocked successfully:', id);
+  } catch (error) {
+    console.error('Skin unlock failed: ', error);
+  }
+};
+
+const fetchSkin = async (id: number) => {
+  try {
+    const params = new URLSearchParams({
+      playerID: String(playerId),
+      skinID: String(id)
+    });
+    const response = await fetch(`http://localhost/api/skin?`+params.toString(), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+    }
+
+    const isUnlocked = await response.json();
+
+    console.log('Freigeschalten:', isUnlocked);
+    return isUnlocked;
+  } catch (error) {
+    console.error('Fehler beim Abrufen ob Skin freigeschalten ist:', error);
+  }
+};
 </script>
 
 
