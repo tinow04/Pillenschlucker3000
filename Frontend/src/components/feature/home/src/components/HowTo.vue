@@ -1,56 +1,64 @@
 <template>
-
-
-  <div class="popup">
-    <div class="popup-inner">
-      <button class="close" @click="$emit('close')">×</button>
-      <img src="" alt="How to play" class="howto-img" />
+  <div class="howto-overlay" @click.self="close">
+    <div class="howto-popup">
+      <button class="close-btn" @click="close">×</button>
+      <img src="@/assets/howto.png" alt="How To Anleitung" />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "HowToPopup"
+  name: 'HowToPopup',
+  emits: ['close'],
+  methods: {
+    close() {
+      this.$emit('close');
+    }
+  }
 };
 </script>
 
 <style scoped>
-.popup {
+.howto-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   z-index: 1000;
 }
-.popup-inner {
-  background: #222;
-  padding: 1rem;
-  border-radius: 1rem;
-  max-width: 90%;
-  max-height: 90%;
-  position: relative;
-}
-.close {
-  position: absolute;
-  top: 0.5rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 2rem;
-  cursor: pointer;
-}
-.howto-img {
-  max-width: 100%;
+
+.howto-popup {
+  background: #fff;
+  border-radius: 0.75rem;
+  max-width: 80vw;
   max-height: 80vh;
-  display: block;
-  margin: 0 auto;
+  overflow: auto;
+  position: relative;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  padding: 1.5rem;
 }
 
+.howto-popup img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.close-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  cursor: pointer;
+  line-height: 1;
+}
 </style>
