@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import {onMounted, ref} from 'vue';
+import {useUserStore} from "@/piniaStore";
+
 
   onMounted(() => {
     fetchScore();
@@ -11,7 +13,9 @@ import {onMounted, ref} from 'vue';
   }>();
 
   const highscore = ref(0);
-  const user = ref(0);
+  const user = ref("Could not load data");
+
+  const userStore = useUserStore();
 
   const formatScore = (val: number | null): string => {
     return val !== null ? val.toLocaleString("de-DE") : "...";
@@ -20,6 +24,7 @@ import {onMounted, ref} from 'vue';
   const fetchScore = async () => {
     const rankID = props.id
     try {
+      console.log("userId: ", userStore.userId);
       const response = await fetch(`http://localhost/api/homepage/leaderboard?rankID=${rankID}`, {
         method: 'GET',
         headers: {
