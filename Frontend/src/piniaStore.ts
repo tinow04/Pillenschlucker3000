@@ -8,14 +8,15 @@ export const useUserStore = defineStore('user', {
   actions: {
     setUserId(id) {
       this.userId = id
-      console.log("piniaStore: ", id, id, typeof id)
+      console.log("piniaStore: ", id, typeof id)
     },
     logout() {
       this.userId = null
     },
     setUsername(username) {
-      this.username = username
+      this.name = username
       console.log("piniaStore: ", username)
     },
-  }
+  },
+  persist: true
 })
