@@ -65,7 +65,7 @@ const fetchCoins = async () => {
 }
 
 const updateCoins = async (skinPrice: number): Promise<boolean> => {
-  if (!playerId && !coins.value) {
+  if (!playerId || !coins.value) {
     console.log('Player ID is not set or no coins. Cannot update coins.');
     return false;
   }

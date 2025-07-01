@@ -1,6 +1,10 @@
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
   import skin9Path from '@/assets/GIFs/pacman.gif';
+  import { useUserStore } from '@/piniaStore';
+
+  const userStore = useUserStore();
+  const playerId = userStore.userId;
 
   const selectedSkinStorage = 'selectedSkin:v2';
   const defaultSelectedSkin = skin9Path;
@@ -21,9 +25,13 @@
   if (!localStorage.getItem(selectedSkinStorage)) {localStorage.setItem(selectedSkinStorage, defaultSelectedSkin);}
 
 
+
   onMounted(() => {
-    /*selectedSkinSrc.value = localStorage.getItem('selectedSkinStorage') || ''*/
-    selectedSkinSrc.value = localStorage.getItem(selectedSkinStorage) || defaultSelectedSkin;
+    if(!playerId){
+      selectedSkinSrc.value = defaultSelectedSkin;
+    } else {
+      selectedSkinSrc.value = localStorage.getItem(selectedSkinStorage) || defaultSelectedSkin;
+    }
   })
 
 
@@ -130,11 +138,16 @@
     s: 'down',
     a: 'left',
     d: 'right',
+    arrowup: 'up',
+    arrowdown: 'down',
+    arrowleft: 'left',
+    arrowright: 'right',
   };
 
   window.addEventListener('keydown', (e) => {
-    if (keyToDirection[e.key]) {
-      nextDirection = keyToDirection[e.key];
+    const key = e.key.toLowerCase();
+    if (keyToDirection[key]) {
+      nextDirection = keyToDirection[key];
     }
   });
 
