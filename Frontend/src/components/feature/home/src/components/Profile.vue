@@ -1,12 +1,14 @@
 <template>
   <div ref="container" class="profile-picture">
-    <span class="username">{{ username }}</span>
+    <span v-if="username" class="username">{{ username }}</span>
     <button class="profile-button" @click="togglePopup">
-      <img src="@/assets/profile.png" alt="Image could not load" />
+      <img src="@/assets/profile.png" alt="Profilbild" />
     </button>
     <div v-if="showPopup" class="profile-popup">
       <p v-if="!username">Noch kein Account?</p>
-      <router-link v-if="!username" to="/login" class="popup-link">Login</router-link>
+      <router-link v-if="!username" to="/login" class="popup-link">
+        Login
+      </router-link>
       <div v-else>
         <p>Eingeloggt als {{ username }}</p>
         <a class="popup-link" @click.prevent="logout">Abmelden</a>
@@ -15,59 +17,76 @@
   </div>
 </template>
 
-<script>
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import { showToast } from "@/components/devPanel/ToastManager.vue";
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useUserStore } from '@/piniaStore';
+import { showToast } from '@/components/devPanel/ToastManager.vue';
 
-export default {
-  name: "ProfileComponent",
-  setup() {
-    const showPopup = ref(false);
-    const username = ref(null);
-    const container = ref(null);
+const showPopup = ref(false);
+const username = ref<string | null>(null);
+const container = ref<HTMLElement | null>(null);
 
-    const togglePopup = () => {
-      showPopup.value = !showPopup.value;
-    };
+const userStore = useUserStore();
+const playerId = userStore.userId;
 
-    const logout = () => {
-      localStorage.removeItem("user");
-      username.value = null;
-      showPopup.value = false;
-      showToast("Erfolgreich abgemeldet", "info");
-    };
-
-    const handleClickOutside = (event) => {
-      if (
-        showPopup.value &&
-        container.value &&
-        !container.value.contains(event.target)
-      ) {
-        showPopup.value = false;
-      }
-    };
-
-    onMounted(() => {
-      const user = localStorage.getItem("user");
-      if (user) {
-        username.value = JSON.parse(user).username;
-      }
-      document.addEventListener("mousedown", handleClickOutside);
-    });
-
-    onBeforeUnmount(() => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    });
-
-    return {
-      showPopup,
-      togglePopup,
-      username,
-      logout,
-      container
-    };
-  },
+const togglePopup = () => {
+  showPopup.value = !showPopup.value;
 };
+
+const logout = async () => {
+  try {
+    const res = await fetch('http://localhost/api/logout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ playerID: playerId }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    userStore.$reset();
+    username.value = null;
+    showPopup.value = false;
+    showToast('Erfolgreich abgemeldet', 'info');
+  } catch (err) {
+    console.error('Fehler beim Abmelden:', err);
+    showToast('Fehler beim Abmelden', 'error');
+  }
+};
+
+const fetchUsername = async () => {
+  if (!playerId) return;
+  try {
+    const res = await fetch(
+      `http://localhost/api/profile?playerID=${playerId}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    username.value = data.username;
+  } catch (err) {
+    console.error('Fehler beim Abrufen des Benutzernamens:', err);
+  }
+};
+
+const handleClickOutside = (ev: MouseEvent) => {
+  if (
+    showPopup.value &&
+    container.value &&
+    !container.value.contains(ev.target as Node)
+  ) {
+    showPopup.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchUsername();
+  document.addEventListener('mousedown', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', handleClickOutside);
+});
 </script>
 
 <style scoped>
@@ -79,7 +98,6 @@ export default {
   align-items: center;
   gap: 0.5rem;
 }
-
 .username {
   font-size: 2rem;
   color: white;
@@ -90,13 +108,11 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .profile-button {
   background: none;
   border: none;
   cursor: pointer;
 }
-
 .profile-button img {
   width: 4.5rem;
   height: 4.5rem;
@@ -104,11 +120,9 @@ export default {
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
   transition: transform 0.2s ease-in-out;
 }
-
 .profile-button img:hover {
   transform: scale(1.1);
 }
-
 .profile-popup {
   position: absolute;
   top: 110%;
@@ -120,19 +134,16 @@ export default {
   z-index: 1000;
   text-align: center;
 }
-
 .profile-popup p {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.5rem;
   font-size: 1.4rem;
 }
-
 .popup-link {
   color: yellow;
   text-decoration: none;
   font-size: 1.5rem;
   cursor: pointer;
 }
-
 .popup-link:hover {
   text-decoration: underline;
 }
