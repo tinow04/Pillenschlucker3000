@@ -55,6 +55,7 @@
 import { ref, onMounted } from 'vue';
 import ButtonComponent from './Button.vue';
 import { useUserStore } from '@/piniaStore';
+import { showToast } from "@/components/devPanel/ToastManager.vue";
 
 
 import skin1PathGIF from '@/assets/GIFs/Angel.gif';
@@ -194,7 +195,9 @@ function buySkin(id: number, price: number) {
       skinsUnlocked.value.add(id);
       unlockSkin(id);
       console.log('Skin gekauft und Coins geupdated.')
+      showToast("Skin gekauft!", "success");
     } else {
+      showToast("Nicht genügend Pillen 🟡", "error");
       console.log('Konnte Coins nicht updaten – Skin nicht freigeschaltet.')
     }
   })
