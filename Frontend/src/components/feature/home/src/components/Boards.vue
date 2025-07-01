@@ -1,7 +1,7 @@
 <template>
   <div class="fixed-wrapper">
     <div class="board-container">
-      <div class="board right">
+      <div class="board">
         <h2 class="board-title">Leaderboard</h2>
         <div class="leader-box">
           <StatCard :id="1" name="Tino" />
@@ -16,57 +16,34 @@
           <StatCard :id="10" name="Fischermans Friend" />
         </div>
       </div>
-
-
-      <div class="board left">
+      <div class="board">
         <h2 class="board-title">Statistics</h2>
-        <div class="stats-container">
-          <div class="stat-group">
-            <p class="stat-title">Highscore</p>
-            <p class="stat-value">59,200</p>
-          </div>
-          <div class="stat-group">
-            <p class="stat-title">Last Score</p>
-            <p class="stat-value">12,600</p>
-          </div>
-          <div class="stat-group">
-            <p class="stat-title">Games Played</p>
-            <p class="stat-value">31</p>
-          </div>
-          <div class="stat-group">
-            <p class="stat-title">Total Play Time</p>
-            <p class="stat-value">01h 21min</p>
-          </div>
-          <div class="stat-group">
-            <p class="stat-title">Highest Level</p>
-            <p class="stat-value">7</p>
-          </div>
-          <div class="stat-group">
-            <p class="stat-title">Ghosts Eaten</p>
-            <p class="stat-value">21</p>
-          </div>
-          <div class="stat-group">
-            <p class="stat-title">Most Deadly Ghost</p>
-            <p class="stat-value">Pinky</p>
-          </div>
+        <div class="log-in-message" v-if="playerID == null">
+          <a > Log in to see data </a>
+        </div>
+        <div class="stats-container" v-else>
+          <LeaderboardCard :statID="1" tag="Highscore" stat="12324"/>
+          <LeaderboardCard :statID="2" tag="Last Score" stat="12321"/>
+          <LeaderboardCard :statID="3" tag="Games Played" stat="54"/>
+          <LeaderboardCard :statID="4" tag="Total Play Time" stat="02h 21min"/>
+          <LeaderboardCard :statID="5" tag="Highest Level" stat="12"/>
+          <LeaderboardCard :statID="6" tag="Total Ghosts Eaten" stat="34"/>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import StatCard from "@/components/feature/home/src/components/stats/StatCard.vue";
+<script setup lang="ts">
+  import StatCard from "@/components/feature/home/src/components/stats/StatCard.vue";
+  import LeaderboardCard from "@/components/feature/home/src/components/stats/LeaderboardCard.vue";
+  import {useUserStore} from "@/piniaStore.ts";
 
-export default {
-  name: "BoardsComponent",
-  components: {StatCard},
-};
+  const userStore = useUserStore();
+  const playerID = userStore.userId;
 </script>
 
 <style scoped>
-
-
 .fixed-wrapper {
   width: 100%;
   display: flex;
@@ -148,11 +125,15 @@ export default {
 }
 
 .leader-box {
+  margin-top: 3rem;
   margin-left: 0.5rem;
   display: grid;
   justify-content: space-between;
   margin-bottom: 0.5rem;
   font-size: 2rem;
   gap: 0.5rem;
+}
+.log-in-message {
+  font-size: 3rem;
 }
 </style>

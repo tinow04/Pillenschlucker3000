@@ -11,7 +11,7 @@ import {onMounted, ref} from 'vue';
   }>();
 
   const highscore = ref(0);
-  const user = ref(0);
+  const user = ref("Could not load data");
 
   const formatScore = (val: number | null): string => {
     return val !== null ? val.toLocaleString("de-DE") : "...";
@@ -33,14 +33,9 @@ import {onMounted, ref} from 'vue';
 
       const data = await response.json(); // z.B. { score: 3123 }
 
-      console.log("data.score: ", data.score);
-      console.log("data.username: ", data.name);
-
       highscore.value = data.score;
       user.value = data.name;
 
-      console.log('Highscore:', highscore);
-      console.log("highscore.value: ", highscore.value);
       return highscore;
     } catch (error) {
       console.error('Fehler beim Abrufen des Highscores:', error);
