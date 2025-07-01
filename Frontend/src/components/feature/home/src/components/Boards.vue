@@ -125,6 +125,7 @@
 }
 
 .leader-box {
+  margin-top: 3rem;
   margin-left: 0.5rem;
   display: grid;
   justify-content: space-between;

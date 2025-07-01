@@ -39,6 +39,7 @@ import {onMounted, ref} from "vue";
         break
       case 4:
         console.log("case: ", props.statID);
+        await fetchTotalPlayTime();
         break
       case 5:
         console.log("case: ", props.statID);
@@ -46,6 +47,7 @@ import {onMounted, ref} from "vue";
         break
       case 6:
         console.log("case: ", props.statID);
+        await fetchTotalGhostsEaten();
         break
     }
   }
@@ -110,6 +112,26 @@ import {onMounted, ref} from "vue";
     }
   }
 
+  const fetchTotalPlayTime = async () => {
+    try {
+      const response = await fetch(`http://localhost/api/homepage/statistics/totalplaytime?playerId=${playerId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+      }
+      const totalPlayTime = await response.json();
+
+      statResult.value = formatScore(totalPlayTime);
+      return totalPlayTime;
+    } catch (error) {
+      console.error('Fehler beim Abrufen des Letzten Scores:', error);
+    }
+  }
+
   const fetchHighestLevel = async () => {
     try {
       const response = await fetch(`http://localhost/api/homepage/statistics/highestlevel?playerId=${playerId}`, {
@@ -125,6 +147,26 @@ import {onMounted, ref} from "vue";
 
       statResult.value = formatScore(highestLevel);
       return highestLevel;
+    } catch (error) {
+      console.error('Fehler beim Abrufen des Letzten Scores:', error);
+    }
+  }
+
+  const fetchTotalGhostsEaten = async () => {
+    try {
+      const response = await fetch(`http://localhost/api/homepage/statistics/totalghostseaten?playerId=${playerId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+      }
+      const totalGhostsEaten = await response.json();
+
+      statResult.value = formatScore(totalGhostsEaten);
+      return totalGhostsEaten;
     } catch (error) {
       console.error('Fehler beim Abrufen des Letzten Scores:', error);
     }
