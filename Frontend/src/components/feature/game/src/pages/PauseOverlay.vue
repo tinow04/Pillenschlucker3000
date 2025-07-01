@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
+import { ref } from 'vue';
 
   const emit = defineEmits(['resume']);
   const router = useRouter();
 
+  const visualScore = ref("");
+
   const props = defineProps<{
     score: number,
   }>();
+
+  const formatScore = (val: number | null): string => {
+    return val !== null ? val.toLocaleString("de-DE") : "...";
+  };
+  visualScore.value = formatScore(props.score);
 
   function goHome() {
     router.push('/'); 
@@ -19,7 +27,7 @@ import { useRouter } from 'vue-router';
             <h1>Game Paused</h1>
             <p>Press "Resume" to continue playing.</p>
             <p>Press "Home" to go back to the main menu.</p>
-            <p>Current Points: {{ score }}</p>
+            <p>Current Points: {{ visualScore }}</p>
             <button class="button resume" @click="$emit('resume')">Resume</button>
             <button class="button home" @click="goHome">Home</button>
         </div>
