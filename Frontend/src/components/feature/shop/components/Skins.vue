@@ -55,6 +55,7 @@
 import { ref, onMounted } from 'vue';
 import ButtonComponent from './Button.vue';
 import { useUserStore } from '@/piniaStore';
+import { showToast } from "@/components/devPanel/ToastManager.vue";
 
 
 import skin1PathGIF from '@/assets/GIFs/Angel.gif';
@@ -177,6 +178,9 @@ function handleSelect(id: number, srcGIF: string) {
   }))
 }
 
+function changeValueOfButton(id: number) {
+  ButtonID.value = id
+}
 
 function showPreview(srcGIF: string) {
   previewSrc.value     = srcGIF
@@ -194,7 +198,9 @@ function buySkin(id: number, price: number) {
       skinsUnlocked.value.add(id);
       unlockSkin(id);
       console.log('Skin gekauft und Coins geupdated.')
+      showToast("Skin gekauft!", "success");
     } else {
+      showToast("Nicht genügend Pillen 🟡", "error");
       console.log('Konnte Coins nicht updaten – Skin nicht freigeschaltet.')
     }
   })
@@ -357,8 +363,8 @@ const fetchSkin = async (id: number) => {
 
 .price-overlay {
   position: absolute;
-  top: 1.5rem;
-  left: 55%;
+  top: 1rem;
+  left: 6.27rem;
   transform: translateX(-50%);
   z-index: 2;
 }
@@ -368,7 +374,6 @@ const fetchSkin = async (id: number) => {
   font-size: 1.25rem;
   font-weight: bold;
   text-shadow: 0 0 4px #000;
-  x: 2.5%;
 }
 
 .lock-content {

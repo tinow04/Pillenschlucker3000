@@ -1,7 +1,18 @@
 <template>
   <div class="main-container">
-    <div class="button-container">
-      <ButtonComponent label="HOME" class-name="Home-Button" @click="switchPageHome" />
+    <div class="header-container">
+      <div class="coins-container">
+        <template v-if="coins !== null">
+          <img src='@/assets/PNGs/Coins%20Overlay.png' class="coin-image" alt="Coins">
+          <span class="coin-amount">{{ coins }}</span>
+        </template>
+        <template v-else>
+          Coins werden geladen...
+        </template>
+      </div>
+      <div class="button-container">
+        <Home />
+      </div>
     </div>
     <div class="grid-wrapper">
       <SkinsComponent
@@ -18,11 +29,12 @@
 </template>
 
 <script setup lang="ts">
-import ButtonComponent from '../components/Button.vue';
 import SkinsComponent from '../components/Skins.vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/piniaStore';
 import { onMounted, ref } from 'vue';
+import Home from "@/components/feature/login/src/components/Home.vue";
+
 
 defineOptions({
   name: 'LockerComponent',
@@ -31,7 +43,7 @@ defineOptions({
 const router = useRouter();
 const userStore = useUserStore();
 const playerId = userStore.userId;
-const coins = ref(30000);
+const coins = ref<number | null>(null);
 
 function switchPageHome() {
   router.push('/');
@@ -117,9 +129,31 @@ onMounted(() => {
   height: 100vh;
 }
 
-.button-container {
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
   height: calc(100vh - 80vh);
   min-height: 80px;
+}
+
+.coins-container {
+  display: flex;
+  align-items: center;
+  height: 4.5rem;
+  font-size: 1.5rem;
+  font-family: "Jersey 10", serif;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 0 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.coin-amount {
+  color: gold;
+  font-weight: bold;
 }
 
 .grid-wrapper {
@@ -139,4 +173,45 @@ onMounted(() => {
     overflow-x: hidden;
   }
 }
+
+.coin-amount {
+  font-family: "Jersey 10", serif;
+  font-size: 24px;
+  letter-spacing: 1px;
+}
+
+.coin-image {
+  height: 1.8rem;
+  width: auto;
+  margin-right: 0.5rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.coins-container:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+}
+
+@media (max-width: 1366px) {
+  .coins-container {
+    padding: 0.4rem 0.8rem;
+    font-size: clamp(1.3rem, 2vw, 2.2rem);
+  }
+}
+
+@media (max-width: 1024px) {
+  .coins-container {
+    padding: 0.3rem 0.6rem;
+    font-size: clamp(1.1rem, 1.8vw, 1.8rem);
+  }
+}
+
+@media (max-width: 800px) {
+  .coins-container {
+    padding: 0.25rem 0.5rem;
+    font-size: clamp(1rem, 1.5vw, 1.5rem);
+  }
+}
+
 </style>
