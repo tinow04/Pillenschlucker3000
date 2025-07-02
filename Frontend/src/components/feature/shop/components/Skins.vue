@@ -363,8 +363,8 @@ const fetchSkin = async (id: number) => {
 
 .price-overlay {
   position: absolute;
-  top: 1.5rem;
-  left: 55%;
+  top: 1rem;
+  left: 6.27rem;
   transform: translateX(-50%);
   z-index: 2;
 }
@@ -374,7 +374,6 @@ const fetchSkin = async (id: number) => {
   font-size: 1.25rem;
   font-weight: bold;
   text-shadow: 0 0 4px #000;
-  x: 2.5%;
 }
 
 .lock-content {
