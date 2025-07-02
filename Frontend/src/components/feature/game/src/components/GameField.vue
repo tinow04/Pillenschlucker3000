@@ -14,6 +14,7 @@
   import VulnerableGhostGIF from '@/assets/GIFs/VulnerableGhost.gif';
   import VulnerableGhost from '@/assets/Vulnerable.png';
   import { useUserStore } from '@/piniaStore';
+import { onUnmounted } from 'vue';
 
   type GhostInstance = ComponentPublicInstance<{
     updateGhostPosition: () => void;
@@ -22,6 +23,8 @@
     setVulnerable: (state: boolean) => void;
     isVulnerable: () => boolean;
   }>;
+
+  type Direction = 'up' | 'down' | 'left' | 'right';
 
   const userStore = useUserStore();
   const playerId = userStore.userId;
@@ -54,7 +57,7 @@
 
   let vulnerableTimeoutId: number | undefined;
   let vulnerableStartTime: number;
-  let vulnerableDelay: number = 7000; // 7 Sekunden
+  let vulnerableDelay: number = 7000;
   let vulnerableTimeLeft: number = vulnerableDelay;
 
   let oldHighscore: number = 0;
@@ -182,11 +185,6 @@
   });
 
   function pacmanAndGhostCollide(pos1, pos2) {
-    /*const pacmanCol = Math.floor(pos1.x / 25);
-    const pacmanRow = Math.floor(pos1.y / 25);
-    const ghostCol = Math.floor(pos2.x / 25);
-    const ghostRow = Math.floor(pos2.y / 25);
-    return pacmanCol === ghostCol && pacmanRow === ghostRow;*/
     return (
     pos1.x + 3.75 < pos2.x + 31.25 &&
     pos1.x + 31.25 > pos2.x + 3.75 &&
@@ -363,10 +361,11 @@
     vulnerableStartTime = Date.now();
     vulnerableDelay = 7000;
     vulnerableTimeoutId = window.setTimeout(() => {
-      ghosts.value[0].image = VulnerableGhostGIF;
-      ghosts.value[1].image = VulnerableGhostGIF;
-      ghosts.value[2].image = VulnerableGhostGIF;
-      ghosts.value[3].image = VulnerableGhostGIF;
+      for (let i = 0; i < ghostRefs.value.length; i++) {
+        if (ghostRefs.value[i]?.isVulnerable && ghostRefs.value[i].isVulnerable()) {
+          ghosts.value[i].image = VulnerableGhostGIF;
+        }
+      }
     }, vulnerableDelay);
 
     powerUpTimeoutStart = Date.now();
@@ -482,10 +481,12 @@
     if (powerUp){
       clearTimeout(timeoutId);
       clearTimeout(vulnerableTimeoutId);
-      const timePassed = Date.now() - powerUpTimeoutStart;
+      let timePassed = Date.now() - powerUpTimeoutStart;
       powerUpTimeLeft = powerUpTimeoutDuration - timePassed;
+      timePassed = Date.now() - vulnerableStartTime;
       vulnerableTimeLeft = vulnerableDelay - timePassed
       console.log("PowerUp paused, time left: " + powerUpTimeLeft);
+      console.log("Vulnerable time left: " + vulnerableTimeLeft);
     }
   }
 
@@ -499,33 +500,56 @@
       powerUpTimeLeft = 0;
       if (vulnerableTimeLeft>0){
         vulnerableStartTime = Date.now();
+        vulnerableDelay = vulnerableTimeLeft;
         vulnerableTimeoutId = window.setTimeout(() => {
-          ghosts.value[0].image = VulnerableGhostGIF;
-          ghosts.value[1].image = VulnerableGhostGIF;
-          ghosts.value[2].image = VulnerableGhostGIF;
-          ghosts.value[3].image = VulnerableGhostGIF;
+          for (let i = 0; i < ghostRefs.value.length; i++) {
+            if (ghostRefs.value[i]?.isVulnerable && ghostRefs.value[i].isVulnerable()) {
+              ghosts.value[i].image = VulnerableGhostGIF;
+            }
+          }
         }, vulnerableDelay);
         vulnerableTimeLeft = 0;
       }
-      console.log("Game resumed");
     }
   }
 
-  window.addEventListener('keydown', (e) => {
-  const key = e.key.toLowerCase();
-  const startKeys = ['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'];
-  if (!isGameStarted.value && startKeys.includes(key)) {
-    startGame();
-  }
-  if (e.key === "Escape") {
-    if (!gamePaused.value && !gameOver.value) {
-      pauseGame();
-    } else {
-      if (!gameOver.value){
-        resumeGame();
+  function handleKeydown(e: KeyboardEvent) {
+    const key = e.key.toLowerCase();
+    const startKeys = ['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'];
+    if (!isGameStarted.value && startKeys.includes(key)) {
+      startGame();
+    }
+    if (e.key === "Escape") {
+      if (!gamePaused.value && !gameOver.value) {
+        pauseGame();
+      } else {
+        if (!gameOver.value && gamePaused.value) {
+          resumeGame();
+        }
       }
     }
+    if (pacmanRef.value && keyToDirection[key]) {
+      pacmanRef.value.setNextDirection(keyToDirection[key]);
+    }
   }
+
+  const keyToDirection: Record<string, Direction> = {
+    w: 'up',
+    s: 'down',
+    a: 'left',
+    d: 'right',
+    arrowup: 'up',
+    arrowdown: 'down',
+    arrowleft: 'left',
+    arrowright: 'right',
+  };
+
+  onMounted(() => {
+    window.addEventListener('keydown', handleKeydown);
+  });
+
+  onUnmounted(() => {
+    window.removeEventListener('keydown', handleKeydown);
   });
 
   const sendGameData = async () => {

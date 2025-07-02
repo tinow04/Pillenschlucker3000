@@ -133,28 +133,15 @@
     nextDirection = null;
   }
 
-  const keyToDirection: Record<string, Direction> = {
-    w: 'up',
-    s: 'down',
-    a: 'left',
-    d: 'right',
-    arrowup: 'up',
-    arrowdown: 'down',
-    arrowleft: 'left',
-    arrowright: 'right',
-  };
-
-  window.addEventListener('keydown', (e) => {
-    const key = e.key.toLowerCase();
-    if (keyToDirection[key]) {
-      nextDirection = keyToDirection[key];
-    }
-  });
+  function setNextDirection(direction: Direction) {
+  nextDirection = direction;
+}
 
   defineExpose({
-  updatePacmanPosition,
-  position,
-  resetPosition
+    updatePacmanPosition,
+    position,
+    resetPosition,
+    setNextDirection,
   });
 </script>
 
