@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { useUserStore } from '@/piniaStore';
 import Header from "@/components/feature/home/src/components/Header.vue";
 import Buttons from "@/components/feature/home/src/components/Buttons.vue";
 import Profile from "@/components/feature/home/src/components/Profile.vue";
@@ -45,10 +46,12 @@ export default {
       isGameStarted: false,
       showHowTo: false,
       showSettings: false,
+      userStore: useUserStore(), // <-- Zugriff auf Pinia Store
     };
   },
   computed: {
     buttonList() {
+      const isLoggedIn = !!this.userStore.userId;
       return [
         { label: "PLAY", handler: this.startGame },
         { label: "HOW TO", handler: this.openHowTo },
@@ -58,6 +61,8 @@ export default {
           handler: () => {
             this.$router.push("/locker");
           },
+          disabled: !isLoggedIn,
+          tooltip: "Log in to unlock the locker",
         },
       ];
     },
@@ -96,6 +101,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 #scaler {

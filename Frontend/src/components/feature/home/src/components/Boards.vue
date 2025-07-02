@@ -38,9 +38,10 @@
   import StatCard from "@/components/feature/home/src/components/stats/StatCard.vue";
   import LeaderboardCard from "@/components/feature/home/src/components/stats/LeaderboardCard.vue";
   import {useUserStore} from "@/piniaStore.ts";
-
+  import { computed } from "vue";
   const userStore = useUserStore();
-  const playerID = userStore.userId;
+  const playerID = computed(() => userStore.userId);
+  computed(() => userStore.leaderboardVersion)
 </script>
 
 <style scoped>
