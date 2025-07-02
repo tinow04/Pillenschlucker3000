@@ -12,6 +12,8 @@ export const useUserStore = defineStore('user', {
     },
     logout() {
       this.userId = null
+      this.name = null;
+      this.leaderboardVersion++;
     },
     setUsername(username) {
       this.name = username

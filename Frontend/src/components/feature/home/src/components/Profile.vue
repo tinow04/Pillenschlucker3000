@@ -41,7 +41,7 @@ const logout = async () => {
       body: JSON.stringify({ playerID: playerId }),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    userStore.$reset();
+    userStore.logout(); // <-- Hier geändert
     username.value = null;
     showPopup.value = false;
     showToast('Erfolgreich abgemeldet', 'info');
@@ -50,6 +50,7 @@ const logout = async () => {
     showToast('Fehler beim Abmelden', 'error');
   }
 };
+
 
 const fetchUsername = async () => {
   if (!playerId) return;

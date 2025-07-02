@@ -1,13 +1,22 @@
 <template>
   <div class="button-container">
-    <button
+    <div
       v-for="btn in buttons"
       :key="btn.label"
-      class="button"
-      @click="btn.handler"
+      class="button-wrapper"
+
     >
-      {{ btn.label }}
-    </button>
+      <button
+        class="button"
+        :class="{ disabled: btn.disabled }"
+        :disabled="btn.disabled"
+        @click="!btn.disabled && btn.handler()"
+        :title="btn.disabled && btn.tooltip ? btn.tooltip : null"
+      >
+        {{ btn.label }}
+      </button>
+
+    </div>
   </div>
 </template>
 
@@ -18,8 +27,8 @@ export default {
     buttons: {
       type: Array,
       required: true,
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -36,7 +45,9 @@ export default {
   transform: translateX(-50%);
   z-index: 10;
 }
-
+.button-wrapper {
+  position: relative;
+}
 .button {
   width: 17rem;
   height: 5rem;
@@ -51,10 +62,26 @@ export default {
   transition: 0.2s ease-in-out;
   transform-origin: center;
 }
-
 .button:hover {
   transform: scale(1.02);
   font-size: 3.2rem;
   background-color: #222;
+}
+.button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #333;
+}
+.tooltip {
+  position: absolute;
+  top: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  white-space: nowrap;
 }
 </style>
