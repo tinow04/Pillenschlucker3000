@@ -9,7 +9,6 @@
 </template>
 
 <script setup lang="ts">
-
 defineOptions({
   name: 'ButtonComponent'
 });
@@ -34,52 +33,44 @@ const emit = defineEmits<{ (e: 'click'): void }>();
 function handleClick() {
   emit('click');
 }
-
 </script>
 
 <style scoped>
 
 .Select-Button {
-  width: 10rem;
-  height: 2rem;
-  background-color: #FFD44C;
-  color: black;
+  width: 5rem;
+  height: 3rem;
+  background-color: black;
+  color: white;
   font-family: "Jersey 10", serif;
-  font-weight: normal;
-  border: 2px solid #FFE066;
+  border: none;
   border-radius: 1rem;
-  box-shadow: 2px 2px 8px rgba(54, 54, 54, 0.08);
-  font-size: 1rem;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+  font-size: 1.7rem;
   cursor: pointer;
   transition: 0.2s ease-in-out;
   transform-origin: center;
-
 }
 
-.Select-Button:hover {
-  background-color: #FFE680;
-  box-shadow: 0 0 8px rgba(255, 220, 100, 0.6);
+.Select-Button:not(.selectedButton):hover {
+  transform: scale(1.02);
+  font-size: 1.8rem;
+  background-color: #222;
 }
 
 .selectedButton {
-  width: 10rem;
-  height: 2rem;
-  background-color: #ffb800;
-  color: black;
-  font-family: 'Jersey 10', serif;
-  font-weight: bold;
-  border: 2px solid #ffd700;
+  width: 5rem;
+  height: 3rem;
+  background-color: #222;
+  color: yellow;
+  font-family: "Jersey 10", serif;
+  border: none;
   border-radius: 1rem;
-  box-shadow: 0 0 12px rgba(255, 184, 0, 0.8);
-  font-size: 1.5rem;
-  cursor: pointer;
+  font-size: 1.7rem;
+  font-weight: bold;
   transform-origin: center;
   transition: all 0.2s ease-in-out;
-}
-
-.selectedButton:hover {
-  background-color: #ffa000;
-  box-shadow: 0 0 16px rgba(255, 160, 0, 1);
+  cursor: default;
 }
 
 </style>
