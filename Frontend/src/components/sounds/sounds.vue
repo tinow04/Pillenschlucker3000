@@ -1,3 +1,6 @@
+<template></template>
+
+
 <script lang="ts">
 import { ref, onMounted } from 'vue';
 
@@ -6,14 +9,12 @@ const volume = ref(
   +(localStorage.getItem('globalVolume') ?? 50) / 100
 );
 
-// Sound-Dateien (mit korrekten Pfaden über Vite)
 const sounds = {
   eatGhost: new Audio(new URL('@/assets/Sounds/pacman_eatghost.wav', import.meta.url).href),
   death: new Audio(new URL('@/assets/Sounds/pacman_death.wav', import.meta.url).href),
   chomp: new Audio(new URL('@/assets/Sounds/pacman_chomp.wav', import.meta.url).href),
   intro: new Audio(new URL('@/assets/Sounds/pacman_beginning.wav', import.meta.url).href),
   intermission: new Audio(new URL('@/assets/Sounds/pacman_intermission.wav', import.meta.url).href),
-
 };
 
 onMounted(() => {
