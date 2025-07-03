@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnMounted } from 'vue'
   import defaultSkinPath from '@/assets/GIFs/pacman.gif';
   import { useUserStore } from '@/piniaStore';
 
@@ -34,14 +34,17 @@
     }
   })
 
+  onUnMounted(() => {
+    localStorage.removeItem(selectedSkinStorage);
+    selectedSkinSrc.value = defaultSelectedSkin;
+  })
+
 
   window.addEventListener('storage', (e) => {
     if (e.key === selectedSkinStorage) {
       selectedSkinSrc.value = e.newValue || defaultSelectedSkin;
     }
   })
-
-
 
 
   const moveToDirection: Record<Direction, { x: number; y: number }> = {
