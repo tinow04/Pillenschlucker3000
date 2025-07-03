@@ -1,13 +1,13 @@
 <script setup lang="ts">
   import { ref, onMounted } from "vue";
-  import skin9Path from '@/assets/GIFs/pacman.gif';
+  import defaultSkinPath from '@/assets/GIFs/pacman.gif';
   import { useUserStore } from '@/piniaStore';
 
   const userStore = useUserStore();
   const playerId = userStore.userId;
 
   const selectedSkinStorage = 'selectedSkin:v2';
-  const defaultSelectedSkin = skin9Path;
+  const defaultSelectedSkin = defaultSkinPath;
 
 
 

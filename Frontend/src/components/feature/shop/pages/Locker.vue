@@ -1,14 +1,9 @@
 <template>
   <div class="main-container">
     <div class="header-container">
-      <div class="coins-container">
-        <template v-if="coins !== null">
-          <img src='@/assets/PNGs/Coins%20Overlay.png' class="coin-image" alt="Coins">
-          <span class="coin-amount">{{ coins }}</span>
-        </template>
-        <template v-else>
-          Coins werden geladen...
-        </template>
+      <div v-if="coins !== null" class="coin-display">
+        <img src="@/assets/PNGs/Coins Overlay.png" class="coin-icon" alt="Coins">
+        <span class="coin-amount">{{ coins }}</span>
       </div>
       <div class="button-container">
         <Home />
@@ -44,10 +39,6 @@ const router = useRouter();
 const userStore = useUserStore();
 const playerId = userStore.userId;
 const coins = ref<number | null>(null);
-
-function switchPageHome() {
-  router.push('/');
-}
 
 const fetchCoins = async () => {
   if (!playerId) {
@@ -138,19 +129,6 @@ onMounted(() => {
   min-height: 80px;
 }
 
-.coins-container {
-  display: flex;
-  align-items: center;
-  height: 4.5rem;
-  font-size: 1.5rem;
-  font-family: "Jersey 10", serif;
-  background-color: rgba(0, 0, 0, 0.75);
-  color: white;
-  padding: 0 1rem;
-  border-radius: 0.75rem;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
-}
-
 .coin-amount {
   color: gold;
   font-weight: bold;
@@ -174,44 +152,29 @@ onMounted(() => {
   }
 }
 
-.coin-amount {
-  font-family: "Jersey 10", serif;
-  font-size: 24px;
-  letter-spacing: 1px;
+
+.coin-display {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: #0d111a;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: "Jersey 10", sans-serif;
+  font-size: 1.9rem;
+  color: yellow;
+  text-shadow: 0 0 5px black;
+  z-index: 999;
 }
 
-.coin-image {
-  height: 1.8rem;
-  width: auto;
-  margin-right: 0.5rem;
-  display: inline-block;
-  vertical-align: middle;
+.coin-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  filter: drop-shadow(0 0 2px black);
 }
 
-.coins-container:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
-}
-
-@media (max-width: 1366px) {
-  .coins-container {
-    padding: 0.4rem 0.8rem;
-    font-size: clamp(1.3rem, 2vw, 2.2rem);
-  }
-}
-
-@media (max-width: 1024px) {
-  .coins-container {
-    padding: 0.3rem 0.6rem;
-    font-size: clamp(1.1rem, 1.8vw, 1.8rem);
-  }
-}
-
-@media (max-width: 800px) {
-  .coins-container {
-    padding: 0.25rem 0.5rem;
-    font-size: clamp(1rem, 1.5vw, 1.5rem);
-  }
-}
 
 </style>
