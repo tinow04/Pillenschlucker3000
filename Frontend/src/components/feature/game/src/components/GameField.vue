@@ -355,6 +355,7 @@
   function startPowerUp(){
     console.log("PowerUp gegessen");
     clearTimeout(timeoutId);
+    clearTimeout(vulnerableTimeoutId);
     powerUp = true;
     ghostsEaten = 0;
     ghostRefs.value.forEach(ref => ref?.setVulnerable(true));
