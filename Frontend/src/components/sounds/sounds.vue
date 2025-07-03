@@ -33,4 +33,9 @@ function playSound(name: keyof typeof sounds) {
 }
 
 export { playSound, volume };
+
+export default {
+  name: 'SoundHandler'
+};
+
 </script>
