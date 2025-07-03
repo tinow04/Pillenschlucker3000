@@ -15,7 +15,7 @@
   import VulnerableGhost from '@/assets/Vulnerable.png';
   import { useUserStore } from '@/piniaStore';
   import { onUnmounted } from 'vue';
-  import { playSound } from '@/components/sounds/sounds.vue';
+  import { playSound, startChomp } from '@/components/sounds/sounds.vue';
 
 
   type GhostInstance = ComponentPublicInstance<{
@@ -340,7 +340,7 @@
   }
 
   function updatePoints(value){
-    playSound('chomp');
+    startChomp();
     if(value==4){
       score.value += 10;
       pointsEaten ++;
