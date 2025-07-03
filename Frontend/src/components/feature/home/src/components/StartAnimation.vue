@@ -12,6 +12,8 @@
 
 
 <script>
+import { playSound } from '@/components/sounds/sounds.vue';
+
 export default {
   name: "StartAnimation",
   data() {
@@ -25,6 +27,7 @@ export default {
   },
   methods: {
     startTransition() {
+      playSound("intro")
       this.showOverlay = true;
       this.showPacman = true;
       this.$nextTick(() => {

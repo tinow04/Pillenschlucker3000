@@ -14,7 +14,9 @@
   import VulnerableGhostGIF from '@/assets/GIFs/VulnerableGhost.gif';
   import VulnerableGhost from '@/assets/Vulnerable.png';
   import { useUserStore } from '@/piniaStore';
-import { onUnmounted } from 'vue';
+  import { onUnmounted } from 'vue';
+  import { playSound } from '@/components/sounds/sounds.vue';
+
 
   type GhostInstance = ComponentPublicInstance<{
     updateGhostPosition: () => void;
@@ -156,7 +158,7 @@ import { onUnmounted } from 'vue';
   function gameLoop(timestamp: number) {
     if (gameOver.value) return;
     if (gamePaused.value) return;
-  
+
     checkPoints();
     if (timestamp - lastMoveTime > moveInterval) {
       pacmanRef.value?.updatePacmanPosition();
@@ -216,6 +218,7 @@ import { onUnmounted } from 'vue';
   }
 
   function eatPacman() {
+    playSound('death');
     lives.value = lives.value - 1;
     invulnerable.value = true;
     areGhostsPaused.value = true;
@@ -237,6 +240,7 @@ import { onUnmounted } from 'vue';
   }
 
   function gameOverHandler() {
+    playSound('death');
     gameOver.value = true;
     lives.value = lives.value - 1;
     console.log('Game Over! Pacman wurde gefangen.');
@@ -258,6 +262,7 @@ import { onUnmounted } from 'vue';
   }
 
   function eatGhost(ghostIdx: number){
+    playSound('eatGhost');
     let scoreValue = 0;
     ghostsEatenTotal.value += 1;
     switch (ghostsEaten) {
@@ -335,6 +340,7 @@ import { onUnmounted } from 'vue';
   }
 
   function updatePoints(value){
+    playSound('chomp');
     if(value==4){
       score.value += 10;
       pointsEaten ++;
@@ -402,6 +408,7 @@ import { onUnmounted } from 'vue';
   }
 
   function resetPoints(grid: number[][]){
+    playSound('intermission');
     for (let row = 0; row < grid.length; row++) {
       for (let col = 0; col < grid[row].length; col++) {
         if (grid[row][col] === 4) {
@@ -441,6 +448,7 @@ import { onUnmounted } from 'vue';
   }
 
   function restartGame(){
+    playSound("intro")
     resetPowerUp();
     resetPoints(grid.value);
     floatingScores.value = [];
