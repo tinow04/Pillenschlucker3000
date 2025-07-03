@@ -37,7 +37,7 @@ import { ref, onMounted, onUnMounted } from 'vue'
   onUnMounted(() => {
     localStorage.removeItem(selectedSkinStorage);
     selectedSkinSrc.value = defaultSelectedSkin;
-  })
+  });
 
 
   window.addEventListener('storage', (e) => {
