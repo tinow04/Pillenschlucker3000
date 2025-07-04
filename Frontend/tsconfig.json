@@ -3,14 +3,24 @@
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "node",
-    "files": [],
-    "references": [
-      {
-        "path": "./tsconfig.node.json"
-      },
-      {
-        "path": "./tsconfig.app.json"
-      }
-    ]
-  }
+    "isolatedModules": true,
+    "strict": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    }
+  ],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
