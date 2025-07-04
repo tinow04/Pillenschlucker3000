@@ -1,10 +1,6 @@
-<template></template>
-
-
 <script lang="ts">
 import { ref, onMounted } from 'vue';
 
-// Lautstärke aus LocalStorage
 const volume = ref(
   +(localStorage.getItem('globalVolume') ?? 50) / 100
 );
@@ -12,15 +8,25 @@ const volume = ref(
 const sounds = {
   eatGhost: new Audio(new URL('@/assets/Sounds/pacman_eatghost.wav', import.meta.url).href),
   death: new Audio(new URL('@/assets/Sounds/pacman_death.wav', import.meta.url).href),
-  chomp: new Audio(new URL('@/assets/Sounds/pacman_chomp.wav', import.meta.url).href),
   intro: new Audio(new URL('@/assets/Sounds/pacman_beginning.wav', import.meta.url).href),
   intermission: new Audio(new URL('@/assets/Sounds/pacman_intermission.wav', import.meta.url).href),
 };
 
+const chompLoop = new Audio(new URL('@/assets/Sounds/pacman_chomp.wav', import.meta.url).href);
+chompLoop.loop = true;
+
+let chompTimeout: number | null = null;
+let chompDurationMs = 200; // Default fallback
+
+chompLoop.addEventListener('loadedmetadata', () => {
+  chompDurationMs = chompLoop.duration * 1000;
+});
+
 onMounted(() => {
   for (const sound of Object.values(sounds)) {
-    sound.volume = volume.value;
+    sound.volume = volume.value * 0.2;
   }
+  chompLoop.volume = volume.value * 0.2;
 });
 
 function playSound(name: keyof typeof sounds) {
@@ -28,14 +34,28 @@ function playSound(name: keyof typeof sounds) {
   if (!base) return;
 
   const instance = base.cloneNode() as HTMLAudioElement;
-  instance.volume = volume.value;
+  instance.volume = volume.value * 0.2;
   instance.play().catch(() => {});
 }
 
-export { playSound, volume };
+function startChomp() {
+  if (chompLoop.paused) {
+    chompLoop.currentTime = 0;
+    chompLoop.play().catch(() => {});
+  }
+
+  if (chompTimeout !== null) clearTimeout(chompTimeout);
+
+  chompTimeout = window.setTimeout(() => {
+    chompLoop.pause();
+    chompLoop.currentTime = 0;
+    chompTimeout = null;
+  }, chompDurationMs);
+}
+
+export { playSound, startChomp, volume };
 
 export default {
   name: 'SoundHandler'
 };
-
 </script>
