@@ -41,9 +41,6 @@ const defaultSelectedSkin = defaultSkinPath;
 
 const handleLoginSubmit = async () => {
 
-  console.log("Test");
-  console.log(import.meta.env.VITE_BASE_URL + "api/login");
-
   try {
     const response = await fetch(import.meta.env.VITE_BASE_URL + 'api/login', {
 
