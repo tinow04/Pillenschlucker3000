@@ -35,7 +35,7 @@ const togglePopup = () => {
 
 const logout = async () => {
   try {
-    const res = await fetch('http://localhost/api/logout', {
+    const res = await fetch(import.meta.env.VITE_BASE_URL + `api/logout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ playerID: playerId }),

@@ -156,7 +156,7 @@ import { onUnmounted } from 'vue';
   function gameLoop(timestamp: number) {
     if (gameOver.value) return;
     if (gamePaused.value) return;
-  
+
     checkPoints();
     if (timestamp - lastMoveTime > moveInterval) {
       pacmanRef.value?.updatePacmanPosition();
@@ -559,7 +559,7 @@ import { onUnmounted } from 'vue';
     }
     console.log("Sending game data...");
     try {
-      const response = await fetch('http://localhost/api/gameover', {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + `api/gameover`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -591,7 +591,7 @@ import { onUnmounted } from 'vue';
     }
     console.log('Highscore abgerufen');
     try {
-      const response = await fetch(`http://localhost/api/gameover?playerID=${playerId}`, {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + `api/gameover?playerID=${playerId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

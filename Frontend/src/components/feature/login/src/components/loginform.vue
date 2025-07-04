@@ -36,8 +36,13 @@ const router = useRouter();
 const userStore = useUserStore();
 
 const handleLoginSubmit = async () => {
+
+  console.log("Test");
+  console.log(import.meta.env.VITE_BASE_URL + "api/login");
+
   try {
-    const response = await fetch("http://localhost/api/login", {
+    const response = await fetch(import.meta.env.VITE_BASE_URL + 'api/login', {
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -45,6 +50,8 @@ const handleLoginSubmit = async () => {
         password: password.value,
       }),
     });
+
+
 
     const data = await response.json();
     if (!response.ok) {

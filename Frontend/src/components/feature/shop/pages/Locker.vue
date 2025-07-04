@@ -56,7 +56,7 @@ const fetchCoins = async () => {
   }
   console.log('Coins abgerufen');
   try {
-    const response = await fetch(`http://localhost/api/shop?playerID=${playerId}`, {
+    const response = await fetch(import.meta.env.VITE_BASE_URL + `api/shop?playerID=${playerId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ const updateCoins = async (skinPrice: number): Promise<boolean> => {
     return false;
   }
   try {
-    const response = await fetch('http://localhost/api/shop', {
+    const response = await fetch(import.meta.env.VITE_BASE_URL + `api/shop`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
