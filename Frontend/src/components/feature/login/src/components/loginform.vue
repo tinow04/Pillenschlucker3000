@@ -59,7 +59,6 @@ const handleLoginSubmit = async () => {
     userStore.setUserId(data.user.id);
     userStore.setUsername(data.user.name);
     localStorage.setItem(selectedSkinStorage, defaultSelectedSkin);
-    console.log("hello");
     showToast("Login erfolgreich", "success");
     router.push("/");
   } catch (error) {
