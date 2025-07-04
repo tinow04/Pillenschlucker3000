@@ -1,13 +1,13 @@
 <script setup lang="ts">
-  import { ref, onMounted } from "vue";
-  import skin9Path from '@/assets/GIFs/pacman.gif';
+import { ref, onMounted, onUnmounted } from 'vue'
+  import defaultSkinPath from '@/assets/GIFs/pacman.gif';
   import { useUserStore } from '@/piniaStore';
 
   const userStore = useUserStore();
   const playerId = userStore.userId;
 
   const selectedSkinStorage = 'selectedSkin:v2';
-  const defaultSelectedSkin = skin9Path;
+  const defaultSelectedSkin = defaultSkinPath;
 
 
 
@@ -34,14 +34,11 @@
     }
   })
 
-
   window.addEventListener('storage', (e) => {
     if (e.key === selectedSkinStorage) {
       selectedSkinSrc.value = e.newValue || defaultSelectedSkin;
     }
   })
-
-
 
 
   const moveToDirection: Record<Direction, { x: number; y: number }> = {

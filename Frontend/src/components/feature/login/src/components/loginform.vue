@@ -28,12 +28,16 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "@/piniaStore";
 import { showToast } from "@/components/devPanel/ToastManager.vue";
+import defaultSkinPath from "@/assets/GIFs/pacman.gif";
 
 const email = ref("");
 const password = ref("");
 
 const router = useRouter();
 const userStore = useUserStore();
+
+const selectedSkinStorage = 'selectedSkin:v2';
+const defaultSelectedSkin = defaultSkinPath;
 
 const handleLoginSubmit = async () => {
 
@@ -61,6 +65,7 @@ const handleLoginSubmit = async () => {
 
     userStore.setUserId(data.user.id);
     userStore.setUsername(data.user.name);
+    localStorage.setItem(selectedSkinStorage, defaultSelectedSkin);
     showToast("Login erfolgreich", "success");
     router.push("/");
   } catch (error) {

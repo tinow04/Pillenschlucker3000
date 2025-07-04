@@ -1,39 +1,33 @@
 <template>
-
-
-  <div class="popup">
+  <div class="popup" @click.self="$emit('close')">
     <div class="popup-inner">
       <button class="close" @click="$emit('close')">×</button>
       <h2>Einstellungen</h2>
-      <label for="volume">Lautstärke:</label>
+
+      <label for="volume">Soundeffekte:</label>
       <input
         id="volume"
         type="range"
         min="0"
         max="100"
-        v-model="volume"
-        @input="updateVolume"
+        v-model="volumeUI"
+        @input="setVolume"
       />
-      <p>{{ volume }}%</p>
+      <p>{{ volumeUI }}%</p>
     </div>
   </div>
 </template>
 
-<script>
-import { ref } from "vue";
+<script setup lang="ts">
+import { ref, watch } from 'vue';
+import { volume } from '@/components/sounds/sounds.vue';
 
-export default {
-  name: "SettingsPopup",
-  setup() {
-    const volume = ref(50);
+const volumeUI = ref(Math.round(volume.value * 100));
 
-    const updateVolume = () => {
-      localStorage.setItem("globalVolume", volume.value);
-    };
-
-    return { volume, updateVolume };
-  }
-};
+function setVolume() {
+  volume.value = volumeUI.value / 100;
+  localStorage.setItem("globalVolume", volumeUI.value.toString());
+}
 </script>
 
 <style scoped>
@@ -49,20 +43,15 @@ export default {
   z-index: 1000;
 }
 .popup-inner {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
   background: #222;
   padding: 2rem;
   border-radius: 1rem;
-  max-width: 90vw;
-  max-height: 90vh;
   color: white;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  width: 300px;
+  text-align: center;
 }
-
-
 .close {
   position: absolute;
   top: 0.5rem;
@@ -77,5 +66,4 @@ input[type="range"] {
   width: 100%;
   margin-top: 1rem;
 }
-
 </style>

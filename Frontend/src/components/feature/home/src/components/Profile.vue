@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div ref="container" class="profile-picture">
     <span v-if="username" class="username">{{ username }}</span>
     <button class="profile-button" @click="togglePopup">
@@ -21,6 +21,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useUserStore } from '@/piniaStore';
 import { showToast } from '@/components/devPanel/ToastManager.vue';
+import defaultSkinPath from "@/assets/GIFs/pacman.gif";
 
 const showPopup = ref(false);
 const username = ref<string | null>(null);
@@ -33,6 +34,9 @@ const togglePopup = () => {
   showPopup.value = !showPopup.value;
 };
 
+const selectedSkinStorage = 'selectedSkin:v2';
+const defaultSelectedSkin = defaultSkinPath;
+
 const logout = async () => {
   try {
     const res = await fetch(import.meta.env.VITE_BASE_URL + `api/logout`, {
@@ -42,6 +46,7 @@ const logout = async () => {
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     userStore.logout(); // <-- Hier geändert
+    localStorage.setItem(selectedSkinStorage, defaultSelectedSkin);
     username.value = null;
     showPopup.value = false;
     showToast('Erfolgreich abgemeldet', 'info');
