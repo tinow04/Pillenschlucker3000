@@ -80,15 +80,22 @@ export default {
     updateScale() {
       const baseWidth = 1920;
       const baseHeight = 1080;
+
       const scaleX = window.innerWidth / baseWidth;
       const scaleY = window.innerHeight / baseHeight;
-      const scale = Math.max(scaleX, scaleY);
+      const scale = Math.min(scaleX, scaleY); // wichtig: NICHT max!
+
+      const offsetX = (window.innerWidth - baseWidth * scale) / 2;
+      const offsetY = (window.innerHeight - baseHeight * scale) / 2;
+
       const scaler = document.getElementById("scaler");
       if (scaler) {
         scaler.style.top = "0";
         scaler.style.left = "0";
-        scaler.style.transform = `scale(${scale})`;
+        scaler.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+        scaler.style.transformOrigin = "top left";
       }
+
       document.documentElement.style.setProperty("--scale-factor", scale);
     },
   },
@@ -111,7 +118,6 @@ export default {
   top: 0;
   left: 0;
   transform-origin: top left;
-  overflow: hidden;
 }
 
 .home-page {
