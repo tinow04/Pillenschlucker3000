@@ -36,6 +36,12 @@ jobs:
         run: |
           npm ci --force
           npm run build
+
+      - name: Build project
+        run: npm run build
+        env:
+          REACT_APP_FIREBASE_API_KEY: ${{ secrets.VITE_BASE_URL }}
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
