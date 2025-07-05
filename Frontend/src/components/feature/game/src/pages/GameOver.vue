@@ -3,8 +3,8 @@
   import { ref } from 'vue';
   import { volume } from '@/components/sounds/sounds.vue';
 
-  import mute from '@/assets/mute.png';
-  import unmute from '@/assets/unmute.png';
+  import mute from '@/assets/Mute.png';
+  import unmute from '@/assets/Unmute.png';
 
   const muteImg = mute;
   const unmuteImg = unmute;
