@@ -20,7 +20,7 @@ import {onMounted, ref} from 'vue';
   const fetchScore = async () => {
     const rankID = props.id
     try {
-      const response = await fetch(`http://localhost/api/homepage/leaderboard?rankID=${rankID}`, {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + `api/homepage/leaderboard?rankID=${rankID}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
