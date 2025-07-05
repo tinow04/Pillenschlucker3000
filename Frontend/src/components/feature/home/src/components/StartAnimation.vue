@@ -27,8 +27,10 @@ export default {
   },
   methods: {
     startTransition() {
-      playSound("intro")
-      this.showOverlay = true;
+      const isMuted = localStorage.getItem('isMuted') === 'true';
+      if (!isMuted) {
+        playSound("intro");
+      }      this.showOverlay = true;
       this.showPacman = true;
       this.$nextTick(() => {
         const pacman = document.getElementById("pacman");
