@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
-    "noEmit": false,
+    "noEmit": true,
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "node",
@@ -13,12 +13,12 @@
         "src/*"
       ]
     },
-    "typeRoots": ["./node_modules/@types", "./types.d.ts"],
+    "typeRoots": ["./node_modules/@types"],
     "noImplicitAny": false,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "types": ["node", "vite/client"]
+    "types": ["node"]
   },
   "files": ["types.d.ts"],
   "references": [
