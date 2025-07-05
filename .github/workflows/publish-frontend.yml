@@ -44,6 +44,11 @@ jobs:
         env:
           VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
 
+      - name: Debug Environment Variables
+        run: |
+          echo "VITE_BASE_URL=${{ secrets.VITE_BASE_URL }}"
+          env
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
