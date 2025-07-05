@@ -12,9 +12,15 @@
       "@/*": [
         "src/*"
       ]
-    }
+    },
+    "typeRoots": ["./node_modules/@types", "./types.d.ts"],
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "types": ["node", "vite/client"]
   },
-  "files": [],
+  "files": ["types.d.ts"],
   "references": [
     {
       "path": "./tsconfig.node.json"
@@ -23,6 +29,6 @@
       "path": "./tsconfig.app.json"
     }
   ],
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "types.d.ts"],
   "exclude": ["node_modules"]
 }
