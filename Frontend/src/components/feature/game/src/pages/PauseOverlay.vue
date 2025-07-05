@@ -1,14 +1,22 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
+import { volume } from '@/components/sounds/sounds.vue';
 
-  const emit = defineEmits(['resume']);
+  import mute from '@/assets/mute.png';
+  import unmute from '@/assets/unmute.png';
+
+  const muteImg = mute;
+  const unmuteImg = unmute;
+
+  const emit = defineEmits(['resume', 'mute','unmute']);
   const router = useRouter();
 
   const visualScore = ref("");
 
   const props = defineProps<{
     score: number,
+    isSoundMuted: boolean
   }>();
 
   const formatScore = (val: number | null): string => {
@@ -19,11 +27,28 @@ import { ref } from 'vue';
   function goHome() {
     router.push('/'); 
   }
+
+  
+  function toggleMute() {
+    if (props.isSoundMuted) {
+      console.log("GameOver", props.isSoundMuted);
+      emit('unmute');
+    }
+    else {
+      if (volume.value > 0) {
+        console.log("GameOver", props.isSoundMuted);
+        emit('mute');
+      }
+    }
+  }
 </script>
 
 <template>
     <div class="pause-overlay">
         <div class="pause-content">
+            <button @click="toggleMute" class="mute-button">
+              <img :src="props.isSoundMuted ? muteImg : unmuteImg" :alt="props.isSoundMuted ? 'Ton aus' : 'Ton an'" class="mute-img"/>
+            </button>
             <h1>Game Paused</h1>
             <p>Press "Resume" to continue playing.</p>
             <p>Press "Home" to go back to the main menu.</p>
@@ -83,6 +108,35 @@ import { ref } from 'vue';
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
   transition: 0.2s ease-in-out;
   cursor: pointer;
+}
+
+
+.mute-button {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.mute-img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  display: block;
+}
+
+.mute-button:hover {
+  transform: scale(1.02);
+  font-size: 2.7rem;
+  background-color:  #183446;
 }
 
 .resume {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref,computed,onMounted } from 'vue';
+  import { ref, computed, onMounted, watch, onUnmounted } from 'vue';
   import PacmanObject from './PacmanObject.vue';
   import PacmanPoints from './PacmanPoints.vue';
   import PacmanPowerUp from './PacmanPowerUp.vue';
@@ -14,7 +14,6 @@
   import VulnerableGhostGIF from '@/assets/GIFs/VulnerableGhost.gif';
   import VulnerableGhost from '@/assets/Vulnerable.png';
   import { useUserStore } from '@/piniaStore';
-  import { onUnmounted } from 'vue';
   import { playSound, startChomp } from '@/components/sounds/sounds.vue';
 
 
@@ -30,6 +29,11 @@
 
   const userStore = useUserStore();
   const playerId = userStore.userId;
+  const isMuted = ref(false);
+  const savedMute = localStorage.getItem('isMuted');
+  if (savedMute !== null) {
+    isMuted.value = savedMute === 'true';
+  }
 
   const isGameStarted = ref(false);
   const areGhostsPaused = ref(false);
@@ -218,7 +222,7 @@
   }
 
   function eatPacman() {
-    playSound('death');
+    if(!isMuted.value) playSound('death');
     lives.value = lives.value - 1;
     invulnerable.value = true;
     areGhostsPaused.value = true;
@@ -240,20 +244,14 @@
   }
 
   function gameOverHandler() {
-    playSound('death');
+    if(!isMuted.value) playSound('death');
     gameOver.value = true;
     lives.value = lives.value - 1;
     console.log('Game Over! Pacman wurde gefangen.');
     if (highscore.value < score.value) {
       highscore.value = score.value;
     }
-    fetchHighscore().then((backendhighscore) => {
-      oldHighscore = backendhighscore;
-      console.log("Highscore from backend: " + oldHighscore);
-      if (oldHighscore > highscore.value) {
-        highscore.value = oldHighscore;
-      }
-    });
+    console.log("Highscore: " + highscore.value);
     if (!gamePaused.value && startTime !== null) {
       timePlayed += Date.now() - startTime;
       console.log("Time played in ms: " + timePlayed);
@@ -262,7 +260,7 @@
   }
 
   function eatGhost(ghostIdx: number){
-    playSound('eatGhost');
+    if(!isMuted.value) playSound('eatGhost');
     let scoreValue = 0;
     ghostsEatenTotal.value += 1;
     switch (ghostsEaten) {
@@ -340,7 +338,7 @@
   }
 
   function updatePoints(value){
-    startChomp();
+    if(!isMuted.value) startChomp();
     if(value==4){
       score.value += 10;
       pointsEaten ++;
@@ -409,7 +407,7 @@
   }
 
   function resetPoints(grid: number[][]){
-    playSound('intermission');
+    if(!isMuted.value) playSound('intermission');
     for (let row = 0; row < grid.length; row++) {
       for (let col = 0; col < grid[row].length; col++) {
         if (grid[row][col] === 4) {
@@ -449,7 +447,7 @@
   }
 
   function restartGame(){
-    playSound("intro")
+    if(!isMuted.value) playSound("intro")
     resetPowerUp();
     resetPoints(grid.value);
     floatingScores.value = [];
@@ -555,6 +553,13 @@
 
   onMounted(() => {
     window.addEventListener('keydown', handleKeydown);
+    fetchHighscore().then((backendhighscore) => {
+      oldHighscore = backendhighscore;
+      console.log("Highscore from backend: " + oldHighscore);
+      if (oldHighscore > highscore.value) {
+        highscore.value = oldHighscore;
+      }
+    });
   });
 
   onUnmounted(() => {
@@ -619,6 +624,22 @@
       console.error('Fehler beim Abrufen des Highscores:', error);
     }
   };
+
+  function mute() {
+    isMuted.value = true;
+    console.log(isMuted.value);
+    console.log("Sound muted");
+  }
+
+  function unmute() {
+    isMuted.value = false;
+    console.log(isMuted.value);
+    console.log("Sound unmuted");
+  }
+
+  watch(isMuted, (val) => {
+    localStorage.setItem('isMuted', val ? 'true' : 'false');
+  });
 </script>
 
 <template>
@@ -631,13 +652,19 @@
     :level="level"
     :ghosts-eaten-total="ghostsEatenTotal"
     :points-eaten-total="pointsEatenTotal"
+    :is-sound-muted="isMuted"
     @restart="restartGame"
+    @mute="mute"
+    @unmute="unmute"
   />
 
   <PauseOverlay
     v-if="gamePaused"
     :score="score"
+    :is-sound-muted="isMuted"
     @resume="resumeGame"
+    @mute="mute"
+    @unmute="unmute"
   />
 
   <div id="game-field" class="game-field">
