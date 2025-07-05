@@ -19,6 +19,7 @@ import {onMounted, ref} from 'vue';
 
   const fetchScore = async () => {
     const rankID = props.id
+    console.log("VITE_BASE_URL + path: ", import.meta.env.VITE_BASE_URL + `api/homepage/leaderboard?rankID=${rankID}`)
     try {
       const response = await fetch(import.meta.env.VITE_BASE_URL + `api/homepage/leaderboard?rankID=${rankID}`, {
         method: 'GET',
