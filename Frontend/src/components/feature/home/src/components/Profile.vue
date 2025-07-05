@@ -61,7 +61,7 @@ const fetchUsername = async () => {
   if (!playerId) return;
   try {
     const res = await fetch(
-      import.meta.env.VITE_BASE_URL + `profile?playerID=${playerId}`,
+      import.meta.env.VITE_BASE_URL + `api/profile?playerID=${playerId}`,
       {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
