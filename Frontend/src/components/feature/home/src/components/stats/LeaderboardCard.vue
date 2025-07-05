@@ -54,7 +54,7 @@ import {onMounted, ref} from "vue";
 
   const fetchHighscore = async () => {
     try {
-      const response = await fetch(`http://localhost/api/homepage/statistics/highscore?playerId=${playerId}`, {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + `api/homepage/statistics/highscore?playerId=${playerId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ import {onMounted, ref} from "vue";
 
   const fetchLastScore = async () => {
     try {
-      const response = await fetch(`http://localhost/api/homepage/statistics/lastscore?playerId=${playerId}`, {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + `api/homepage/statistics/lastscore?playerId=${playerId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ import {onMounted, ref} from "vue";
 
   const fetchGamesPlayed = async () => {
     try {
-      const response = await fetch(`http://localhost/api/homepage/statistics/gamesplayed?playerId=${playerId}`, {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + `api/homepage/statistics/gamesplayed?playerId=${playerId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ import {onMounted, ref} from "vue";
 
   const fetchTotalPlayTime = async () => {
     try {
-      const response = await fetch(`http://localhost/api/homepage/statistics/totalplaytime?playerId=${playerId}`, {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + `api/homepage/statistics/totalplaytime?playerId=${playerId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ import {onMounted, ref} from "vue";
 
   const fetchHighestLevel = async () => {
     try {
-      const response = await fetch(`http://localhost/api/homepage/statistics/highestlevel?playerId=${playerId}`, {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + `api/homepage/statistics/highestlevel?playerId=${playerId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -154,7 +154,7 @@ import {onMounted, ref} from "vue";
 
   const fetchTotalGhostsEaten = async () => {
     try {
-      const response = await fetch(`http://localhost/api/homepage/statistics/totalghostseaten?playerId=${playerId}`, {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + `api/homepage/statistics/totalghostseaten?playerId=${playerId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

@@ -1,4 +1,19 @@
 {
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "strict": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    }
+  },
   "files": [],
   "references": [
     {
@@ -7,5 +22,7 @@
     {
       "path": "./tsconfig.app.json"
     }
-  ]
+  ],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
