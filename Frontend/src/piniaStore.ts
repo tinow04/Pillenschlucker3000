@@ -20,7 +20,8 @@ export const useUserStore = defineStore('user', {
       this.name = username
       console.log("piniaStore: ", username)
     },
-  },
+  }
+  // @ts-expect-error
   persist: true
 })
 

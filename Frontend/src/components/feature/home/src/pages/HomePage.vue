@@ -46,7 +46,7 @@ export default {
       isGameStarted: false,
       showHowTo: false,
       showSettings: false,
-      userStore: useUserStore(), // <-- Zugriff auf Pinia Store
+      userStore: useUserStore(),
     };
   },
   computed: {
