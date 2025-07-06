@@ -38,6 +38,8 @@ jobs:
         run: |
           npm ci --force
           npm run build
+        env:
+          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
