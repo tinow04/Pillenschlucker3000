@@ -1,6 +1,4 @@
-<template></template>
-
-<script setup lang="ts">
+<script lang="ts">
 import { onMounted } from 'vue';
 import { useSoundStore } from '@/piniaStore';
 
@@ -68,3 +66,5 @@ function playChomp() {
 
 export { playSound, playChomp };
 </script>
+
+<template></template>
