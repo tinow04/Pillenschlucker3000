@@ -80,22 +80,15 @@ export default {
     updateScale() {
       const baseWidth = 1920;
       const baseHeight = 1080;
-
       const scaleX = window.innerWidth / baseWidth;
       const scaleY = window.innerHeight / baseHeight;
-      const scale = Math.min(scaleX, scaleY); // wichtig: NICHT max!
-
-      const offsetX = (window.innerWidth - baseWidth * scale) / 2;
-      const offsetY = (window.innerHeight - baseHeight * scale) / 2;
-
+      const scale = Math.max(scaleX, scaleY);
       const scaler = document.getElementById("scaler");
       if (scaler) {
         scaler.style.top = "0";
         scaler.style.left = "0";
-        scaler.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
-        scaler.style.transformOrigin = "top left";
+        scaler.style.transform = `scale(${scale})`;
       }
-
       document.documentElement.style.setProperty("--scale-factor", scale);
     },
   },
