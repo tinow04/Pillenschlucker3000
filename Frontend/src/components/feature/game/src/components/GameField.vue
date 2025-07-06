@@ -667,10 +667,7 @@
     :level="level"
     :ghosts-eaten-total="ghostsEatenTotal"
     :points-eaten-total="pointsEatenTotal"
-    :is-sound-muted="isMuted"
     @restart="restartGame"
-    @mute="mute"
-    @unmute="unmute"
   />
 
   <PauseOverlay
