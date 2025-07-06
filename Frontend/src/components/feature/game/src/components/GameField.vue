@@ -14,7 +14,7 @@
   import VulnerableGhostGIF from '@/assets/GIFs/VulnerableGhost.gif';
   import VulnerableGhost from '@/assets/Vulnerable.png';
   import { useUserStore } from '@/piniaStore';
-  import { playSound, playChomp } from '@/components/sounds/sounds.vue';
+  import { playSound, playChomp } from '@/components/sounds/sounds';
   import { useSoundStore } from '@/piniaStore';
 
 
