@@ -1,4 +1,3 @@
-<script lang="ts">
 import { onMounted } from 'vue';
 import { useSoundStore } from '@/piniaStore';
 
@@ -15,7 +14,7 @@ const sounds = {
 const CHOMP_POOL_SIZE = 3;
 const chompPool: HTMLAudioElement[] = Array.from({ length: CHOMP_POOL_SIZE }, () => {
   const audio = new Audio(new URL('@/assets/Sounds/pacman_chomp.wav', import.meta.url).href);
-  audio.volume = 0.2; // Wird bei playChomp nochmal überschrieben
+  audio.volume = 0.2;
   return audio;
 });
 
@@ -65,4 +64,8 @@ function playChomp() {
 }
 
 export { playSound, playChomp };
-</script>
+
+export default {
+  playSound,
+  playChomp
+};

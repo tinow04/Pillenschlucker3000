@@ -12,7 +12,7 @@
 
 
 <script>
-import { playSound } from '@/components/sounds/sounds.vue';
+import { playSound } from '@/components/sounds/sounds.ts';
 import { useSoundStore } from '@/piniaStore';
 
 export default {
