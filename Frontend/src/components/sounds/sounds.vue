@@ -1,3 +1,5 @@
+<template></template>
+
 <script lang="ts">
 import { onMounted } from 'vue';
 import { useSoundStore } from '@/piniaStore';
