@@ -39,7 +39,7 @@ export default {
   align-items: center;
   gap: 2rem;
   min-height: 100vh;
-  margin-top: 40rem;
+  margin-top: 35rem;
   position: fixed;
   left: 50%;
   transform: translateX(-50%);

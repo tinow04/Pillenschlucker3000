@@ -1,9 +1,8 @@
 <script lang="ts">
-import { ref, onMounted } from 'vue';
+import { onMounted } from 'vue';
+import { useSoundStore } from '@/piniaStore';
 
-const volume = ref(
-  +(localStorage.getItem('globalVolume') ?? 50) / 100
-);
+let soundStore: ReturnType<typeof useSoundStore>;
 
 const sounds = {
   eatGhost: new Audio(new URL('@/assets/Sounds/pacman_eatghost.wav', import.meta.url).href),
@@ -12,50 +11,58 @@ const sounds = {
   intermission: new Audio(new URL('@/assets/Sounds/pacman_intermission.wav', import.meta.url).href),
 };
 
-const chompLoop = new Audio(new URL('@/assets/Sounds/pacman_chomp.wav', import.meta.url).href);
-chompLoop.loop = true;
-
-let chompTimeout: number | null = null;
-let chompDurationMs = 200; // Default fallback
-
-chompLoop.addEventListener('loadedmetadata', () => {
-  chompDurationMs = chompLoop.duration * 1000;
+// Chomp Sound Pool
+const CHOMP_POOL_SIZE = 3;
+const chompPool: HTMLAudioElement[] = Array.from({ length: CHOMP_POOL_SIZE }, () => {
+  const audio = new Audio(new URL('@/assets/Sounds/pacman_chomp.wav', import.meta.url).href);
+  audio.volume = 0.2; // Wird bei playChomp nochmal überschrieben
+  return audio;
 });
 
+let currentChompIndex = 0;
+let chompCooldown = false;
+
 onMounted(() => {
+  soundStore = useSoundStore();
+  const volume = soundStore.volume * 0.2;
+
   for (const sound of Object.values(sounds)) {
-    sound.volume = volume.value * 0.2;
+    sound.volume = volume;
   }
-  chompLoop.volume = volume.value * 0.2;
+
+  for (const chomp of chompPool) {
+    chomp.volume = volume;
+  }
 });
 
 function playSound(name: keyof typeof sounds) {
+  if (!soundStore) soundStore = useSoundStore();
+
   const base = sounds[name];
   if (!base) return;
 
   const instance = base.cloneNode() as HTMLAudioElement;
-  instance.volume = volume.value * 0.2;
+  instance.volume = soundStore.volume * 0.2;
   instance.play().catch(() => {});
 }
 
-function startChomp() {
-  if (chompLoop.paused) {
-    chompLoop.currentTime = 0;
-    chompLoop.play().catch(() => {});
-  }
+function playChomp() {
+  if (chompCooldown) return;
+  if (!soundStore) soundStore = useSoundStore();
 
-  if (chompTimeout !== null) clearTimeout(chompTimeout);
+  const chomp = chompPool[currentChompIndex];
+  chomp.currentTime = 0;
+  chomp.volume = soundStore.volume * 0.2;
 
-  chompTimeout = window.setTimeout(() => {
-    chompLoop.pause();
-    chompLoop.currentTime = 0;
-    chompTimeout = null;
-  }, chompDurationMs);
+  chomp.play().catch(() => {});
+  chompCooldown = true;
+
+  chomp.onended = () => {
+    chompCooldown = false;
+  };
+
+  currentChompIndex = (currentChompIndex + 1) % CHOMP_POOL_SIZE;
 }
 
-export { playSound, startChomp, volume };
-
-export default {
-  name: 'SoundHandler'
-};
+export { playSound, playChomp };
 </script>

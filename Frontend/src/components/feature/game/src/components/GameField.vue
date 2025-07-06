@@ -14,7 +14,8 @@
   import VulnerableGhostGIF from '@/assets/GIFs/VulnerableGhost.gif';
   import VulnerableGhost from '@/assets/Vulnerable.png';
   import { useUserStore } from '@/piniaStore';
-  import { playSound, startChomp } from '@/components/sounds/sounds.vue';
+  import { playSound, playChomp } from '@/components/sounds/sounds.vue';
+  import { useSoundStore } from '@/piniaStore';
 
 
   type GhostInstance = ComponentPublicInstance<{
@@ -27,7 +28,8 @@
 
   type Direction = 'up' | 'down' | 'left' | 'right';
 
-  const userStore = useUserStore();
+  const userStore = useUserStore()
+  const soundStore = useSoundStore();
   const playerId = userStore.userId;
   const isMuted = ref(false);
   const savedMute = localStorage.getItem('isMuted');
@@ -222,7 +224,9 @@
   }
 
   function eatPacman() {
-    if(!isMuted.value) playSound('death');
+    if (!soundStore.isMuted) {
+      playSound("death");
+    }
     lives.value = lives.value - 1;
     invulnerable.value = true;
     areGhostsPaused.value = true;
@@ -260,7 +264,9 @@
   }
 
   function eatGhost(ghostIdx: number){
-    if(!isMuted.value) playSound('eatGhost');
+    if (!soundStore.isMuted) {
+      playSound("eatGhost");
+    }
     let scoreValue = 0;
     ghostsEatenTotal.value += 1;
     switch (ghostsEaten) {
@@ -338,7 +344,9 @@
   }
 
   function updatePoints(value){
-    if(!isMuted.value) startChomp();
+    if (!soundStore.isMuted) {
+      playChomp();
+    }
     if(value==4){
       score.value += 10;
       pointsEaten ++;
@@ -407,7 +415,9 @@
   }
 
   function resetPoints(grid: number[][]){
-    if(!isMuted.value) playSound('intermission');
+    if (!soundStore.isMuted) {
+      playSound("intermission");
+    }
     for (let row = 0; row < grid.length; row++) {
       for (let col = 0; col < grid[row].length; col++) {
         if (grid[row][col] === 4) {
@@ -447,7 +457,9 @@
   }
 
   function restartGame(){
-    if(!isMuted.value) playSound("intro")
+    if (!soundStore.isMuted) {
+      playSound("intro");
+    }
     resetPowerUp();
     resetPoints(grid.value);
     floatingScores.value = [];

@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
-import { volume } from '@/components/sounds/sounds.vue';
+import { useSoundStore } from '@/piniaStore';
 
   import mute from '@/assets/Mute.png';
   import unmute from '@/assets/Unmute.png';
+
+  const soundStore = useSoundStore();
 
   const muteImg = mute;
   const unmuteImg = unmute;
@@ -16,7 +18,6 @@ import { volume } from '@/components/sounds/sounds.vue';
 
   const props = defineProps<{
     score: number,
-    isSoundMuted: boolean
   }>();
 
   const formatScore = (val: number | null): string => {
@@ -25,21 +26,12 @@ import { volume } from '@/components/sounds/sounds.vue';
   visualScore.value = formatScore(props.score);
 
   function goHome() {
-    router.push('/'); 
+    router.push('/');
   }
 
-  
+
   function toggleMute() {
-    if (props.isSoundMuted) {
-      console.log("GameOver", props.isSoundMuted);
-      emit('unmute');
-    }
-    else {
-      if (volume.value > 0) {
-        console.log("GameOver", props.isSoundMuted);
-        emit('mute');
-      }
-    }
+    soundStore.toggleMute();
   }
 </script>
 
@@ -47,7 +39,7 @@ import { volume } from '@/components/sounds/sounds.vue';
     <div class="pause-overlay">
         <div class="pause-content">
             <button @click="toggleMute" class="mute-button">
-              <img :src="props.isSoundMuted ? muteImg : unmuteImg" :alt="props.isSoundMuted ? 'Ton aus' : 'Ton an'" class="mute-img"/>
+              <img :src="soundStore.isMuted ? muteImg : unmuteImg" :alt="soundStore.isMuted ? 'Ton aus' : 'Ton an'" class="mute-img" />
             </button>
             <h1>Game Paused</h1>
             <p>Press "Resume" to continue playing.</p>
@@ -73,7 +65,7 @@ import { volume } from '@/components/sounds/sounds.vue';
 .pause-content {
   position: relative;
   font-family: "Jersey 10", serif;
-  padding: 3rem 5rem 7rem 5rem; 
+  padding: 3rem 5rem 7rem 5rem;
   border-radius: 2rem;
   text-align: center;
   box-shadow: 0 0 30px #000;

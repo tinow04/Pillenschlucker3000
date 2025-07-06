@@ -23,7 +23,7 @@ export default {
 
 .bottom-image {
   position: absolute;
-  bottom: 5%;
+  bottom: 13%;
   left: 50%;
   transform: translateX(-50%);
   pointer-events: none;

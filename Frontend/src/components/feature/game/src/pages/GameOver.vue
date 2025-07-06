@@ -1,10 +1,12 @@
 <script setup lang="ts">
   import { useRouter } from 'vue-router';
   import { ref } from 'vue';
-  import { volume } from '@/components/sounds/sounds.vue';
+  import { useSoundStore } from '@/piniaStore';
 
   import mute from '@/assets/Mute.png';
   import unmute from '@/assets/Unmute.png';
+
+  const soundStore = useSoundStore();
 
   const muteImg = mute;
   const unmuteImg = unmute;
@@ -37,7 +39,7 @@
   const router = useRouter();
 
   function goHome() {
-    router.push('/'); 
+    router.push('/');
   }
 
   function toggleMute() {
@@ -86,7 +88,7 @@
 .gameover-content {
   position: relative;
   font-family: "Jersey 10", serif;
-  padding: 3rem 5rem 7rem 5rem; 
+  padding: 3rem 5rem 7rem 5rem;
   border-radius: 2rem;
   text-align: center;
   box-shadow: 0 0 30px #000;

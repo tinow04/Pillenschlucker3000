@@ -13,6 +13,7 @@
 
 <script>
 import { playSound } from '@/components/sounds/sounds.vue';
+import { useSoundStore } from '@/piniaStore';
 
 export default {
   name: "StartAnimation",
@@ -27,10 +28,11 @@ export default {
   },
   methods: {
     startTransition() {
-      const isMuted = localStorage.getItem('isMuted') === 'true';
-      if (!isMuted) {
+      const soundStore = useSoundStore();
+      if (!soundStore.isMuted) {
         playSound("intro");
-      }      this.showOverlay = true;
+      }
+      this.showOverlay = true;
       this.showPacman = true;
       this.$nextTick(() => {
         const pacman = document.getElementById("pacman");
@@ -105,7 +107,7 @@ export default {
 
 <style scoped>
 .black-overlay {
-  position: absolute;
+  position: fixed;
   top: 0; left: 0;
   width: 100%;
   height: 100%;
