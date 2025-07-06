@@ -242,7 +242,7 @@ function isSkinUnlocked(id: number): boolean {
 const unlockSkin = async (id: number) => {
   console.log("Unlocking skin with ID:", id);
   try {
-    const response = await fetch('http://localhost/api/skin', {
+    const response = await fetch(import.meta.env.VITE_BASE_URL + `api/skin`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -269,7 +269,7 @@ const fetchSkin = async (id: number) => {
       playerID: String(playerId),
       skinID: String(id)
     });
-    const response = await fetch(`http://localhost/api/skin?`+params.toString(), {
+    const response = await fetch(import.meta.env.VITE_BASE_URL + `api/skin?` + params.toString(), {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
