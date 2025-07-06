@@ -1,28 +1,39 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue';
 
-export const useUserStore = defineStore('user', {
-  state: () => ({
-    userId: null,
-    name: null
-  }),
-  actions: {
-    setUserId(id) {
-      this.userId = id
-      console.log("piniaStore: ", id, typeof id)
-    },
-    logout() {
-      this.userId = null
-      this.name = null;
-      this.leaderboardVersion++;
-    },
-    setUsername(username) {
-      this.name = username
-      console.log("piniaStore: ", username)
-    },
+export const useUserStore = defineStore(
+  'user',
+  () => {
+    const userId            = ref<number | null>(null)
+    const name              = ref<string | null>(null)
+    const leaderboardVersion = ref<number>(0)
+
+    function setUserId(id: number) {
+      userId.value = id
+      console.log('piniaStore setUserId:', id)
+    }
+    function setUsername(username: string) {
+      name.value = username
+      console.log('piniaStore setUsername:', username)
+    }
+    function logout() {
+      userId.value            = null
+      name.value              = null
+      leaderboardVersion.value++
+      console.log('logged out, new version:', leaderboardVersion.value)
+    }
+
+    return {
+      userId,
+      name,
+      leaderboardVersion,
+      setUserId,
+      setUsername,
+      logout,
+    }
   },
-  persist: true
-})
+  { persist: true }
+)
 
 export const useSoundStore = defineStore('sound', () => {
   const volume = ref(
