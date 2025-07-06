@@ -50,7 +50,28 @@ const passwordRepeat = ref("");
 const router = useRouter();
 const userStore = useUserStore();
 
+const isTooShort = (name: string) => name.length < 3;
+const isTooLong = (name: string) => name.length > 14;
+const hasInvalidChars = (name: string) => !/^[a-zA-Z0-9_]*$/.test(name);
+
 const registerUser = async () => {
+  const name = username.value;
+
+  if (isTooShort(name)) {
+    showToast("Benutzername ist zu kurz (min. 3 Zeichen)", "error");
+    return;
+  }
+
+  if (isTooLong(name)) {
+    showToast("Benutzername ist zu lang (max. 14 Zeichen)", "error");
+    return;
+  }
+
+  if (hasInvalidChars(name)) {
+    showToast("Benutzername enthält ungültige Zeichen (nur a–z, A–Z, 0–9, _ erlaubt)", "error");
+    return;
+  }
+
   if (password.value !== passwordRepeat.value) {
     showToast("Passwörter stimmen nicht überein", "error");
     return;
@@ -61,7 +82,7 @@ const registerUser = async () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        username: username.value,
+        username: name,
         email: email.value,
         password: password.value,
       }),
