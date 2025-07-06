@@ -24,26 +24,25 @@ export const useUserStore = defineStore('user', {
   persist: true
 })
 
-export const useSoundStore = defineStore('sound', () => {
-  const volume = ref(
-    Number(localStorage.getItem('globalVolume') ?? '50') / 100
-  );
-
-  const isMuted = ref(volume.value === 0);
-
-  watch(volume, (val) => {
-    isMuted.value = val === 0;
-    localStorage.setItem('globalVolume', String(Math.round(val * 100)));
-  });
-
-  function toggleMute() {
-    if (isMuted.value) {
-      volume.value = 0.5;
-    } else {
-      volume.value = 0;
+export const useSoundStore = defineStore('sound', {
+  state: () => ({
+    volume: 0.5
+  }),
+  getters: {
+    isMuted: (state) => state.volume === 0
+  },
+  actions: {
+    toggleMute() {
+      this.volume = this.isMuted ? 0.5 : 0;
+    },
+    setVolume(val: number) {
+      this.volume = val;
     }
+  },
+  persist: {
+    key: 'sound',
+    paths: ['volume']
   }
-
-  return { volume, isMuted, toggleMute };
 });
+
 

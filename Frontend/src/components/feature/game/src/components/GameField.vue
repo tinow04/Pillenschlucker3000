@@ -344,14 +344,17 @@
   }
 
   function updatePoints(value){
-    if (!soundStore.isMuted) {
-      playChomp();
-    }
     if(value==4){
+      if (!soundStore.isMuted) {
+        playChomp();
+      }
       score.value += 10;
       pointsEaten ++;
       pointsEatenTotal.value += 1;
     } else {
+      if (!soundStore.isMuted) {
+        playSound("eatPowerpill");
+      }
       score.value += 50;
       pointsEaten ++;
       startPowerUp();

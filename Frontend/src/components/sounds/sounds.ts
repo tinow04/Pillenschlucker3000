@@ -8,18 +8,13 @@ const sounds = {
   death: new Audio(new URL('@/assets/Sounds/pacman_death.wav', import.meta.url).href),
   intro: new Audio(new URL('@/assets/Sounds/pacman_beginning.wav', import.meta.url).href),
   intermission: new Audio(new URL('@/assets/Sounds/pacman_intermission.wav', import.meta.url).href),
+  eatPowerpill: new Audio(new URL('@/assets/Sounds/pacman_eatpowerpill.wav', import.meta.url).href),
 };
 
-// Chomp Sound Pool
-const CHOMP_POOL_SIZE = 3;
-const chompPool: HTMLAudioElement[] = Array.from({ length: CHOMP_POOL_SIZE }, () => {
-  const audio = new Audio(new URL('@/assets/Sounds/pacman_chomp.wav', import.meta.url).href);
-  audio.volume = 0.2;
-  return audio;
-});
+const eatDot0 = new URL('@/assets/Sounds/eat_dot_0.wav', import.meta.url).href;
+const eatDot1 = new URL('@/assets/Sounds/eat_dot_1.wav', import.meta.url).href;
 
-let currentChompIndex = 0;
-let chompCooldown = false;
+let alternate = false;
 
 onMounted(() => {
   soundStore = useSoundStore();
@@ -27,10 +22,6 @@ onMounted(() => {
 
   for (const sound of Object.values(sounds)) {
     sound.volume = volume;
-  }
-
-  for (const chomp of chompPool) {
-    chomp.volume = volume;
   }
 });
 
@@ -46,23 +37,13 @@ function playSound(name: keyof typeof sounds) {
 }
 
 function playChomp() {
-  if (chompCooldown) return;
   if (!soundStore) soundStore = useSoundStore();
 
-  const chomp = chompPool[currentChompIndex];
-  chomp.currentTime = 0;
-  chomp.volume = soundStore.volume * 0.2;
+  const dotSound = new Audio(alternate ? eatDot1 : eatDot0);
+  dotSound.volume = soundStore.volume * 0.15;
+  dotSound.play().catch(() => {});
 
-  chomp.play().catch(() => {});
-  chompCooldown = true;
-
-  chomp.onended = () => {
-    chompCooldown = false;
-  };
-
-  currentChompIndex = (currentChompIndex + 1) % CHOMP_POOL_SIZE;
+  alternate = !alternate;
 }
 
 export { playSound, playChomp };
-
-
