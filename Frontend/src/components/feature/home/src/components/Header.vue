@@ -18,7 +18,7 @@ export default {
   font-size: 6rem;
   text-align: center;
   position: absolute;
-  top: 0%;
+  top: -3%;
   left: 50%;
   transform: translateX(-50%);
 }
