@@ -1,26 +1,26 @@
 <template>
-  <div class="main-container">
-    <div class="header-container">
-      <div v-if="coins !== null" class="coin-display">
-        <img src="@/assets/PNGs/Coins Overlay.png" class="coin-icon" alt="Coins">
-        <span class="coin-amount">{{ coins }}</span>
+  <div class="background-layer"></div>
+    <div class="main-container">
+      <div class="header-container">
+        <div v-if="coins !== null" class="coin-display">
+          <img src="@/assets/PNGs/Coins Overlay.png" class="coin-icon" alt="Coins">
+          <span class="coin-amount">{{ formatCoins(coins) }}</span>
+        </div>
+        <div class="button-container">
+          <Home />
+        </div>
       </div>
-      <div class="button-container">
-        <Home />
+      <div class="grid-wrapper">
+        <SkinsComponent
+          @updateCoins="
+          (price, done) => {
+            updateCoins(price)
+            .then(success => done(success))
+            .catch(()   => done(false))
+          }"
+        />
       </div>
     </div>
-    <div class="grid-wrapper">
-      <SkinsComponent
-        @updateCoins="
-        (price, done) => {
-          updateCoins(price)
-          .then(success => done(success))
-          .catch(()   => done(false))
-        }
-        "
-      />
-    </div>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -39,6 +39,10 @@ const router = useRouter();
 const userStore = useUserStore();
 const playerId = userStore.userId;
 const coins = ref<number | null>(null);
+
+const formatCoins = (val: number | null): string => {
+  return val !== null ? val.toLocaleString("de-DE") : "...";
+};
 
 const fetchCoins = async () => {
   if (!playerId) {
@@ -107,9 +111,20 @@ onMounted(() => {
     coins.value = playerCoins;
   });
 })
+
 </script>
 
 <style>
+.background-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #162034;
+  z-index: -1;
+}
+
 ::-webkit-scrollbar {
   display: none;
 }
