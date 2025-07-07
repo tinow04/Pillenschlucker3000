@@ -3,8 +3,8 @@ import { onMounted, onUnmounted } from 'vue';
 import GameField from '../components/GameField.vue';
 
 function updateZoomDynamically() {
-  const BASE_WIDTH = 1000;
-  const BASE_HEIGHT = 500;
+  const BASE_WIDTH = 1600;
+  const BASE_HEIGHT = 800;
 
   const scaleX = window.innerWidth / BASE_WIDTH;
   const scaleY = window.innerHeight / BASE_HEIGHT;
