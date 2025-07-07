@@ -1,23 +1,26 @@
 <template>
-  <div>
-    <Header />
-    <Home />
-    <div class="form-container">
-      <LoginForm v-if="showLogin" @toggle-form="toggleForm" />
-      <RegisterForm
-        v-else
-        @toggle-form="toggleForm"
-        @password-mismatch="showPasswordPopup"
-      />
-    </div>
-    <div class="popup" v-if="showPopup">
-      <p>Passwords do not match.</p>
+  <div class="background-layer"></div>
+    <div id="scaler">
+    <div class="login-page">
+      <Header />
+      <Home />
+      <div class="form-container">
+        <LoginForm v-if="showLogin" @toggle-form="toggleForm" />
+        <RegisterForm
+          v-else
+          @toggle-form="toggleForm"
+          @password-mismatch="showPasswordPopup"
+        />
+      </div>
+      <div class="popup" v-if="showPopup">
+        <p>Passwords do not match.</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import Header from "@/components/feature/login/src/components/Header.vue";
 import Home from "@/components/feature/login/src/components/Home.vue";
 import LoginForm from "@/components/feature/login/src/components/loginform.vue";
@@ -41,24 +44,70 @@ export default {
 
     const showPasswordPopup = () => {
       showPopup.value = true;
-
       setTimeout(() => {
         showPopup.value = false;
       }, 3000);
     };
+
+    const updateScale = () => {
+      const baseWidth = 1920;
+      const baseHeight = 1080;
+      const scaleX = window.innerWidth / baseWidth;
+      const scaleY = window.innerHeight / baseHeight;
+      const scale = Math.max(scaleX, scaleY);
+      const scaler = document.getElementById("scaler");
+      if (scaler) {
+        scaler.style.top = "0";
+        scaler.style.left = "0";
+        scaler.style.transform = `scale(${scale})`;
+      }
+      document.documentElement.style.setProperty("--scale-factor", scale);
+    };
+
+    onMounted(() => {
+      updateScale();
+      window.addEventListener("resize", updateScale);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener("resize", updateScale);
+    });
 
     return { showLogin, toggleForm, showPopup, showPasswordPopup };
   },
 };
 </script>
 
-<style>
-body {
+<style scoped>
+.background-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #162034;
+  z-index: -1;
+}
+
+#scaler {
+  width: 1920px;
+  height: 1080px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+}
+
+.login-page {
   background-color: #162034;
   font-family: "Jersey 10", serif;
-  margin: 0;
-  color: white;
   overflow: hidden;
+  user-select: none;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
 }
 
 .form-container {
@@ -76,7 +125,6 @@ body {
   flex-direction: column;
   align-items: center;
 }
-
 
 .popup {
   position: fixed;

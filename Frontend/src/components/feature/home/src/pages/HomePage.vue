@@ -1,22 +1,23 @@
 <template>
-  <div id="scaler">
-    <div class="home-page">
-      <Header />
+  <div class="background-layer"></div>
+    <div id="scaler">
+      <div class="home-page">
+        <Header />
 
-      <Buttons :buttons="buttonList" />
+        <Buttons :buttons="buttonList" />
 
-      <Profile />
-      <Boards />
-      <ImageBottom />
-      <StartAnimation v-if="isGameStarted" />
+        <Profile />
+        <Boards />
+        <ImageBottom />
+        <StartAnimation v-if="isGameStarted" />
 
-      <!-- How To Popup -->
-      <HowTo v-if="showHowTo" @close="showHowTo = false" />
+        <!-- How To Popup -->
+        <HowTo v-if="showHowTo" @close="showHowTo = false" />
 
-      <!-- Settings Popup -->
-      <Settings v-if="showSettings" @close="showSettings = false" />
+        <!-- Settings Popup -->
+        <Settings v-if="showSettings" @close="showSettings = false" />
+      </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts">
@@ -104,6 +105,16 @@ export default {
 
 
 <style scoped>
+.background-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #162034;
+  z-index: -1;
+}
+
 #scaler {
   width: 1920px;
   height: 1080px;
