@@ -1,6 +1,6 @@
 <template>
   <div class="form-box">
-    <h2>Anmelden</h2>
+    <h2>Login</h2>
     <form @submit.prevent="handleLoginSubmit">
       <input
         v-model="email"
@@ -11,14 +11,14 @@
       <input
         v-model="password"
         type="password"
-        placeholder="Passwort"
+        placeholder="Password"
         required
       />
       <button type="submit" class="button">Login</button>
     </form>
     <p>
-      Noch kein Konto?
-      <a @click="$emit('toggle-form')">Registrieren</a>
+      Don't have an account yet?
+      <a @click="$emit('toggle-form')">Register</a>
     </p>
   </div>
 </template>
@@ -52,18 +52,18 @@ const handleLoginSubmit = async () => {
 
     const data = await response.json();
     if (!response.ok) {
-      showToast(data.message || "Login fehlgeschlagen", "error");
+      showToast(data.message || "Login failed", "error");
       return;
     }
 
     userStore.setUserId(data.user.id);
     userStore.setUsername(data.user.name);
     localStorage.setItem(selectedSkinStorage, defaultSelectedSkin);
-    showToast("Login erfolgreich", "success");
+    showToast("Login successful", "success");
     router.push("/");
   } catch (error) {
     console.error("Fehler:", error);
-    showToast("Login fehlgeschlagen. Bitte versuchen Sie es erneut.", "error");
+    showToast("Login failed. Please try again.", "error");
   }
 };
 </script>

@@ -5,13 +5,13 @@
       <img src="@/assets/profile.png" alt="Profilbild" />
     </button>
     <div v-if="showPopup" class="profile-popup">
-      <p v-if="!username">Noch kein Account?</p>
+      <p v-if="!username">Don't have an account yet?</p>
       <router-link v-if="!username" to="/login" class="popup-link">
         Login
       </router-link>
       <div v-else>
-        <p>Eingeloggt als {{ username }}</p>
-        <a class="popup-link" @click.prevent="logout">Abmelden</a>
+        <p>Logged in as {{ username }}</p>
+        <a class="popup-link" @click.prevent="logout">Logout</a>
       </div>
     </div>
   </div>
@@ -45,14 +45,14 @@ const logout = async () => {
       body: JSON.stringify({ playerID: playerId }),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    userStore.logout(); // <-- Hier geändert
+    userStore.logout();
     localStorage.setItem(selectedSkinStorage, defaultSelectedSkin);
     username.value = null;
     showPopup.value = false;
-    showToast('Erfolgreich abgemeldet', 'info');
+    showToast('Successfully logged out', 'info');
   } catch (err) {
-    console.error('Fehler beim Abmelden:', err);
-    showToast('Fehler beim Abmelden', 'error');
+    console.error('Error during logout:', err);
+    showToast('Error during logout', 'error');
   }
 };
 
@@ -71,7 +71,7 @@ const fetchUsername = async () => {
     const data = await res.json();
     username.value = data.username;
   } catch (err) {
-    console.error('Fehler beim Abrufen des Benutzernamens:', err);
+    console.error('Error while fetching username:', err);
   }
 };
 
