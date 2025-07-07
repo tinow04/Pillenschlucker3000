@@ -2,21 +2,31 @@
 import { onMounted, onUnmounted } from 'vue';
 import GameField from '../components/GameField.vue';
 
-let originalZoom: string | null = null;
+function updateZoomDynamically() {
+  const BASE_WIDTH = 1000;
+  const BASE_HEIGHT = 500;
+
+  const scaleX = window.innerWidth / BASE_WIDTH;
+  const scaleY = window.innerHeight / BASE_HEIGHT;
+  const scale = Math.min(scaleX, scaleY, 1);
+
+  document.documentElement.style.zoom = scale.toFixed(3);
+}
 
 onMounted(() => {
-  originalZoom = document.documentElement.style.zoom;
-  document.documentElement.style.zoom = '0.8';
+  updateZoomDynamically();
+  window.addEventListener('resize', updateZoomDynamically);
 });
 
 onUnmounted(() => {
-  document.documentElement.style.zoom = originalZoom || '';
+  window.removeEventListener('resize', updateZoomDynamically);
+  document.documentElement.style.zoom = '1.0';
 });
 </script>
 
 <template>
   <div class="page-container">
-    <GameField class="field-box"></GameField>
+    <GameField class="field-box" />
   </div>
 </template>
 
