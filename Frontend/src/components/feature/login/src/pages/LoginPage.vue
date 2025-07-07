@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { ref } from "vue";
 import Header from "@/components/feature/login/src/components/Header.vue";
 import Home from "@/components/feature/login/src/components/Home.vue";

@@ -1,3 +1,8 @@
+<!--
+  This animation was fully created using ChatGPT.
+  It has been officially approved by the supervising professor (Silas), provided that this note is included.
+-->
+
 <template>
   <div>
     <div class="black-overlay" v-show="showOverlay" ref="overlay"></div>
@@ -11,7 +16,7 @@
 </template>
 
 
-<script>
+<script lang="ts">
 import { playSound } from '@/components/sounds/sounds';
 import { useSoundStore } from '@/piniaStore';
 

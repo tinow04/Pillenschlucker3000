@@ -8,7 +8,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { showToast } from "@/components/devPanel/ToastManager.vue";
 import { ref, onMounted, onBeforeUnmount } from "vue";
 

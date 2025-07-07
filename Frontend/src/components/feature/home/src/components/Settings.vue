@@ -6,7 +6,6 @@
       <div class="settings-container">
         <h2>Settings</h2>
 
-        <!-- Mute Button -->
         <button @click="toggleMute" class="mute-button">
           <img
             :src="isSoundMuted ? muteImg : unmuteImg"
@@ -113,7 +112,6 @@ input[type="range"] {
   margin-top: 0.5rem;
 }
 
-/* Mute Button Style */
 .mute-button {
   margin-bottom: 1rem;
   width: 58px;
@@ -131,6 +129,11 @@ input[type="range"] {
   width: 58px;
   height: 58px;
   object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.mute-button:hover .mute-img {
+  transform: scale(1.1);
 }
 
 .settings-container h2 {

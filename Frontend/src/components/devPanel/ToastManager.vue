@@ -14,13 +14,11 @@ ToastManager:<template>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { ref } from "vue";
 
-// Toast array
 const toasts = ref([]);
 
-// Exportierbare Methode für externes Triggern
 export function showToast(message, type = "default", duration = 5000) {
   toasts.value.push({ message, type, duration });
 
@@ -31,7 +29,6 @@ export function showToast(message, type = "default", duration = 5000) {
 
 export default {
   setup() {
-    // Lokale Icon-Pfade (aus /assets)
     const getIconUrl = (type) => {
       switch (type) {
         case "success":
