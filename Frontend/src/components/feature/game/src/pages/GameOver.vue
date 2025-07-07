@@ -25,7 +25,7 @@
   visualGhostsEaten.value = formatScore(props.ghostsEatenTotal);
   visualPillsSwallowed.value = formatScore(props.pointsEatenTotal);
 
-  const emit = defineEmits(['restart', 'mute','unmute']);
+  const emit = defineEmits(['restart']);
   const router = useRouter();
 
   function goHome() {
