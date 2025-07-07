@@ -4,11 +4,10 @@
       <button class="close-btn" @click="close">×</button>
       <div class="carousel">
         <button class="arrow left" @click.stop="prev" :disabled="isFirst">‹</button>
-        <!-- Klicks rund ums Bild schließen nach wie vor -->
         <div class="image-container" @click.self="close">
           <img
             :src="images[currentIndex]"
-            alt="How To Anleitung"
+            alt="How To Guide"
             draggable="false"
             @dragstart.prevent
           />

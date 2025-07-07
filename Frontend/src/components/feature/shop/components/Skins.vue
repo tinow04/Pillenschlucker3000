@@ -224,12 +224,12 @@ function buySkin(id: number, price: number) {
     if (success) {
       skinsUnlocked.value.add(id);
       unlockSkin(id);
-      console.log('Skin gekauft und Coins geupdated.');
-      showToast("Skin gekauft!", "success");
+      console.log('Skin purchased and coins updated.');
+      showToast("Skin purchased!", "success");
       closePreview(); // nur bei Erfolg!
     } else {
-      showToast("Nicht genügend Pillen 🟡", "error");
-      console.log('Konnte Coins nicht updaten – Skin nicht freigeschaltet.');
+      showToast("Not enough pills", "error");
+      console.log('Could not update coins – skin not unlocked.');
     }
   })
 }
@@ -282,10 +282,10 @@ const fetchSkin = async (id: number) => {
 
     const isUnlocked = await response.json();
 
-    console.log('Freigeschalten:', isUnlocked);
+    console.log('Unlocked:', isUnlocked);
     return isUnlocked;
   } catch (error) {
-    console.error('Fehler beim Abrufen ob Skin freigeschalten ist:', error);
+    console.error('Error while checking if skin is unlocked:', error);
   }
 };
 </script>

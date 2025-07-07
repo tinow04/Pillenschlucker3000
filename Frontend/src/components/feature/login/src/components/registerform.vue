@@ -1,11 +1,11 @@
 <template>
   <div class="form-box">
-    <h2>Registrieren</h2>
+    <h2>Register</h2>
     <form @submit.prevent="registerUser">
       <input
         v-model="username"
         type="text"
-        placeholder="Benutzername"
+        placeholder="Username"
         required
       />
       <input
@@ -17,21 +17,21 @@
       <input
         v-model="password"
         type="password"
-        placeholder="Passwort"
+        placeholder="Password"
         required
       />
       <input
         v-model="passwordRepeat"
         type="password"
-        placeholder="Passwort wiederholen"
+        placeholder="Repeat password"
         required
       />
-      <button type="submit" class="button">Registrieren</button>
+      <button type="submit" class="button">Register</button>
     </form>
 
     <p>
-      Schon ein Konto?
-      <a @click="$emit('toggle-form')">Anmelden</a>
+      Already have an account?
+      <a @click="$emit('toggle-form')">Login</a>
     </p>
   </div>
 </template>
@@ -58,22 +58,22 @@ const registerUser = async () => {
   const name = username.value;
 
   if (isTooShort(name)) {
-    showToast("Benutzername ist zu kurz (min. 3 Zeichen)", "error");
+    showToast("Username is too short (min. 3 characters)", "error");
     return;
   }
 
   if (isTooLong(name)) {
-    showToast("Benutzername ist zu lang (max. 14 Zeichen)", "error");
+    showToast("Username is too long (max. 14 characters)", "error");
     return;
   }
 
   if (hasInvalidChars(name)) {
-    showToast("Benutzername enthält ungültige Zeichen (nur a–z, A–Z, 0–9, _ erlaubt)", "error");
+    showToast("Username contains invalid characters (only a–z, A–Z, 0–9, _ allowed)", "error");
     return;
   }
 
   if (password.value !== passwordRepeat.value) {
-    showToast("Passwörter stimmen nicht überein", "error");
+    showToast("Passwords do not match", "error");
     return;
   }
 
@@ -90,17 +90,16 @@ const registerUser = async () => {
 
     const data = await response.json();
     if (!response.ok) {
-      showToast(data.message || "Fehler bei der Registrierung", "error");
+      showToast(data.message || "Registration failed", "error");
       return;
     }
 
-    showToast("Registrierung erfolgreich", "success");
+    showToast("Registration successful", "success");
     userStore.setUserId(data.user.id);
     router.push("/");
   } catch (err) {
     console.error(err);
-    showToast("Fehler bei der Registrierung", "error");
-  }
+    showToast("Registration failed", "error");}
 };
 </script>
 

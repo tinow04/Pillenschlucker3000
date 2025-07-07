@@ -11,7 +11,7 @@
       />
     </div>
     <div class="popup" v-if="showPopup">
-      <p>Die Passwörter stimmen nicht überein.</p>
+      <p>Passwords do not match.</p>
     </div>
   </div>
 </template>

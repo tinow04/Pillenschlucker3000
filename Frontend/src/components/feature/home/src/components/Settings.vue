@@ -4,19 +4,19 @@
       <button class="close-btn" @click="close">×</button>
 
       <div class="settings-container">
-        <h2>Einstellungen</h2>
+        <h2>Settings</h2>
 
         <!-- Mute Button -->
         <button @click="toggleMute" class="mute-button">
           <img
             :src="isSoundMuted ? muteImg : unmuteImg"
-            :alt="isSoundMuted ? 'Ton aus' : 'Ton an'"
+            :alt="isSoundMuted ? 'Sound off' : 'Sound on'"
             class="mute-img"
           />
         </button>
 
         <!-- Volume Slider -->
-        <label for="volume">Soundeffekte:</label>
+        <label for="volume">Soundeffects:</label>
         <input
           id="volume"
           type="range"
@@ -77,11 +77,11 @@ const unmuteImg = unmute;
 .settings-popup {
   position: relative;
   background: #222;
-  padding: 2rem;
+  padding: 4rem;
   border-radius: 1rem;
   color: white;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-  width: 320px;
+  width: 450px;
   text-align: center;
 }
 
@@ -91,7 +91,7 @@ const unmuteImg = unmute;
   right: 1rem;
   background: none;
   border: none;
-  font-size: 2.5rem;
+  font-size: 3rem;
   cursor: pointer;
   color: white;
   z-index: 1;
@@ -116,8 +116,8 @@ input[type="range"] {
 /* Mute Button Style */
 .mute-button {
   margin-bottom: 1rem;
-  width: 48px;
-  height: 48px;
+  width: 58px;
+  height: 58px;
   padding: 0;
   border: none;
   background: transparent;
@@ -128,8 +128,23 @@ input[type="range"] {
 }
 
 .mute-img {
-  width: 48px;
-  height: 48px;
+  width: 58px;
+  height: 58px;
   object-fit: contain;
+}
+
+.settings-container h2 {
+  font-size: 3rem;
+}
+
+.settings-container label {
+  font-size: 2rem;
+  margin-top: 1.2rem;
+  font-weight: normal;
+}
+
+.settings-container p {
+  font-size: 1.5rem;
+  margin-top: 0.4rem;
 }
 </style>
