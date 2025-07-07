@@ -1,5 +1,17 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue';
 import GameField from '../components/GameField.vue';
+
+let originalZoom: string | null = null;
+
+onMounted(() => {
+  originalZoom = document.documentElement.style.zoom;
+  document.documentElement.style.zoom = '0.8';
+});
+
+onUnmounted(() => {
+  document.documentElement.style.zoom = originalZoom || '';
+});
 </script>
 
 <template>
