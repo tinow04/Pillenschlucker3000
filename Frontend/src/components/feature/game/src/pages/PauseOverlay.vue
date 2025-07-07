@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { ref } from 'vue';
-import { useSoundStore } from '@/piniaStore';
-
+  import { useRouter } from 'vue-router';
+  import { ref } from 'vue';
+  import { useSoundStore } from '@/piniaStore';
   import mute from '@/assets/Mute.png';
   import unmute from '@/assets/Unmute.png';
 
