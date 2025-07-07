@@ -72,6 +72,11 @@ const registerUser = async () => {
     return;
   }
 
+  if (password.value.includes(" ")) {
+    showToast("Password must not contain spaces", "error");
+    return;
+  }
+
   if (password.value !== passwordRepeat.value) {
     showToast("Passwords do not match", "error");
     return;
@@ -99,7 +104,8 @@ const registerUser = async () => {
     router.push("/");
   } catch (err) {
     console.error(err);
-    showToast("Registration failed", "error");}
+    showToast("Registration failed", "error");
+  }
 };
 </script>
 
