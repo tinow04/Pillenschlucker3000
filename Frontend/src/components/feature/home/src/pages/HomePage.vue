@@ -80,10 +80,10 @@ export default {
     },
     updateScale() {
       const baseWidth = 1920;
-      const baseHeight = 1080;
+      const baseHeight = 1000;
       const scaleX = window.innerWidth / baseWidth;
       const scaleY = window.innerHeight / baseHeight;
-      const scale = Math.max(scaleX, scaleY);
+      const scale = Math.min(scaleX, scaleY);
       const scaler = document.getElementById("scaler");
       if (scaler) {
         scaler.style.top = "0";
