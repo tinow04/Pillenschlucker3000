@@ -80,18 +80,27 @@ export default {
     },
     updateScale() {
       const baseWidth = 1920;
-      const baseHeight = 1080;
+      const baseHeight = 995;
+
       const scaleX = window.innerWidth / baseWidth;
       const scaleY = window.innerHeight / baseHeight;
-      const scale = Math.max(scaleX, scaleY);
+      const scale = Math.min(scaleX, scaleY);
+
       const scaler = document.getElementById("scaler");
       if (scaler) {
-        scaler.style.top = "0";
-        scaler.style.left = "0";
         scaler.style.transform = `scale(${scale})`;
+        scaler.style.transformOrigin = "top left";
+
+        // Hier das Fenster optisch "größer ziehen", damit es sich zentral anfühlt
+        const offsetX = (window.innerWidth - baseWidth * scale) / 2;
+        const offsetY = (window.innerHeight - baseHeight * scale) / 2;
+
+        scaler.style.position = "absolute";
+        scaler.style.left = `${offsetX}px`;
+        scaler.style.top = `${offsetY}px`;
       }
-      document.documentElement.style.setProperty("--scale-factor", scale);
-    },
+    }
+    ,
   },
   mounted() {
     this.updateScale();
@@ -118,10 +127,13 @@ export default {
 #scaler {
   width: 1920px;
   height: 1080px;
-  position: absolute;
-  top: 0;
-  left: 0;
   transform-origin: top left;
+  position: absolute;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 .home-page {
