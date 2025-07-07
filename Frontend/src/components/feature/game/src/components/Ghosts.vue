@@ -92,8 +92,6 @@
 
   function updateGhostPosition() {
     getNextDirection();
-    // Ist nextDirection erlaubt?
-    // Versuche, in currentDirection zu laufen
     if (currentDirection.value) {
       if(position.value.x===5&&position.value.y===345){
         position.value.x=670;
