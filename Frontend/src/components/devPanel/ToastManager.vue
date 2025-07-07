@@ -1,4 +1,4 @@
-ToastManager:<template>
+<template>
   <div class="toast-wrapper">
     <div
       v-for="(toast, index) in toasts"
@@ -14,14 +14,20 @@ ToastManager:<template>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { ref } from "vue";
 
-// Toast array
-const toasts = ref([]);
+type ToastType = 'default' | 'success' | 'error' | 'info';
 
-// Exportierbare Methode für externes Triggern
-export function showToast(message, type = "default", duration = 5000) {
+interface Toast {
+  message: string;
+  type: ToastType;
+  duration: number;
+}
+
+const toasts = ref<Toast[]>([]);
+
+export function showToast(message: string, type: ToastType = "default", duration: number = 5000): void {
   toasts.value.push({ message, type, duration });
 
   setTimeout(() => {
@@ -30,9 +36,9 @@ export function showToast(message, type = "default", duration = 5000) {
 }
 
 export default {
+  name: "ToastManager",
   setup() {
-    // Lokale Icon-Pfade (aus /assets)
-    const getIconUrl = (type) => {
+    const getIconUrl = (type: ToastType): string => {
       switch (type) {
         case "success":
           return new URL("@/assets/toast_check.png", import.meta.url).href;
@@ -45,7 +51,7 @@ export default {
       }
     };
 
-    const remove = (index) => {
+    const remove = (index: number): void => {
       toasts.value.splice(index, 1);
     };
 
@@ -145,5 +151,3 @@ export default {
   background-color: #1565c0;
 }
 </style>
-
-

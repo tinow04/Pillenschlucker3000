@@ -8,16 +8,18 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { showToast } from "@/components/devPanel/ToastManager.vue";
 import { ref, onMounted, onBeforeUnmount } from "vue";
+
+type ToastType = 'default' | 'success' | 'info' | 'error';
 
 export default {
   name: "DevPanel",
   setup() {
     const visible = ref(false);
 
-    const show = (msg, type = "default") => {
+    const show = (msg: string, type: ToastType = "default") => {
       showToast(msg, type);
     };
 
@@ -25,7 +27,7 @@ export default {
       visible.value = !visible.value;
     };
 
-    const handleKey = (e) => {
+    const handleKey = (e: KeyboardEvent) => {
       if (e.altKey && e.key.toLowerCase() === "p") {
         toggle();
       }

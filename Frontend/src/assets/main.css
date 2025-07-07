@@ -1,16 +1,29 @@
 @import './base.css';
 @import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
 
+* {
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  box-sizing: border-box;
+}
+
+img {
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
 body {
   font-family: "Jersey 10", serif;
   overflow: hidden;
-  user-select: none;
+  margin: 0;
 }
 
 html, body, #app {
   height: 100%;
   margin: 0;
 }
+
 /*
 #app {
   max-width: 1280px;

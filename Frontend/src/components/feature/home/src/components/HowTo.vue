@@ -27,7 +27,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import howto1 from '@/assets/howto1.png';
 import howto2 from '@/assets/howto2.png';
 import howto3 from '@/assets/howto3.png';
@@ -120,7 +120,6 @@ export default {
   transform-origin: center;
   display: block;
 
-  /* Kein Draggen in Chrome/Safari/WebKit */
   -webkit-user-drag: none;
   user-drag: none;
   user-select: none;

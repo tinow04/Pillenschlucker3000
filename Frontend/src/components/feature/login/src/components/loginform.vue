@@ -62,7 +62,7 @@ const handleLoginSubmit = async () => {
     showToast("Login successful", "success");
     router.push("/");
   } catch (error) {
-    console.error("Fehler:", error);
+    console.error("Error:", error);
     showToast("Login failed. Please try again.", "error");
   }
 };
