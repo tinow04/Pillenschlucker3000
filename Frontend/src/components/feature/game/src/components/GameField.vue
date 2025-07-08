@@ -569,11 +569,7 @@
   onMounted(() => {
     window.addEventListener('keydown', handleKeydown);
     fetchHighscore().then((backendhighscore) => {
-      oldHighscore = backendhighscore;
-      console.log("Highscore from backend: " + oldHighscore);
-      if (oldHighscore > highscore.value) {
-        highscore.value = oldHighscore;
-      }
+      highscore.value = backendhighscore || 0;
     });
   });
 
@@ -618,7 +614,6 @@
       console.log("Player ID fehlt. Highscore kann nicht abgefragt werden.");
       return;
     }
-    console.log('Highscore abgerufen');
     try {
       const response = await fetch(import.meta.env.VITE_BASE_URL + `api/gameover?playerID=${playerId}`, {
         method: 'GET',
